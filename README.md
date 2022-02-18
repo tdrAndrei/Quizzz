@@ -15,6 +15,7 @@ Add your own name (do not add the names for others!) to the section below.
 | ![](profile_images/picture-maarten.jpg) | Maarten van der Weide | M.V.vanderWeide@student.tudelft.nl |
 | ![](profile_images/Wiktor_photo.jpg) | Wiktor Grzybko | W.J.Grzybko@student.tudelft.nl |
 | ![](profile_images/pic-Ana.jpg) | Ana Bătrîneanu | A.Batrineanu@student.tudelft.nl |
+| ![](profile_images/KayleighPicture.jpg) | Kayleigh Jones | K.M.Jones@student.tudelft.nl |
 
 <!-- Instructions (remove once assignment has been completed -->
 <!-- - Add (only!) your own name to the table above (use Markdown formatting) -->
