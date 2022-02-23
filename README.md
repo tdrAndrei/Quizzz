@@ -10,7 +10,12 @@ Add your own name (do not add the names for others!) to the section below.
 
 | Profile Picture | Name | Email |
 |---|---|---|
-| ![](https://eu.ui-avatars.com/api/?name=OOPP&length=4&size=50&color=DDD&background=777&font-size=0.325) | Your Name Here | Y.NameHere@student.tudelft.nl |
+| ![](profile_images/AvatarTAndrei.jpg) | Tudor Andrei | T.Andrei@student.tudelft.nl |
+| ![](profile_images/Webp.net-resizeimage.jpg) | Juan Tarazona | J.J.TarazonaRodriguez@student.tudelft.nl |
+| ![](profile_images/picture-maarten.jpg) | Maarten van der Weide | M.V.vanderWeide@student.tudelft.nl |
+| ![](profile_images/Wiktor_photo.jpg) | Wiktor Grzybko | W.J.Grzybko@student.tudelft.nl |
+| ![](profile_images/pic-Ana.jpg) | Ana Bătrîneanu | A.Batrineanu@student.tudelft.nl |
+| ![](profile_images/KayleighPicture.jpg) | Kayleigh Jones | K.M.Jones@student.tudelft.nl |
 
 <!-- Instructions (remove once assignment has been completed -->
 <!-- - Add (only!) your own name to the table above (use Markdown formatting) -->
