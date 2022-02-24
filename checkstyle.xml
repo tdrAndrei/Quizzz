@@ -6,8 +6,35 @@
 <module name = "Checker">
     <module name="TreeWalker">
         <module name="UnusedImports" />
+        <module name="AvoidStarImport" />
+        <module name="SingleSpaceSeparator" />
+        <module name="FallThrough" />
+        <module name="InnerTypeLast" />
+        <module name="LeftCurly" />
+        <module name="RightCurly" />
+        <module name="StringLiteralEquality" />
+        <module name="AvoidInlineConditionals" />
+        <module name="UnusedLocalVariable" />
+        <module name="EmptyBlock" />
+
+        <module name="MethodLength">
+            <property name="max" value="50"/>
+            <property name="countEmpty" value="false"/>
+        </module>
+
+        <module name="PackageDeclaration" />
+
+        <module name="WhitespaceAfter"/>
+
+        <module name="AbbreviationAsWordInName">
+            <property name="allowedAbbreviationLength" value="4"/>
+        </module>
+
+        <module name="NestedIfDepth">
+            <property name="max" value="3"/>
+        </module>
+
+        <module name="RequireThis"/>
+
     </module>
-
-    <!-- TODO: decide in your team with other checkers to add! -->
-
 </module>
