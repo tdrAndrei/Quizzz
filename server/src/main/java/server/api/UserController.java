@@ -32,8 +32,7 @@ public class UserController {
     }
 
     @PostMapping
-    public void registerNewUser(@RequestBody String name) {
-        User user = new User(name);
+    public void registerNewUser(@RequestBody User user) {
         userService.insert(user);
     }
 
