@@ -1,8 +1,10 @@
 package server.service;
 
+import commons.User;
 import org.springframework.stereotype.Service;
 import server.database.UserRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -20,7 +22,7 @@ public class UserService {
 
     public Optional<User> getById(Long id) {
         if( id < 0 || !userRepo.existsById(id) ) {
-            return Optional < User >.empty();
+            return Optional.empty();
         } else {
             return Optional.of(userRepo.findById(id).get());
         }
@@ -48,6 +50,5 @@ public class UserService {
             userRepo.save(toUpdate.get());
             return toUpdate;
         }
-
     }
 }
