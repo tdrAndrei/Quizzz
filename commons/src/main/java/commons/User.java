@@ -28,17 +28,12 @@ public class User {
     )
     private String name;
 
-    public User(Long id, String name) {
-        this.id = id;
+    public User(String name) {
         this.name = name;
     }
 
     User(){
 
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public void setName(String name) {
