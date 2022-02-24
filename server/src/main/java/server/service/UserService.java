@@ -21,7 +21,7 @@ public class UserService {
     }
 
     public Optional<User> getById(Long id) {
-        if( id < 0 || !userRepo.existsById(id) ) {
+        if (id < 0 || !userRepo.existsById(id)) {
             return Optional.empty();
         } else {
             return Optional.of(userRepo.findById(id).get());
@@ -33,7 +33,7 @@ public class UserService {
     }
 
     public void deleteById(Long id) {
-        if( id < 0 || !userRepo.existsById(id) ) {
+        if (id < 0 || !userRepo.existsById(id)) {
             return ;
         } else {
             userRepo.deleteById(id);
