@@ -1,6 +1,7 @@
 package server.service;
 
 import commons.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import server.database.UserRepository;
 
@@ -12,6 +13,7 @@ public class UserService {
 
     private final UserRepository userRepo;
 
+    @Autowired
     public UserService(UserRepository userRepo) {
         this.userRepo = userRepo;
     }
@@ -40,13 +42,13 @@ public class UserService {
         }
     }
 
-    public Optional<User> updateById(Long id, User user) {
+    public Optional<User> updateById(Long id, String name) {
         Optional<User> toUpdate = getById(id);
 
         if (toUpdate.isEmpty()) {
             return toUpdate;
         } else {
-            toUpdate.get().setName(user.getName());
+            toUpdate.get().setName(name);
             userRepo.save(toUpdate.get());
             return toUpdate;
         }
