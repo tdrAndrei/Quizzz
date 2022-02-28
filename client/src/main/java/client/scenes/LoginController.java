@@ -1,14 +1,13 @@
 package client.scenes;
 
 import client.utils.ServerUtils;
+import commons.User;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextField;
 
 import javax.inject.Inject;
+import java.io.IOException;
 
 public class LoginController {
 
@@ -27,24 +26,15 @@ public class LoginController {
         this.server = server;
     }
 
-    public void submit(ActionEvent even){
+    public void submit(ActionEvent event) {
         server.setUrl(urlBox.getText());
-        server.addUser(nameBox.getText());
-
+        User user = server.addUser(new User(nameBox.getText()));
+        mainCtrl.setUser(user);
     }
 
-    public void quit(ActionEvent even){
-
+    public void quit(ActionEvent event) throws IOException {
+        mainCtrl.quit();
     }
-//    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-//        alert.setTitle("Logout");
-//        alert.setHeaderText("You are about to logout");
-//        alert.setContentText("Do you want to save before exiting");
-//
-//        if (alert.showAndWait().get() == ButtonType.OK) {
-//        System.out.println("You successfully logged out");
-//        stage.close();
-//    }
 }
 
 
