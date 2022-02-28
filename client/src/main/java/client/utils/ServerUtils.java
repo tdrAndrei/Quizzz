@@ -32,7 +32,12 @@ import jakarta.ws.rs.core.GenericType;
 
 public class ServerUtils {
 
-    private static final String SERVER = "http://localhost:8080/";
+    private static String SERVER = "";
+
+
+    public void setUrl(String url) {
+        SERVER = url;
+    }
 
     public void getQuotesTheHardWay() throws IOException {
         var url = new URL("http://localhost:8080/api/quotes");
@@ -50,6 +55,14 @@ public class ServerUtils {
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
                 .get(new GenericType<List<Quote>>() {});
+    }
+
+    public void addUser(String name) {
+        ClientBuilder.newClient(new ClientConfig()) //
+                .target(SERVER).path("api/user") //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .post(Entity.entity(name, APPLICATION_JSON), String.class);
     }
 
     public Quote addQuote(Quote quote) {
