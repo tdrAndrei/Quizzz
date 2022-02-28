@@ -16,20 +16,20 @@
       <children>
             <VBox layoutX="87.0" layoutY="174.0" prefHeight="200.0" prefWidth="390.0">
                <children>
-                  <TextField prefHeight="26.0" prefWidth="304.0">
+                  <TextField fx:id="nameBox" prefHeight="26.0" prefWidth="304.0">
                      <tooltip>
                         <Tooltip text="This is how other player will see you." />
                      </tooltip>
                   </TextField>
-                  <TextField>
+                  <TextField fx:id="urlBox">
                      <VBox.margin>
                         <Insets top="25.0" />
                      </VBox.margin>
                   </TextField>
                   <ButtonBar prefHeight="40.0" prefWidth="200.0">
                     <buttons>
-                      <Button mnemonicParsing="false" text="Submit" />
-                        <Button mnemonicParsing="false" text="Quit" />
+                      <Button fx:id="submitButton" mnemonicParsing="false" text="Submit" />
+                        <Button fx:id="quitButton" mnemonicParsing="false" text="Quit" />
                     </buttons>
                      <VBox.margin>
                         <Insets right="120.0" top="10.0" />
