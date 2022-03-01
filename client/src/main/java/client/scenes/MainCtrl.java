@@ -58,7 +58,7 @@ public class MainCtrl {
     }
 
     public void showOverview() {
-        primaryStage.setTitle("Quotes: Overview");
+        primaryStage.setTitle("Quizzzz!");
         primaryStage.setScene(loginScene);
     }
 
