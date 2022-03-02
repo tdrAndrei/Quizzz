@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 
-<AnchorPane prefHeight="580.0" prefWidth="880.0" stylesheets="@../../client.css/wating.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.WaitingRoomCotroller">
+<AnchorPane prefHeight="580.0" prefWidth="880.0" stylesheets="@client.css/wating.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.WaitingRoomController">
    <children>
       <Button fx:id="exitButton" layoutX="40.0" layoutY="14.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="141.0" stylesheets="@../../client.css/wating.css" text="Exit lobby" />
       <Label fx:id="currentLabel" alignment="CENTER" layoutX="228.0" layoutY="127.0" prefHeight="38.0" prefWidth="428.0" stylesheets="@../../client.css/wating.css" text="Current Players" />

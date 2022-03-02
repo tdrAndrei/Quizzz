@@ -33,19 +33,34 @@ public class MainCtrl {
     private User user;
 
    // private LoginController loginController;
-    private MultiQuestionController multiQuestionController;
+    private LoginController loginController;
     private Scene loginScene;
+
+    private MainController mainController;
+    private Scene mainMenuScene;
+
+    private MultiQuestionController multiCtrl;
+    private Scene multiScene;
 
     @Inject
     private ServerUtils server;
 
 
-    public void initialize(Stage primaryStage, Pair<MultiQuestionController, Parent> overview) {
+    public void initialize(Stage primaryStage, Pair<LoginController, Parent> login,
+                           Pair<MainController, Parent> mainMenu,
+                           Pair<MultiQuestionController, Parent> multiQuestion) {
         this.primaryStage = primaryStage;
-        this.multiQuestionController = overview.getKey();
-        this.loginScene = new Scene(overview.getValue());
 
-        showOverview();
+        this.loginController = login.getKey();
+        this.loginScene = new Scene(login.getValue());
+
+        this.mainController = mainMenu.getKey();
+        this.mainMenuScene = new Scene(mainMenu.getValue());
+
+        this.multiCtrl = multiQuestion.getKey();
+        this.multiScene = new Scene(multiQuestion.getValue());
+
+        showLogin();
         primaryStage.show();
 
         primaryStage.setOnCloseRequest(event -> {
@@ -58,11 +73,18 @@ public class MainCtrl {
         });
     }
 
-    public void showOverview() {
+    public void showLogin() {
         primaryStage.setTitle("Quizzzz!");
         primaryStage.setScene(loginScene);
     }
 
+    public void showMainMenu(){
+        primaryStage.setScene(mainMenuScene);
+    }
+
+    public void showMultiQuestion(){
+       primaryStage.setScene(multiScene);
+    }
     public void quit() throws IOException{
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Exit");

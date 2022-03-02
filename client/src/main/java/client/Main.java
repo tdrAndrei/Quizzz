@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 
 import client.scenes.LoginController;
+import client.scenes.MainController;
 import client.scenes.MultiQuestionController;
 import com.google.inject.Injector;
 
@@ -41,10 +42,12 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws IOException {
 
-        var login = FXML.load(MultiQuestionController.class, "client", "scenes", "multiQuestion.fxml");
+        var login = FXML.load(LoginController.class, "client", "scenes", "Login.fxml");
+        var mainMenu = FXML.load(MainController.class, "client", "scenes", "main.fxml");
+        var multiQuestion = FXML.load(MultiQuestionController.class, "client", "scenes", "multiQuestion.fxml");
         //var add = FXML.load(AddQuoteCtrl.class, "client", "scenes", "AddQuote.fxml");
 
         var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
-        mainCtrl.initialize(primaryStage, login);
+        mainCtrl.initialize(primaryStage, login, mainMenu, multiQuestion);
     }
 }

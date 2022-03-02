@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<VBox prefHeight="282.0" prefWidth="506.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.LoginController">
+<VBox prefHeight="282.0" prefWidth="506.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.LoginController">
   <children>
     <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="267.0" prefWidth="506.0" style="-fx-background-color: #fff4d1;" VBox.vgrow="ALWAYS">
       <children>
@@ -17,7 +17,7 @@
                         <Tooltip text="This is how other player will see you." />
                      </tooltip>
                   </TextField>
-                  <TextField fx:id="urlBox">
+                  <TextField fx:id="urlBox" text="http://localhost:8080/">
                      <VBox.margin>
                         <Insets top="25.0" />
                      </VBox.margin>
@@ -39,6 +39,7 @@
                   <Text layoutX="5.0" layoutY="53.0" strokeType="OUTSIDE" strokeWidth="0.0" text="URL" />
                </children>
             </Group>
+            <Label fx:id="warnBox" alignment="CENTER" layoutX="141.0" layoutY="120.0" prefHeight="18.0" prefWidth="224.0" />
       </children>
     </AnchorPane>
   </children>
