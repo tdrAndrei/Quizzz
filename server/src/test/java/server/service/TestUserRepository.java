@@ -184,4 +184,15 @@ public class TestUserRepository implements UserRepository {
     public <S extends User, R> R findBy(Example<S> example, Function<FluentQuery.FetchableFluentQuery<S>, R> queryFunction) {
         return null;
     }
+
+    @Override
+    public Optional<User> getByName(String name) {
+        call("getByName");
+        for (User u : users){
+            if (u.getName().equals(name)){
+                return Optional.of(u);
+            }
+        }
+        return Optional.empty();
+    }
 }
