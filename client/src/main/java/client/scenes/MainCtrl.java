@@ -32,16 +32,17 @@ public class MainCtrl {
     private Stage primaryStage;
     private User user;
 
-    private LoginController loginController;
+   // private LoginController loginController;
+    private MultiQuestionController multiQuestionController;
     private Scene loginScene;
 
     @Inject
     private ServerUtils server;
 
 
-    public void initialize(Stage primaryStage, Pair<LoginController, Parent> overview) {
+    public void initialize(Stage primaryStage, Pair<MultiQuestionController, Parent> overview) {
         this.primaryStage = primaryStage;
-        this.loginController = overview.getKey();
+        this.multiQuestionController = overview.getKey();
         this.loginScene = new Scene(overview.getValue());
 
         showOverview();
