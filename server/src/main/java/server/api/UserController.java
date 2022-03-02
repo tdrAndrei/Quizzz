@@ -38,7 +38,9 @@ public class UserController {
     @PostMapping
     public ResponseEntity<User> registerNewUser(@RequestBody User user) {
         User insertedUser = userService.insert(user);
-
+        if (insertedUser == null){
+            return ResponseEntity.badRequest().build();
+        }
         return ResponseEntity.ok(insertedUser);
     }
 

@@ -2,6 +2,8 @@ package server.service;
 
 import commons.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import server.database.UserRepository;
 
@@ -31,6 +33,9 @@ public class UserService {
     }
 
     public User insert(User user) {
+        if (user == null || user.getName().isEmpty()){
+            return null;
+        }
         return userRepo.save(user);
     }
 
