@@ -11,7 +11,7 @@ Note taker:     Ana Bătrîneanu
 - checkstyle decided & merged
 - wrote questions for teamwork Q&A
 
-### Monday 28-2-22, 16:00 - ?
+### Monday 28-02-22 from 16:00 to ~ 17:30
   
 - client-server communication
 - client closes: drop his name from the table
@@ -47,10 +47,10 @@ PLAYER : - store user + score
 logic screen + main screen (check database)
 
 ### Monday 28-2-22, 20:30-23:00
-- Login stuff
+- Wiktor, Maarten and Kayleigh worked on the login screen + storing online users in the database (insert on connect, delete on disconnect)
 
 ### Tuesday 14:30-16:30
-- plan classes etc
+- Plan classes 
 
 # Opening
 All team members were present physically
@@ -91,4 +91,4 @@ next week:
 - make sure we don't run out of memory
 
 # Closing
-- We have currently split our work and we will meet on Thursday to discuss everybody's progress.
+- We have currently split our work, and we will meet on Thursday to discuss everybody's progress.
