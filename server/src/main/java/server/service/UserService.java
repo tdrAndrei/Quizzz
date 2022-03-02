@@ -31,6 +31,9 @@ public class UserService {
     }
 
     public User insert(User user) {
+        if (user == null || user.getName().isEmpty()){
+            return null;
+        }
         return userRepo.save(user);
     }
 
