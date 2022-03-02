@@ -3,14 +3,12 @@ package commons;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.lang.reflect.GenericArrayType;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ActivityTest {
 
@@ -70,7 +68,7 @@ class ActivityTest {
     @Test
     void testEquals2(){
 
-        Activity activity2 = new Activity("00-smartphone", "00/smartphone.png","Charging your smartphone at night", 10L,"https://9to5mac.com/2021/09/16/iphone-13-battery-life/");
+        Activity activity2 = new Activity("00-smartphone", "00/smartphone.png", "Charging your smartphone at night", 10L, "https://9to5mac.com/2021/09/16/iphone-13-battery-life/");
         assertEquals(activity2, activityList.get(1));
 
     }
