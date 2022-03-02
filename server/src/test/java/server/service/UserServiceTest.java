@@ -7,10 +7,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 
 class UserServiceTest {
 
@@ -39,6 +41,7 @@ class UserServiceTest {
     @Test
     public void insertUsesDatabase(){
         User user = sut.insert(getUser("test"));
+        assertTrue(repo.calledMethods.contains("getByName"));
         assertTrue(repo.calledMethods.contains("save"));
     }
 
@@ -48,6 +51,13 @@ class UserServiceTest {
         assertEquals(insertedUser.getName(), repo.users.get(0).getName());
     }
 
+    @Test
+    public void insertAlreadyTakenName(){
+        User insertedUser1 = sut.insert(getUser("test"));
+        User insertedUser2 = sut.insert(getUser("test"));
+        assertNotNull(insertedUser1);
+        assertNull(insertedUser2);
+    }
     @Test
     public void getAllUsersUsesDatabase(){
         List<User> users = sut.getAllUsers();
