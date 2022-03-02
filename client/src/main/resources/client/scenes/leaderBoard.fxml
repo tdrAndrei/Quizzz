@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="580.0" prefWidth="880.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.WaitingRoomCotroller">
+   <children>
+      <Button fx:id="exitButton" layoutX="32.0" layoutY="531.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="101.0" text="Exit Game" />
+      <Label alignment="CENTER" layoutX="150.0" layoutY="140.0" prefHeight="47.0" prefWidth="617.0" text="LEADERBOARD">
+         <font>
+            <Font size="32.0" />
+         </font>
+      </Label>
+      <HBox layoutX="153.0" layoutY="236.0" prefHeight="275.0" prefWidth="612.0">
+         <children>
+            <ScrollPane prefHeight="275.0" prefWidth="627.0" style="-fx-background-color: transparent;" stylesheets="@../../client.css/wating.css" vbarPolicy="NEVER">
+               <content>
+                  <GridPane fx:id="grid" prefHeight="0.0" prefWidth="583.0">
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                    </columnConstraints>
+                  </GridPane>
+               </content>
+            </ScrollPane>
+         </children>
+      </HBox>
+      <Label fx:id="timeLeftLabel" layoutX="158.0" layoutY="72.0" text="Time Left until next quesiton">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <ProgressBar fx:id="progressBar" layoutX="404.0" layoutY="60.0" prefHeight="34.0" prefWidth="358.0" progress="0.13" />
+      <Button fx:id="temporaryButton" layoutX="518.0" layoutY="100.0" mnemonicParsing="false" onAction="#increaseProgress" text="temporary button" />
+   </children>
+   <stylesheets>
+      <URL value="@../../client.css/wating.css" />
+      <URL value="@../../client.css/wating.css" />
+   </stylesheets>
+</AnchorPane>
