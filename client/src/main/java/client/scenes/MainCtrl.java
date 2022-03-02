@@ -15,43 +15,67 @@
  */
 package client.scenes;
 
+import client.utils.ServerUtils;
+import commons.User;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 import javafx.util.Pair;
+
+import javax.inject.Inject;
+import java.io.IOException;
 
 public class MainCtrl {
 
     private Stage primaryStage;
+    private User user;
 
-    private QuoteOverviewCtrl overviewCtrl;
-    private Scene overview;
+    private LoginController loginController;
+    private Scene loginScene;
 
-    private AddQuoteCtrl addCtrl;
-    private Scene add;
+    @Inject
+    private ServerUtils server;
 
-    public void initialize(Stage primaryStage, Pair<QuoteOverviewCtrl, Parent> overview,
-            Pair<AddQuoteCtrl, Parent> add) {
+
+    public void initialize(Stage primaryStage, Pair<LoginController, Parent> overview) {
         this.primaryStage = primaryStage;
-        this.overviewCtrl = overview.getKey();
-        this.overview = new Scene(overview.getValue());
-
-        this.addCtrl = add.getKey();
-        this.add = new Scene(add.getValue());
+        this.loginController = overview.getKey();
+        this.loginScene = new Scene(overview.getValue());
 
         showOverview();
         primaryStage.show();
+
+        primaryStage.setOnCloseRequest(event -> {
+            try {
+                event.consume();
+                quit();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     public void showOverview() {
-        primaryStage.setTitle("Quotes: Overview");
-        primaryStage.setScene(overview);
-        overviewCtrl.refresh();
+        primaryStage.setTitle("Quizzzz!");
+        primaryStage.setScene(loginScene);
     }
 
-    public void showAdd() {
-        primaryStage.setTitle("Quotes: Adding Quote");
-        primaryStage.setScene(add);
-        add.setOnKeyPressed(e -> addCtrl.keyPressed(e));
+    public void quit() throws IOException{
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Exit");
+        alert.setHeaderText("You are about to exit the application");
+        if (alert.showAndWait().get() == ButtonType.OK) {
+            System.out.println("Goodbye!");
+            if (user != null) {
+                server.deleteSelf(user);
+            }
+            primaryStage.close();
+        }
+    }
+
+    public void setUser(User user){
+        this.user = user;
     }
 }
