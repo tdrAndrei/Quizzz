@@ -1,6 +1,7 @@
 package commons;
 
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.util.Objects;
 
 /**
@@ -10,6 +11,7 @@ import java.util.Objects;
 @Entity(name = "Activity")
 public class Activity {
 
+    @Id
     private String id;
     private String image_path;
     private String title;
