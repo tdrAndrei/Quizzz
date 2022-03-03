@@ -21,7 +21,10 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 
 import client.scenes.LoginController;
+import client.scenes.MainMenuController;
+import client.scenes.MultiQuestionController;
 import com.google.inject.Injector;
+
 
 import client.scenes.MainCtrl;
 import javafx.application.Application;
@@ -40,9 +43,11 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws IOException {
 
         var login = FXML.load(LoginController.class, "client", "scenes", "Login.fxml");
+        var mainMenu = FXML.load(MainMenuController.class, "client", "scenes", "main.fxml");
+        var multiQuestion = FXML.load(MultiQuestionController.class, "client", "scenes", "multiQuestion.fxml");
         //var add = FXML.load(AddQuoteCtrl.class, "client", "scenes", "AddQuote.fxml");
 
         var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
-        mainCtrl.initialize(primaryStage, login);
+        mainCtrl.initialize(primaryStage, login, mainMenu, multiQuestion);
     }
 }

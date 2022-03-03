@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="580.0" prefWidth="880.0" stylesheets="@client.css/questions.css" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.MultiQuestionController">
+   <children>
+      <Button fx:id="exitButton" layoutX="57.0" layoutY="515.0" mnemonicParsing="false" onAction="#quit" text="Exit Game">
+         <font>
+            <Font size="19.0" />
+         </font>
+      </Button>
+      <ProgressBar fx:id="progressBar" layoutX="285.0" layoutY="90.0" prefHeight="32.0" prefWidth="330.0" progress="0.51" />
+      <Label fx:id="timeButton" alignment="CENTER" layoutX="425.0" layoutY="57.0" prefHeight="27.0" prefWidth="51.0" text="10S">
+         <font>
+            <Font size="21.0" />
+         </font>
+      </Label>
+      <Label fx:id="questionLabel" layoutX="268.0" layoutY="165.0" prefHeight="107.0" prefWidth="368.0" text="What is the most wasteful activity regarding energy consumptioin" textAlignment="CENTER" textFill="#fef5a1" wrapText="true">
+         <font>
+            <Font name="Arial Bold" size="24.0" />
+         </font>
+      </Label>
+      <Label layoutX="627.0" layoutY="518.0" text="React">
+         <font>
+            <Font size="23.0" />
+         </font>
+      </Label>
+      <Label alignment="CENTER" layoutX="19.0" layoutY="114.0" prefHeight="22.0" prefWidth="208.0" text="JOKERS" textFill="#fef5a1">
+         <font>
+            <Font name="Arial Bold" size="19.0" />
+         </font>
+      </Label>
+      <ImageView fitHeight="93.0" fitWidth="61.0" layoutX="7.0" layoutY="11.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="eliminateJoker" fitHeight="93.0" fitWidth="61.0" layoutX="12.0" layoutY="7.0" onMouseClicked="#changeJoker1" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@client.photos/jokerOneAnswer.png" />
+         </image>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </ImageView>
+      <ImageView fx:id="doublePointsJoker" fitHeight="93.0" fitWidth="61.0" layoutX="94.0" layoutY="7.0" onMouseClicked="#changeJoker2" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@client.photos/doubleJoker.png" />
+         </image>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </ImageView>
+      <ImageView fx:id="timeJoker" fitHeight="93.0" fitWidth="61.0" layoutX="173.0" layoutY="7.0" onMouseClicked="#changeJoker3" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@client.photos/timeJoker.png" />
+         </image>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </ImageView>
+      <ImageView fx:id="question2Image" fitHeight="165.0" fitWidth="194.0" layoutX="368.0" layoutY="318.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@client.photos/question3.png" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="question1Image" fitHeight="165.0" fitWidth="184.0" layoutX="80.0" layoutY="253.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@client.photos/question2.png" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="question3Image" fitHeight="175.0" fitWidth="195.0" layoutX="659.0" layoutY="249.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@client.photos/question1.png" />
+         </image>
+      </ImageView>
+      <Label layoutX="656.0" layoutY="38.0" prefHeight="32.0" prefWidth="101.0" text="Your Score:">
+         <font>
+            <Font name="Arial Bold" size="17.0" />
+         </font>
+      </Label>
+      <Label layoutX="761.0" layoutY="41.0" prefHeight="27.0" prefWidth="106.0" text="990pts">
+         <font>
+            <Font name="Arial Bold" size="24.0" />
+         </font>
+      </Label>
+   </children>
+</AnchorPane>
