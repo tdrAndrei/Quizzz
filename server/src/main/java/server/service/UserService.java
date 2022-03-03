@@ -34,6 +34,9 @@ public class UserService {
         if (user == null || user.getName().isEmpty()){
             return null;
         }
+        if (userRepo.getByName(user.getName()).isPresent()){
+            return null;
+        }
         return userRepo.save(user);
     }
 
