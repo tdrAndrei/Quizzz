@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="580.0" prefWidth="880.0" stylesheets="@client.css/questions.css" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.MultiQuestionController">
+<AnchorPane prefHeight="580.0" prefWidth="880.0" stylesheets="@/client.css/questions.css" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.MultiQuestionController">
    <children>
       <Button fx:id="exitButton" layoutX="57.0" layoutY="515.0" mnemonicParsing="false" onAction="#quit" text="Exit Game">
          <font>
@@ -37,7 +37,7 @@
       <ImageView fitHeight="93.0" fitWidth="61.0" layoutX="7.0" layoutY="11.0" pickOnBounds="true" preserveRatio="true" />
       <ImageView fx:id="eliminateJoker" fitHeight="93.0" fitWidth="61.0" layoutX="12.0" layoutY="7.0" onMouseClicked="#changeJoker1" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@client.photos/jokerOneAnswer.png" />
+            <Image url="@/client.photos/jokerOneAnswer.png" />
          </image>
          <cursor>
             <Cursor fx:constant="HAND" />
@@ -45,7 +45,7 @@
       </ImageView>
       <ImageView fx:id="doublePointsJoker" fitHeight="93.0" fitWidth="61.0" layoutX="94.0" layoutY="7.0" onMouseClicked="#changeJoker2" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@client.photos/doubleJoker.png" />
+            <Image url="@/client.photos/doubleJoker.png" />
          </image>
          <cursor>
             <Cursor fx:constant="HAND" />
@@ -53,7 +53,7 @@
       </ImageView>
       <ImageView fx:id="timeJoker" fitHeight="93.0" fitWidth="61.0" layoutX="173.0" layoutY="7.0" onMouseClicked="#changeJoker3" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@client.photos/timeJoker.png" />
+            <Image url="@/client.photos/timeJoker.png" />
          </image>
          <cursor>
             <Cursor fx:constant="HAND" />
@@ -61,17 +61,17 @@
       </ImageView>
       <ImageView fx:id="question2Image" fitHeight="165.0" fitWidth="194.0" layoutX="368.0" layoutY="318.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@client.photos/question3.png" />
+            <Image url="@/client.photos/question3.png" />
          </image>
       </ImageView>
       <ImageView fx:id="question1Image" fitHeight="165.0" fitWidth="184.0" layoutX="80.0" layoutY="253.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@client.photos/question2.png" />
+            <Image url="@/client.photos/question2.png" />
          </image>
       </ImageView>
       <ImageView fx:id="question3Image" fitHeight="175.0" fitWidth="195.0" layoutX="659.0" layoutY="249.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@client.photos/question1.png" />
+            <Image url="@/client.photos/question1.png" />
          </image>
       </ImageView>
       <Label layoutX="656.0" layoutY="38.0" prefHeight="32.0" prefWidth="101.0" text="Your Score:">
