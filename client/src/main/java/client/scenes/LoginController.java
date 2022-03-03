@@ -2,6 +2,7 @@ package client.scenes;
 
 import client.utils.ServerUtils;
 import commons.User;
+import jakarta.ws.rs.BadRequestException;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -32,14 +33,14 @@ public class LoginController {
 
     public void submit(ActionEvent event) {
         server.setUrl(urlBox.getText());
-        User user = server.addUser(new User(nameBox.getText()));
-        if (user == null) {
+        try{
+            User user = server.addUser(new User(nameBox.getText()));
+            mainCtrl.setUser(user);
+            mainCtrl.showMainMenu();
+        } catch (BadRequestException e){
             nameBox.setText("");
             warnBox.setText("Chosen username is already taken");
-            return;
         }
-        mainCtrl.setUser(user);
-        mainCtrl.showMainMenu();
     }
 
     public void quit(ActionEvent event) throws IOException {

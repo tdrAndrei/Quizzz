@@ -21,7 +21,7 @@
       </Label>
       <HBox layoutX="153.0" layoutY="236.0" prefHeight="275.0" prefWidth="612.0">
          <children>
-            <ScrollPane prefHeight="275.0" prefWidth="627.0" style="-fx-background-color: transparent;" stylesheets="@client.css/wating.css" vbarPolicy="NEVER">
+            <ScrollPane prefHeight="275.0" prefWidth="627.0" style="-fx-background-color: transparent;" stylesheets="@/client.css/waiting.css" vbarPolicy="NEVER">
                <content>
                   <GridPane fx:id="grid" prefHeight="0.0" prefWidth="583.0">
                     <columnConstraints>
@@ -41,7 +41,7 @@
       <Button fx:id="temporaryButton" layoutX="518.0" layoutY="100.0" mnemonicParsing="false" onAction="#increaseProgress" text="temporary button" />
    </children>
    <stylesheets>
-      <URL value="@client.css/wating.css" />
-      <URL value="@client.css/wating.css" />
+      <URL value="@/client.css/waiting.css" />
+      <URL value="@/client.css/waiting.css" />
    </stylesheets>
 </AnchorPane>

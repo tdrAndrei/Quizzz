@@ -9,13 +9,13 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 
-<AnchorPane prefHeight="580.0" prefWidth="880.0" stylesheets="@client.css/wating.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.WaitingRoomController">
+<AnchorPane prefHeight="580.0" prefWidth="880.0" stylesheets="@/client.css/waiting.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.WaitingRoomController">
    <children>
-      <Button fx:id="exitButton" layoutX="40.0" layoutY="14.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="141.0" stylesheets="@../../client.css/wating.css" text="Exit lobby" />
-      <Label fx:id="currentLabel" alignment="CENTER" layoutX="228.0" layoutY="127.0" prefHeight="38.0" prefWidth="428.0" stylesheets="@../../client.css/wating.css" text="Current Players" />
-      <HBox fx:id="hBox" layoutX="234.0" layoutY="179.0" prefHeight="222.0" prefWidth="417.0" styleClass="HBox" stylesheets="@../../client.css/wating.css">
+      <Button fx:id="exitButton" layoutX="40.0" layoutY="14.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="141.0" stylesheets="@../../client.css/waiting.css" text="Exit lobby" />
+      <Label fx:id="currentLabel" alignment="CENTER" layoutX="228.0" layoutY="127.0" prefHeight="38.0" prefWidth="428.0" stylesheets="@../../client.css/waiting.css" text="Current Players" />
+      <HBox fx:id="hBox" layoutX="234.0" layoutY="179.0" prefHeight="222.0" prefWidth="417.0" styleClass="HBox" stylesheets="@../../client.css/waiting.css">
          <children>
-            <ScrollPane fx:id="scrollPane" hbarPolicy="NEVER" nodeOrientation="LEFT_TO_RIGHT" prefHeight="196.0" prefWidth="350.0" style="-fx-background-color: transparent;" stylesheets="@../../client.css/wating.css" HBox.hgrow="ALWAYS">
+            <ScrollPane fx:id="scrollPane" hbarPolicy="NEVER" nodeOrientation="LEFT_TO_RIGHT" prefHeight="196.0" prefWidth="350.0" style="-fx-background-color: transparent;" stylesheets="@../../client.css/waiting.css" HBox.hgrow="ALWAYS">
                <content>
                   <GridPane fx:id="grid" prefHeight="0.0" prefWidth="0.0">
                     <columnConstraints>
