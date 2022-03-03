@@ -36,7 +36,7 @@ public class MainCtrl {
     private LoginController loginController;
     private Scene loginScene;
 
-    private MainController mainController;
+    private MainMenuController mainMenuController;
     private Scene mainMenuScene;
 
     private MultiQuestionController multiCtrl;
@@ -47,14 +47,14 @@ public class MainCtrl {
 
 
     public void initialize(Stage primaryStage, Pair<LoginController, Parent> login,
-                           Pair<MainController, Parent> mainMenu,
+                           Pair<MainMenuController, Parent> mainMenu,
                            Pair<MultiQuestionController, Parent> multiQuestion) {
         this.primaryStage = primaryStage;
 
         this.loginController = login.getKey();
         this.loginScene = new Scene(login.getValue());
 
-        this.mainController = mainMenu.getKey();
+        this.mainMenuController = mainMenu.getKey();
         this.mainMenuScene = new Scene(mainMenu.getValue());
 
         this.multiCtrl = multiQuestion.getKey();

@@ -53,7 +53,7 @@ public class MultiQuestionController {
 
 
     public void quit() throws IOException {
-        mainCtrl.quit();
+        mainCtrl.showMainMenu();
     }
     public void changeJoker1() {
         eliminateJoker.setImage(image);

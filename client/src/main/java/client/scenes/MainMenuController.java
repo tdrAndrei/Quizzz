@@ -8,7 +8,7 @@ import javafx.scene.image.ImageView;
 import javax.inject.Inject;
 import java.io.IOException;
 
-public class MainController {
+public class MainMenuController {
 
     @FXML
     private ImageView factImage;
@@ -29,7 +29,7 @@ public class MainController {
     private final MainCtrl mainCtrl;
 
     @Inject
-    public MainController(MainCtrl mainCtrl){
+    public MainMenuController(MainCtrl mainCtrl){
         this.mainCtrl = mainCtrl;
     }
 

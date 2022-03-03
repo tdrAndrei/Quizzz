@@ -17,7 +17,7 @@ package client;
 
 import client.scenes.LoginController;
 import client.scenes.MainCtrl;
-import client.scenes.MainController;
+import client.scenes.MainMenuController;
 import client.scenes.MultiQuestionController;
 import client.scenes.WaitingRoomController;
 import client.scenes.AddQuoteCtrl;
@@ -35,7 +35,7 @@ public class MyModule implements Module {
         binder.bind(MainCtrl.class).in(Scopes.SINGLETON);
         binder.bind(LoginController.class).in(Scopes.SINGLETON);
         binder.bind(ServerUtils.class).in(Scopes.SINGLETON);
-        binder.bind(MainController.class).in(Scopes.SINGLETON);
+        binder.bind(MainMenuController.class).in(Scopes.SINGLETON);
         binder.bind(MultiQuestionController.class).in(Scopes.SINGLETON);
         binder.bind(WaitingRoomController.class).in(Scopes.SINGLETON);
 
