@@ -30,7 +30,16 @@ public class LoginController {
         server.setUrl(urlBox.getText());
         User user = server.addUser(new User(nameBox.getText()));
         mainCtrl.setUser(user);
+
+        clearFields();
+        mainCtrl.showBoardOverview();
     }
+
+    private void clearFields() {
+        nameBox.clear();
+        urlBox.clear();
+    }
+
 
     public void quit(ActionEvent event) throws IOException {
         mainCtrl.quit();

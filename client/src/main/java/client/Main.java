@@ -20,6 +20,7 @@ import static com.google.inject.Guice.createInjector;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
+import client.scenes.LeaderboardSoloController;
 import client.scenes.LoginController;
 import com.google.inject.Injector;
 
@@ -41,8 +42,8 @@ public class Main extends Application {
 
         var login = FXML.load(LoginController.class, "client", "scenes", "Login.fxml");
         //var add = FXML.load(AddQuoteCtrl.class, "client", "scenes", "AddQuote.fxml");
-
         var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
-        mainCtrl.initialize(primaryStage, login);
+        var leaderboardSolo = FXML.load(LeaderboardSoloController.class, "client", "scenes", "LeaderboardSolo.fxml");
+        mainCtrl.initialize(primaryStage, login, leaderboardSolo);
     }
 }

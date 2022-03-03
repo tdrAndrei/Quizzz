@@ -15,14 +15,15 @@
  */
 package client;
 
-import client.scenes.LoginController;
 import com.google.inject.Binder;
 import com.google.inject.Module;
 import com.google.inject.Scopes;
 
-import client.scenes.AddQuoteCtrl;
 import client.scenes.MainCtrl;
+import client.scenes.LoginController;
+import client.scenes.AddQuoteCtrl;
 import client.scenes.QuoteOverviewCtrl;
+import client.scenes.LeaderboardSoloController;
 
 public class MyModule implements Module {
 
@@ -32,5 +33,6 @@ public class MyModule implements Module {
         binder.bind(LoginController.class).in(Scopes.SINGLETON);
         binder.bind(AddQuoteCtrl.class).in(Scopes.SINGLETON);
         binder.bind(QuoteOverviewCtrl.class).in(Scopes.SINGLETON);
+        binder.bind(LeaderboardSoloController.class).in(Scopes.SINGLETON);
     }
 }

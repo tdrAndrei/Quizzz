@@ -35,14 +35,22 @@ public class MainCtrl {
     private LoginController loginController;
     private Scene loginScene;
 
+    private LeaderboardSoloController leaderboardSoloController;
+    private Scene leaderboardSoloScene;
+
     @Inject
     private ServerUtils server;
 
 
-    public void initialize(Stage primaryStage, Pair<LoginController, Parent> overview) {
+    public void initialize(Stage primaryStage, Pair<LoginController, Parent> overview,
+                           Pair<LeaderboardSoloController, Parent> boardOverview) {
         this.primaryStage = primaryStage;
         this.loginController = overview.getKey();
         this.loginScene = new Scene(overview.getValue());
+
+        this.leaderboardSoloController = boardOverview.getKey();
+        this.leaderboardSoloScene = new Scene(boardOverview.getValue());
+        leaderboardSoloScene.getStylesheets().add("resources/client.css/LeaderboardSolo.css");
 
         showOverview();
         primaryStage.show();
@@ -55,6 +63,11 @@ public class MainCtrl {
                 e.printStackTrace();
             }
         });
+    }
+
+    public void showBoardOverview() {
+        primaryStage.setTitle("Quizzzz! leaderboard");
+        primaryStage.setScene(leaderboardSoloScene);
     }
 
     public void showOverview() {
