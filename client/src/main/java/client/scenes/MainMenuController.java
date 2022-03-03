@@ -40,5 +40,10 @@ public class MainMenuController {
     public void startSolo(){
         mainCtrl.showMultiQuestion();
     }
+
+    public void showLeaderboard(){
+        mainCtrl.showLeaderboardSolo();
+    }
+
 }
 

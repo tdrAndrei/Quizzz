@@ -95,4 +95,9 @@ public class LeaderboardSoloController implements Initializable {
         colName.setCellValueFactory(q -> new SimpleObjectProperty<>(q.getValue().getNameLabel()));
         colScore.setCellValueFactory(q -> new SimpleObjectProperty<>(q.getValue().getPoints()));
     }
+
+    public void backToMainMenu(){
+        mainCtrl.showMainMenu();
+    }
+
 }

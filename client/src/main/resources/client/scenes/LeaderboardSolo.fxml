@@ -14,6 +14,7 @@
          </columns>
     </TableView>
     <TextField fx:id="score" layoutX="90.0" layoutY="32.0" promptText="Score (max 600)" />
-    <Button layoutX="254.0" layoutY="32.0" onAction="#addLabel" text="Add thingy" />
+    <Button layoutX="254.0" layoutY="32.0" onAction="#addLabel" text="Add entry" />
+    <Button layoutX="419.0" layoutY="485.0" onAction="#backToMainMenu" text="Back" />
 
 </AnchorPane>

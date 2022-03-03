@@ -49,6 +49,6 @@ public class Main extends Application {
         //var add = FXML.load(AddQuoteCtrl.class, "client", "scenes", "AddQuote.fxml");
         var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
         var leaderboardSolo = FXML.load(LeaderboardSoloController.class, "client", "scenes", "LeaderboardSolo.fxml");
-        mainCtrl.initialize(primaryStage, login, leaderboardSolo);
+        mainCtrl.initialize(primaryStage, login, mainMenu, multiQuestion, leaderboardSolo);
     }
 }

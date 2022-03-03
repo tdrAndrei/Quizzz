@@ -2,6 +2,11 @@
     -fx-background-color: #fcebd9;
 }
 
+.button {
+    -fx-background-color: #c95959;
+    -fx-background-radius: 10;
+}
+
 .label {
     -fx-font-size: 150%;
     -fx-alignment: baseline-left;
