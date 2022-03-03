@@ -1,6 +1,6 @@
 # Meeting Thursday 03/03/2022
 
-- Time: 16h00 - 
+- Time: 16h00 - 18h45
 - Participants: all
 - Agenda: discuss frontend dev, HCI final, structure of game
 
