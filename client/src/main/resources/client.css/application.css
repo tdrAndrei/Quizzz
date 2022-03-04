@@ -7,6 +7,16 @@
     -fx-background-radius: 10;
 }
 
+.button:hover {
+    -fx-background-color: #e67070;
+}
+
+.button:pressed {
+    -fx-background-color: #ad4b4b;
+    -fx-scale-x: 95%;
+    -fx-scale-y: 95%;
+}
+
 /*.shadow {*/
 /*    -fx-effect: dropShadow(three-pass-box,rgba(0,0,0,1),5.0,0.0,0.0,5.0);*/
 /*}*/

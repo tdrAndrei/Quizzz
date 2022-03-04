@@ -6,12 +6,16 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="586.0" prefWidth="880.0" stylesheets="@client.css/application.css" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.MainMenuController">
+<AnchorPane prefHeight="586.0" prefWidth="880.0" stylesheets="@/client.css/application.css" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.MainMenuController">
    <children>
-      <Button fx:id="quitButton" layoutX="31.0" layoutY="14.0" mnemonicParsing="false" onAction="#quit" prefHeight="39.0" prefWidth="100.0" styleClass="shadow" text="Quit Game" textFill="WHITE">
+      <Button fx:id="quitButton" layoutX="31.0" layoutY="14.0" mnemonicParsing="false" onAction="#quit" prefHeight="39.0" prefWidth="100.0" styleClass="shadow" text="QUIT" textFill="WHITE">
+         <font>
+            <Font name="Arial Bold" size="17.0" />
+         </font>
          <cursor>
             <Cursor fx:constant="HAND" />
-         </cursor></Button>
+         </cursor>
+      </Button>
       <Button fx:id="multiplayerButton" layoutX="452.0" layoutY="204.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="175.0" styleClass="quitButton" text="MULTIPLAYER" textFill="WHITE">
          <font>
             <Font name="Arial Bold" size="17.0" />
@@ -39,10 +43,13 @@
          <font>
             <Font name="Arial Bold" size="17.0" />
          </font>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
       </Button>
       <ImageView fx:id="factImage" fitHeight="150.0" fitWidth="200.0" layoutX="290.0" layoutY="389.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@client.photos/factImage.png" />
+            <Image url="@/client.photos/factImage.png" />
          </image>
       </ImageView>
       <Label layoutX="461.0" layoutY="473.0" prefHeight="21.0" prefWidth="175.0" text="Did you know that...">
@@ -57,7 +64,7 @@
       </Label>
       <ImageView fx:id="logoImage" fitHeight="150.0" fitWidth="421.0" layoutX="236.0" layoutY="21.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@client.photos/quizLogo.png" />
+            <Image url="@/client.photos/quizLogo.png" />
          </image>
       </ImageView>
    </children>

@@ -6,7 +6,7 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="586.0" prefWidth="880.0" stylesheets="@client.css/LeaderboardSolo.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.LeaderboardSoloController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="586.0" prefWidth="880.0" stylesheets="@/client.css/LeaderboardSolo.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.LeaderboardSoloController">
     <TableView fx:id="leaderboardEntries" layoutX="90.0" layoutY="85.0">
          <columns>
             <TableColumn fx:id="colName" prefWidth="600.0" text="name" />
@@ -14,7 +14,7 @@
          </columns>
     </TableView>
     <TextField fx:id="score" layoutX="90.0" layoutY="39.0" promptText="Score (max 6000)" />
-    <Button layoutX="265.0" layoutY="32.0" onAction="#addLabel" prefHeight="17.0" prefWidth="106.0" text="Add entry" />
-    <Button layoutX="353.0" layoutY="505.0" onAction="#backToMainMenu" prefHeight="50.0" prefWidth="175.0" text="Back" />
+    <Button layoutX="265.0" layoutY="32.0" onAction="#addLabel" prefHeight="17.0" prefWidth="106.0" text="ADD" />
+    <Button layoutX="353.0" layoutY="505.0" onAction="#backToMainMenu" prefHeight="50.0" prefWidth="175.0" text="BACK" />
 
 </AnchorPane>
