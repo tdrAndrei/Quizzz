@@ -19,7 +19,7 @@ public abstract class Question {
         this.time = time;
     }
 
-    public Question() {
+    Question() {
 
     }
 
