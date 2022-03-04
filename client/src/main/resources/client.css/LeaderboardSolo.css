@@ -4,7 +4,9 @@
 
 .button {
     -fx-background-color: #c95959;
+    -fx-font-size: 150%;
     -fx-background-radius: 10;
+    -fx-text-fill: white;
 }
 
 .label {
