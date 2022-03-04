@@ -13,7 +13,7 @@ import javafx.scene.control.TextField;
 
 import javax.inject.Inject;
 import java.net.URL;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -60,7 +60,7 @@ public class LeaderboardSoloController implements Initializable {
 
     private ObservableList<LeaderboardEntry> data;
 
-    private List<LeaderboardEntry> entries = new ArrayList<>();
+    private List<LeaderboardEntry> entries = new LinkedList<>();
 
     @Inject
     public LeaderboardSoloController(ServerUtils server, MainCtrl mainCtrl) {
@@ -85,7 +85,7 @@ public class LeaderboardSoloController implements Initializable {
         } else {
             label.getStyleClass().add("redBar");
         }
-        entries.add(new LeaderboardEntry(label, sc));
+        entries.add(getNearestIndex(sc, 0, entries.size()-1), new LeaderboardEntry(label, sc));
         data = FXCollections.observableList(entries);
         leaderboardEntries.setItems(data);
     }
@@ -99,5 +99,21 @@ public class LeaderboardSoloController implements Initializable {
     public void backToMainMenu(){
         mainCtrl.showMainMenu();
     }
+
+    public int getNearestIndex(int target, int low, int high) {
+        if (low > high) {
+            return low;
+        }
+        int mid = (low+high)/2;
+        if ((mid == 0 || entries.get(mid-1).getPoints() >= target) && target > entries.get(mid).getPoints()) {
+            return mid;
+        }
+        if (target <= entries.get(mid).getPoints()) {
+            return getNearestIndex(target, mid+1, high);
+        }
+        return getNearestIndex(target, low, mid-1);
+    }
+
+
 
 }

@@ -65,7 +65,7 @@ public class MainCtrl {
 
         this.leaderboardSoloController = leaderboardSolo.getKey();
         this.leaderboardSoloScene = new Scene(leaderboardSolo.getValue());
-        leaderboardSoloScene.getStylesheets().add("resources/client.css/LeaderboardSolo.css");
+        leaderboardSoloScene.getStylesheets().add("@/client.css/LeaderboardSolo.css");
 
         showLogin();
         primaryStage.show();
