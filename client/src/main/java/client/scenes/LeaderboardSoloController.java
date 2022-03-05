@@ -69,25 +69,29 @@ public class LeaderboardSoloController implements Initializable {
     }
 
     public void addLabel() { // WILL HAVE INPUT INT SCORE INSTEAD OF TAKING FROM TEXT FIELD
-        int sc = Integer.parseInt(score.getText());
-        Label label = new Label();
-        label.setText("This is a new label.");
-        if (sc >= 5000) {
-            label.getStyleClass().add("greenBar");
-        } else if (sc >= 4000) {
-            label.getStyleClass().add("greenYellowBar");
-        } else if (sc >= 3000) {
-            label.getStyleClass().add("yellowBar");
-        } else if (sc >= 2000) {
-            label.getStyleClass().add("yellowOrangeBar");
-        } else if (sc >= 1000) {
-            label.getStyleClass().add("orangeBar");
-        } else {
-            label.getStyleClass().add("redBar");
+        try {
+            int sc = Integer.parseInt(score.getText());
+            Label label = new Label();
+            label.setText("This is a new label.");
+            if (sc >= 5000) {
+                label.getStyleClass().add("greenBar");
+            } else if (sc >= 4000) {
+                label.getStyleClass().add("greenYellowBar");
+            } else if (sc >= 3000) {
+                label.getStyleClass().add("yellowBar");
+            } else if (sc >= 2000) {
+                label.getStyleClass().add("yellowOrangeBar");
+            } else if (sc >= 1000) {
+                label.getStyleClass().add("orangeBar");
+            } else {
+                label.getStyleClass().add("redBar");
+            }
+            entries.add(getNearestIndex(sc, 0, entries.size() - 1), new LeaderboardEntry(label, sc));
+            data = FXCollections.observableList(entries);
+            leaderboardEntries.setItems(data);
+        } catch (NumberFormatException e) {
+            score.setText("0");
         }
-        entries.add(getNearestIndex(sc, 0, entries.size()-1), new LeaderboardEntry(label, sc));
-        data = FXCollections.observableList(entries);
-        leaderboardEntries.setItems(data);
     }
 
     @Override

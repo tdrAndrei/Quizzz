@@ -6,29 +6,11 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="586.0" prefWidth="880.0" stylesheets="@/client.css/application.css" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.MainMenuController">
+<AnchorPane fx:id="mainMenuPane" prefHeight="586.0" prefWidth="880.0" stylesheets="@/client.css/application.css"  xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.MainMenuController">
    <children>
-      <Button fx:id="quitButton" layoutX="31.0" layoutY="14.0" mnemonicParsing="false" onAction="#quit" prefHeight="39.0" prefWidth="100.0" styleClass="shadow" text="QUIT" textFill="WHITE">
-         <font>
-            <Font name="Arial Bold" size="17.0" />
-         </font>
-         <cursor>
-            <Cursor fx:constant="HAND" />
-         </cursor>
-      </Button>
-      <Button fx:id="multiplayerButton" layoutX="452.0" layoutY="204.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="175.0" styleClass="quitButton" text="MULTIPLAYER" textFill="WHITE">
-         <font>
-            <Font name="Arial Bold" size="17.0" />
-         </font>
-      </Button>
-      <Button fx:id="soloButton" layoutX="248.0" layoutY="204.0" mnemonicParsing="false" onAction="#startSolo" prefHeight="50.0" prefWidth="175.0" styleClass="quitButton" text="SOLO" textFill="WHITE">
-         <font>
-            <Font name="Arial Bold" size="18.0" />
-         </font>
-         <cursor>
-            <Cursor fx:constant="HAND" />
-         </cursor>
-      </Button>
+      <Button fx:id="quitButton" layoutX="31.0" layoutY="14.0" mnemonicParsing="false" onAction="#quit" prefHeight="39.0" prefWidth="100.0" styleClass="shadow" text="QUIT" textFill="WHITE"/>
+      <Button fx:id="multiplayerButton" layoutX="452.0" layoutY="204.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="175.0" styleClass="quitButton" text="MULTIPLAYER" textFill="WHITE"/>
+      <Button fx:id="soloButton" layoutX="248.0" layoutY="204.0" mnemonicParsing="false" onAction="#startSolo" prefHeight="50.0" prefWidth="175.0" styleClass="quitButton" text="SOLO" textFill="WHITE"/>
       <Label alignment="CENTER" layoutX="252.0" layoutY="260.0" prefHeight="17.0" prefWidth="166.0" text="Practice your knowledge">
          <font>
             <Font name="Arial Black" size="11.0" />
@@ -39,14 +21,7 @@
             <Font name="Arial Black" size="11.0" />
          </font>
       </Label>
-      <Button fx:id="leaderboardButton" layoutX="266.0" layoutY="318.0" mnemonicParsing="false" onAction="#showLeaderboard" prefHeight="50.0" prefWidth="348.0" styleClass="quitButton" text="ALL TIME SOLO LEADERBOARD" textFill="WHITE">
-         <font>
-            <Font name="Arial Bold" size="17.0" />
-         </font>
-         <cursor>
-            <Cursor fx:constant="HAND" />
-         </cursor>
-      </Button>
+      <Button fx:id="leaderboardButton" layoutX="266.0" layoutY="318.0" mnemonicParsing="false" onAction="#showLeaderboard" prefHeight="50.0" prefWidth="348.0" styleClass="quitButton" text="ALL TIME SOLO LEADERBOARD" textFill="WHITE"/>
       <ImageView fx:id="factImage" fitHeight="150.0" fitWidth="200.0" layoutX="290.0" layoutY="389.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@/client.photos/factImage.png" />
