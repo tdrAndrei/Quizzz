@@ -1,0 +1,112 @@
+.root {
+    -fx-background-color: #fcebd9;
+    -fx-font-family: Arial;
+}
+
+.button {
+    -fx-background-color: #c95959;
+    -fx-font-size: 17;
+    -fx-background-radius: 10;
+    -fx-text-fill: white;
+    -fx-font-weight: Bold;
+    -fx-cursor: hand;
+}
+.button:hover {
+    -fx-background-color: #e67070;
+}
+
+.button:pressed {
+    -fx-background-color: #ad4b4b;
+    -fx-scale-x: 95%;
+    -fx-scale-y: 95%;
+}
+
+.label {
+    -fx-font-size: 150%;
+    -fx-alignment: baseline-left;
+    -fx-text-fill: white;
+    -fx-padding: 500%;
+}
+
+.table-view {
+    -fx-background-color: #fff6ed;
+    -fx-border-radius: 20 20 20 20;
+    -fx-background-radius: 20 20 20 20;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: transparent;
+}
+
+.table-view .column-header-background .label{
+    -fx-background-color: transparent;
+    -fx-padding: 2 20 2 20;
+    -fx-font-size: 120%;
+    -fx-text-fill: black;
+}
+
+.table-view .column-header {
+    -fx-background-color: transparent;
+}
+
+.table-row-cell{
+    -fx-background-color: transparent;
+}
+
+.table-view .table-cell{
+    -fx-border-color: transparent;
+    -fx-padding: 2 0 2 12;
+    -fx-font-size: 150%;
+    -fx-alignment: baseline-left;
+    -fx-text-fill: black;
+}
+
+.table-view .virtual-flow .scroll-bar:vertical,
+.table-view .virtual-flow .scroll-bar:vertical .track,
+.table-view .virtual-flow .scroll-bar:vertical .track-background {
+    -fx-background-color: transparent;
+}
+.table-view .virtual-flow .scroll-bar:horizontal,
+.table-view .virtual-flow .scroll-bar:horizontal .track,
+.table-view .virtual-flow .scroll-bar:horizontal .track-background {
+    -fx-min-width: 0;
+    -fx-pref-width: 0;
+    -fx-max-width: 0;
+
+    -fx-min-height: 0;
+    -fx-pref-height: 0;
+    -fx-max-height: 0;
+}
+
+
+
+.greenBar {
+    -fx-max-width: 300;
+    -fx-shape: "M 0 100 L 1100 100 L 1200 50 L 1100 0 L 0 0 L 0 100 z";
+    -fx-background-color: #80da94;
+}
+.greenYellowBar {
+    -fx-max-width: 320;
+    -fx-background-color: #bee8a0;
+    -fx-shape: "M 0 100 L 1200 100 L 1300 50 L 1200 0 L 0 0 L 0 100 z";
+}
+.yellowBar {
+    -fx-max-width: 340;
+    -fx-background-color: #fef292;
+    -fx-shape: "M 0 100 L 1300 100 L 1400 50 L 1300 0 L 0 0 L 0 100 z";
+}
+.yellowOrangeBar {
+    -fx-max-width: 360;
+    -fx-background-color: #fedaa0;
+    -fx-shape: "M 0 100 L 1400 100 L 1500 50 L 1400 0 L 0 0 L 0 100 z";
+}
+.orangeBar {
+    -fx-max-width: 380;
+    -fx-background-color: #fdb38e;
+    -fx-shape: "M 0 100 L 1500 100 L 1600 50 L 1500 0 L 0 0 L 0 100 z";
+}
+.redBar {
+    -fx-max-width: 400;
+    -fx-background-color: #ff8182;
+    -fx-shape: "M 0 100 L 1600 100 L 1700 50 L 1600 0 L 0 0 L 0 100 z";
+}

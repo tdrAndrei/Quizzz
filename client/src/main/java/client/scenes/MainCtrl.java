@@ -32,7 +32,6 @@ public class MainCtrl {
     private Stage primaryStage;
     private User user;
 
-   // private LoginController loginController;
     private LoginController loginController;
     private Scene loginScene;
 
@@ -42,13 +41,17 @@ public class MainCtrl {
     private MultiQuestionController multiCtrl;
     private Scene multiScene;
 
+    private LeaderboardSoloController leaderboardSoloController;
+    private Scene leaderboardSoloScene;
+
     @Inject
     private ServerUtils server;
 
 
     public void initialize(Stage primaryStage, Pair<LoginController, Parent> login,
                            Pair<MainMenuController, Parent> mainMenu,
-                           Pair<MultiQuestionController, Parent> multiQuestion) {
+                           Pair<MultiQuestionController, Parent> multiQuestion,
+                           Pair<LeaderboardSoloController, Parent> leaderboardSolo) {
         this.primaryStage = primaryStage;
 
         this.loginController = login.getKey();
@@ -59,6 +62,9 @@ public class MainCtrl {
 
         this.multiCtrl = multiQuestion.getKey();
         this.multiScene = new Scene(multiQuestion.getValue());
+
+        this.leaderboardSoloController = leaderboardSolo.getKey();
+        this.leaderboardSoloScene = new Scene(leaderboardSolo.getValue());
 
         showLogin();
         primaryStage.show();
@@ -71,6 +77,11 @@ public class MainCtrl {
                 e.printStackTrace();
             }
         });
+    }
+
+    public void showLeaderboardSolo() {
+        primaryStage.setTitle("Quizzzz!");
+        primaryStage.setScene(leaderboardSoloScene);
     }
 
     public void showLogin() {

@@ -1,10 +1,32 @@
 .root {
-    -fx-background-color: #fef8a0;
+    -fx-background-color: #fcebd9;
+    -fx-font-family: Arial;
 }
 
 .button {
     -fx-background-color: #c95959;
+    -fx-font-size: 17;
     -fx-background-radius: 10;
+    -fx-text-fill: white;
+    -fx-font-weight: Bold;
+    -fx-cursor: hand;
+}
+.button:hover {
+    -fx-background-color: #e67070;
+}
+
+.button:pressed {
+    -fx-background-color: #ad4b4b;
+    -fx-scale-x: 95%;
+    -fx-scale-y: 95%;
+}
+
+#mainMenuPane {
+    -fx-background-color: #fef8a0;
+}
+
+#warnBox {
+    -fx-text-fill: #c95959;
 }
 
 /*.shadow {*/
