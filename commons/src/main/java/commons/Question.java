@@ -6,13 +6,13 @@ import java.util.Objects;
 public abstract class Question {
 
     protected String title;
-    protected int answer;
+    protected long answer;
     protected List<Activity> activities;
     protected int max_score;
     protected double difficulty;
     protected int time;
 
-    public Question(String title, int answer, List<Activity> activities, int time) {
+    public Question(String title, long answer, List<Activity> activities, int time) {
         this.title = title;
         this.answer = answer;
         this.activities = activities;
@@ -29,14 +29,6 @@ public abstract class Question {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public int getAnswer() {
-        return answer;
-    }
-
-    public void setAnswer(int answer) {
-        this.answer = answer;
     }
 
     public List<Activity> getActivities() {
@@ -68,7 +60,7 @@ public abstract class Question {
     }
 
     //Each question can implement its own logic for choosing the correct answer
-    public abstract int calculateScore(int answer, int seconds);
+    public abstract int calculateScore(long answer, int seconds);
 
     @Override
     public boolean equals(Object o) {

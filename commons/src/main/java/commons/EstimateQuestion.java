@@ -4,7 +4,7 @@ import java.util.List;
 
 public class EstimateQuestion extends Question {
 
-    public EstimateQuestion(String title, int answer, List<Activity> activities, int time) {
+    public EstimateQuestion(String title, long answer, List<Activity> activities, int time) {
         super(title, answer, activities, time);
 
         setMax_score(100);
@@ -13,13 +13,13 @@ public class EstimateQuestion extends Question {
         setDifficulty(30);
     }
 
-    public EstimateQuestion() {
+    EstimateQuestion() {
     }
 
     @Override
-    public int calculateScore(int answer, int seconds) {
-        int margin = getMagnitude(answer);
-        int error = Math.abs(answer - getAnswer());
+    public int calculateScore(long answer, int seconds) {
+        long margin = getMagnitude(answer);
+        long error = Math.abs(answer - this.answer);
         if (error > margin)
             return 0;
 
@@ -32,10 +32,10 @@ public class EstimateQuestion extends Question {
         return (int) Math.floor(timeCoefficient - accuracyCoefficient);
     }
 
-    public int getMagnitude(int n) {
-        int p10 = 1;
+    public long getMagnitude(long n) {
+        long p10 = 1;
         while (p10 <= n)
             p10 *= 10;
-        return p10 / 10;
+        return p10 / 10L;
     }
 }
