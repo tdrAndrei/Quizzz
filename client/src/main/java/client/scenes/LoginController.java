@@ -39,7 +39,7 @@ public class LoginController {
             mainCtrl.showMainMenu();
         } catch (BadRequestException e){
             nameBox.setText("");
-            warnBox.setText("Chosen username is already taken");
+            warnBox.setText("This username is already taken.");
         }
     }
 

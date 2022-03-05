@@ -22,6 +22,7 @@ import client.scenes.MultiQuestionController;
 import client.scenes.WaitingRoomController;
 import client.scenes.AddQuoteCtrl;
 import client.scenes.QuoteOverviewCtrl;
+import client.scenes.LeaderboardSoloController;
 
 import client.utils.ServerUtils;
 import com.google.inject.Binder;
@@ -38,7 +39,7 @@ public class MyModule implements Module {
         binder.bind(MainMenuController.class).in(Scopes.SINGLETON);
         binder.bind(MultiQuestionController.class).in(Scopes.SINGLETON);
         binder.bind(WaitingRoomController.class).in(Scopes.SINGLETON);
-
+        binder.bind(LeaderboardSoloController.class).in(Scopes.SINGLETON);
         binder.bind(AddQuoteCtrl.class).in(Scopes.SINGLETON);
         binder.bind(QuoteOverviewCtrl.class).in(Scopes.SINGLETON);
     }
