@@ -17,9 +17,9 @@ public class EstimateQuestion extends Question {
     }
 
     @Override
-    public int calculateScore(long answer, int seconds) {
-        long margin = getMagnitude(answer);
-        long error = Math.abs(answer - this.answer);
+    public int calculateScore(long userAnswer, int seconds) {
+        long margin = getMagnitude(userAnswer);
+        long error = Math.abs(userAnswer - this.answer);
         if (error > margin)
             return 0;
 

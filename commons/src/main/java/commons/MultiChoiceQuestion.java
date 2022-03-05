@@ -19,8 +19,8 @@ public class MultiChoiceQuestion extends Question {
 
     //score = MAX_SCORE - (seconds / questionTime * difficulty) ^ 2
     @Override
-    public int calculateScore(long answer, int seconds) {
-        if (answer != this.answer)
+    public int calculateScore(long userAnswer, int seconds) {
+        if (userAnswer != this.answer)
             return 0;
 
         int score = (int) Math.floor(max_score - ((((double) seconds / time) * difficulty) * (((double) seconds / time) * difficulty)));
