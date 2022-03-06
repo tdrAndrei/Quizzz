@@ -1,0 +1,9 @@
+.root{
+    -fx-background-color: #ffc5ac;
+}
+#progressBar {
+    -fx-accent: #f37500;
+}
+.button {
+    -fx-background-color: #fdecd8;
+}

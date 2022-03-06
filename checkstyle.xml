@@ -6,7 +6,6 @@
 <module name = "Checker">
     <module name="TreeWalker">
         <module name="UnusedImports" />
-        <module name="AvoidStarImport" />
         <module name="SingleSpaceSeparator" />
         <module name="FallThrough" />
         <module name="InnerTypeLast" />

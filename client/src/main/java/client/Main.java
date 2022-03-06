@@ -20,11 +20,14 @@ import static com.google.inject.Guice.createInjector;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
+import client.scenes.LeaderboardSoloController;
+import client.scenes.LoginController;
+import client.scenes.MainMenuController;
+import client.scenes.MultiQuestionController;
 import com.google.inject.Injector;
 
-import client.scenes.AddQuoteCtrl;
+
 import client.scenes.MainCtrl;
-import client.scenes.QuoteOverviewCtrl;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
@@ -40,10 +43,12 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws IOException {
 
-        var overview = FXML.load(QuoteOverviewCtrl.class, "client", "scenes", "QuoteOverview.fxml");
-        var add = FXML.load(AddQuoteCtrl.class, "client", "scenes", "AddQuote.fxml");
-
+        var login = FXML.load(LoginController.class, "client", "scenes", "Login.fxml");
+        var mainMenu = FXML.load(MainMenuController.class, "client", "scenes", "main.fxml");
+        var multiQuestion = FXML.load(MultiQuestionController.class, "client", "scenes", "multiQuestion.fxml");
+        //var add = FXML.load(AddQuoteCtrl.class, "client", "scenes", "AddQuote.fxml");
         var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
-        mainCtrl.initialize(primaryStage, overview, add);
+        var leaderboardSolo = FXML.load(LeaderboardSoloController.class, "client", "scenes", "LeaderboardSolo.fxml");
+        mainCtrl.initialize(primaryStage, login, mainMenu, multiQuestion, leaderboardSolo);
     }
 }

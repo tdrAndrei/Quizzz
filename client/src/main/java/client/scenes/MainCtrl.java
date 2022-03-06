@@ -15,43 +15,101 @@
  */
 package client.scenes;
 
+import client.utils.ServerUtils;
+import commons.User;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 import javafx.util.Pair;
+
+import javax.inject.Inject;
+import java.io.IOException;
 
 public class MainCtrl {
 
     private Stage primaryStage;
+    private User user;
 
-    private QuoteOverviewCtrl overviewCtrl;
-    private Scene overview;
+    private LoginController loginController;
+    private Scene loginScene;
 
-    private AddQuoteCtrl addCtrl;
-    private Scene add;
+    private MainMenuController mainMenuController;
+    private Scene mainMenuScene;
 
-    public void initialize(Stage primaryStage, Pair<QuoteOverviewCtrl, Parent> overview,
-            Pair<AddQuoteCtrl, Parent> add) {
+    private MultiQuestionController multiCtrl;
+    private Scene multiScene;
+
+    private LeaderboardSoloController leaderboardSoloController;
+    private Scene leaderboardSoloScene;
+
+    @Inject
+    private ServerUtils server;
+
+
+    public void initialize(Stage primaryStage, Pair<LoginController, Parent> login,
+                           Pair<MainMenuController, Parent> mainMenu,
+                           Pair<MultiQuestionController, Parent> multiQuestion,
+                           Pair<LeaderboardSoloController, Parent> leaderboardSolo) {
         this.primaryStage = primaryStage;
-        this.overviewCtrl = overview.getKey();
-        this.overview = new Scene(overview.getValue());
 
-        this.addCtrl = add.getKey();
-        this.add = new Scene(add.getValue());
+        this.loginController = login.getKey();
+        this.loginScene = new Scene(login.getValue());
 
-        showOverview();
+        this.mainMenuController = mainMenu.getKey();
+        this.mainMenuScene = new Scene(mainMenu.getValue());
+
+        this.multiCtrl = multiQuestion.getKey();
+        this.multiScene = new Scene(multiQuestion.getValue());
+
+        this.leaderboardSoloController = leaderboardSolo.getKey();
+        this.leaderboardSoloScene = new Scene(leaderboardSolo.getValue());
+
+        showLogin();
         primaryStage.show();
+
+        primaryStage.setOnCloseRequest(event -> {
+            try {
+                event.consume();
+                quit();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
-    public void showOverview() {
-        primaryStage.setTitle("Quotes: Overview");
-        primaryStage.setScene(overview);
-        overviewCtrl.refresh();
+    public void showLeaderboardSolo() {
+        primaryStage.setTitle("Quizzzz!");
+        primaryStage.setScene(leaderboardSoloScene);
     }
 
-    public void showAdd() {
-        primaryStage.setTitle("Quotes: Adding Quote");
-        primaryStage.setScene(add);
-        add.setOnKeyPressed(e -> addCtrl.keyPressed(e));
+    public void showLogin() {
+        primaryStage.setTitle("Quizzzz!");
+        primaryStage.setScene(loginScene);
+    }
+
+    public void showMainMenu(){
+        primaryStage.setScene(mainMenuScene);
+    }
+
+    public void showMultiQuestion(){
+       primaryStage.setScene(multiScene);
+    }
+    public void quit() throws IOException{
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Exit");
+        alert.setHeaderText("You are about to exit the application");
+        if (alert.showAndWait().get() == ButtonType.OK) {
+            System.out.println("Goodbye!");
+            if (user != null) {
+                server.deleteSelf(user);
+            }
+            primaryStage.close();
+        }
+    }
+
+    public void setUser(User user){
+        this.user = user;
     }
 }

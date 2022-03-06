@@ -1,0 +1,33 @@
+.root {
+    -fx-background-color: #fdecd8;
+}
+
+.button {
+    -fx-background-color: #eab79f;
+    -fx-background-radius: 10;
+}
+
+.label {
+    -fx-background-color: #fec5ac;
+    -fx-background-radius: 10;
+}
+
+.scroll-pane > .viewport {
+-fx-background-color: transparent;
+}
+#timeLeftLabel{
+    -fx-background-color: #fdecd8;
+}
+#anchorScrollPane{
+    -fx-background-color: #fec5ac;
+    -fx-background-radius: 10;
+
+}
+
+#progressBar {
+    -fx-accent: green;
+}
+/*.HBox {*/
+/*    -fx-background-color: #fec5ac;*/
+/*    -fx-background-radius: 10;*/
+/*}*/

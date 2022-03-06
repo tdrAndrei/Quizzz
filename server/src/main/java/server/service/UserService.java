@@ -31,12 +31,18 @@ public class UserService {
     }
 
     public User insert(User user) {
+        if (user == null || user.getName().isEmpty()){
+            return null;
+        }
+        if (userRepo.getByName(user.getName()).isPresent()){
+            return null;
+        }
         return userRepo.save(user);
     }
 
     public void deleteById(Long id) {
         if (id < 0 || !userRepo.existsById(id)) {
-            return ;
+            return;
         } else {
             userRepo.deleteById(id);
         }
