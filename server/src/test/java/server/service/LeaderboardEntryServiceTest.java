@@ -65,7 +65,7 @@ public class LeaderboardEntryServiceTest {
 
     @Test
     public void getAllEntriesTwoEntries(){
-        sut.insert(getEntry("test1",5));
+        sut.insert(getEntry("test1", 5));
         sut.insert(getEntry("test2", 10));
         List<LeaderboardEntry> entries = sut.getAllEntries();
         assertEquals(entries.get(0).getName(), "test1");
