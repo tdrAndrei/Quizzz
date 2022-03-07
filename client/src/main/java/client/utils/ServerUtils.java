@@ -21,6 +21,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.List;
 
+import commons.LeaderboardEntry;
 import commons.User;
 import org.glassfish.jersey.client.ClientConfig;
 
@@ -57,6 +58,22 @@ public class ServerUtils {
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
                 .get(new GenericType<List<Quote>>() {});
+    }
+
+    public List<LeaderboardEntry> getLeaderboardEntries() {
+        return ClientBuilder.newClient(new ClientConfig()) //
+                .target(SERVER).path("api/scores") //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .get(new GenericType<List<LeaderboardEntry>>() {});
+    }
+
+    public LeaderboardEntry addLeaderboardEntry(LeaderboardEntry leaderboardEntry) {
+        return ClientBuilder.newClient(new ClientConfig()) //
+                .target(SERVER).path("api/scores") //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .post(Entity.entity(leaderboardEntry, APPLICATION_JSON), LeaderboardEntry.class);
     }
 
     public void deleteSelf(User user) {
