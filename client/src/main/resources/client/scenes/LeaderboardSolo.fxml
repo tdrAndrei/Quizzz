@@ -13,8 +13,9 @@
             <TableColumn fx:id="colScore" prefWidth="100.0" text="points" />
          </columns>
     </TableView>
-    <TextField fx:id="score" layoutX="90.0" layoutY="39.0" onAction="#addLabel" promptText="Score (max 6000)" />
-    <Button layoutX="265.0" layoutY="32.0" onAction="#addLabel" prefHeight="17.0" prefWidth="106.0" text="ADD" />
+    <TextField fx:id="name" layoutX="90.0" layoutY="39.0" prefHeight="26.0" prefWidth="190.0" promptText="Username" />
+    <Button layoutX="420.0" layoutY="32.0" onAction="#addEntry" prefHeight="17.0" prefWidth="106.0" text="ADD" />
     <Button layoutX="353.0" layoutY="505.0" onAction="#backToMainMenu" prefHeight="50.0" prefWidth="175.0" text="BACK" />
+   <TextField fx:id="score" layoutX="298.0" layoutY="39.0" prefHeight="26.0" prefWidth="106.0" promptText="Score (max 6000)" />
 
 </AnchorPane>
