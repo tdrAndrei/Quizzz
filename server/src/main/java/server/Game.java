@@ -92,9 +92,9 @@ public class Game {
         }
     }
 
-    public void processAnswer(Long userAnswer, User user){
+    public void processAnswer(Long userAnswer, Long userId){
         int elapsed = ((int) (new Date().getTime() - startTime.getTime()) / 1000);
-        Player currPlayer = playerMap.get(user.getId());
+        Player currPlayer = playerMap.get(userId);
         currPlayer.setScore(currPlayer.getScore() + currentQuestion.calculateScore(userAnswer, elapsed));
         amountAnswered++;
     }
