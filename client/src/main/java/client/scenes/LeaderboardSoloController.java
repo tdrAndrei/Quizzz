@@ -1,6 +1,7 @@
 package client.scenes;
 
 import client.utils.ServerUtils;
+import commons.LeaderboardEntry;
 import jakarta.ws.rs.WebApplicationException;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
@@ -17,12 +18,12 @@ import java.util.List;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
-class LeaderboardEntry {
+class LeaderboardEntryLabel {
 
     Label nameLabel;
     int points;
 
-    public LeaderboardEntry(Label nameLabel, int points) {
+    public LeaderboardEntryLabel(Label nameLabel, int points) {
         this.nameLabel=nameLabel;
         this.points=points;
     }
@@ -43,8 +44,8 @@ class LeaderboardEntry {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof LeaderboardEntry)) return false;
-        LeaderboardEntry that = (LeaderboardEntry) o;
+        if (!(o instanceof LeaderboardEntryLabel)) return false;
+        LeaderboardEntryLabel that = (LeaderboardEntryLabel) o;
         return points == that.points && Objects.equals(nameLabel, that.nameLabel);
     }
 
@@ -66,10 +67,10 @@ public class LeaderboardSoloController implements Initializable {
     private TableView leaderboardEntries;
 
     @FXML
-    private TableColumn<LeaderboardEntry, Label> colName;
+    private TableColumn<LeaderboardEntryLabel, Label> colName;
 
     @FXML
-    private TableColumn<LeaderboardEntry, Integer> colScore;
+    private TableColumn<LeaderboardEntryLabel, Integer> colScore;
 
     @FXML
     private TextField name;
@@ -77,9 +78,9 @@ public class LeaderboardSoloController implements Initializable {
     @FXML
     private TextField score;
 
-    private ObservableList<LeaderboardEntry> data;
+    private ObservableList<LeaderboardEntryLabel> data;
 
-    private List<LeaderboardEntry> entries = new ArrayList<>();
+    private List<LeaderboardEntryLabel> entries = new ArrayList<>();
 
     private int scoreLowerBound;
     private int scoreUpperBound;
@@ -92,7 +93,7 @@ public class LeaderboardSoloController implements Initializable {
 
     public void addEntry() {
         try {
-            server.addLeaderboardEntry(new commons.LeaderboardEntry(name.getText(), Integer.parseInt(score.getText())));
+            server.addLeaderboardEntry(new LeaderboardEntry(name.getText(), Integer.parseInt(score.getText())));
         } catch (WebApplicationException e) {
 
             var alert = new Alert(Alert.AlertType.ERROR);
@@ -122,7 +123,7 @@ public class LeaderboardSoloController implements Initializable {
             } else {
                 label.getStyleClass().add("redBar");
             }
-            entries.add(getNearestIndex(sc, 0, entries.size() - 1), new LeaderboardEntry(label, sc));
+            entries.add(getNearestIndex(sc, 0, entries.size() - 1), new LeaderboardEntryLabel(label, sc));
             data = FXCollections.observableList(entries);
             leaderboardEntries.setItems(data);
     }
@@ -158,7 +159,7 @@ public class LeaderboardSoloController implements Initializable {
         scoreUpperBound = 0;
         scoreLowerBound = Integer.MAX_VALUE;
 
-        for (commons.LeaderboardEntry rawEntry : allTimeEntries) {
+        for (LeaderboardEntry rawEntry : allTimeEntries) {
             if (rawEntry.getScore() < scoreLowerBound) {
                 scoreLowerBound = rawEntry.getScore();
             }
@@ -166,7 +167,7 @@ public class LeaderboardSoloController implements Initializable {
                 scoreUpperBound = rawEntry.getScore();
             }
         }
-        for (commons.LeaderboardEntry rawEntry : allTimeEntries) {
+        for (LeaderboardEntry rawEntry : allTimeEntries) {
             addLabel(rawEntry.getName(), rawEntry.getScore());
         }
     }
