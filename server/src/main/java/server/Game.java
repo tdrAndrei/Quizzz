@@ -32,6 +32,14 @@ public class Game {
         this.id = id;
         this.questionService = questionService;
         stageQueue.add(new MutablePair<>("Waiting", Integer.MAX_VALUE));
+        for (int i = 0; i < 10; i++) {
+            stageQueue.add(new MutablePair<>("Question", 20));
+            stageQueue.add(new MutablePair<>("CorrectAns", 3));
+        }
+        for (int i = 0; i < 10; i++) {
+            stageQueue.add(new MutablePair<>("Estimate", 20));
+            stageQueue.add(new MutablePair<>("CorrectAns", 3));
+        }
     }
 
     public void addPlayer(User user){
@@ -48,22 +56,39 @@ public class Game {
         }
         String stage = stagePair.getKey();
         startTime = new Date();
-        if (stage.equals("Waiting")){
-            setMaxTime(stagePair.getValue());
-            return;
-        }
-        if (stage.equals("Leaderboard")){
-            setMaxTime(stagePair.getValue());
-            insertMessageIntoDiff(new ShowLeaderboardMessage("ShowLeaderboard", new ArrayList<>(playerMap.values())));
-        }
-        if (stage.equals("Question")){
-            setMaxTime(stagePair.getValue());
-            currentQuestion = questionService.makeMultipleChoice(stagePair.getValue());
-            insertQuestionIntoDiff(currentQuestion);
-        }
-        if (stage.equals("End")){
-            setMaxTime(stagePair.getValue());
-            insertMessageIntoDiff(new ShowLeaderboardMessage("EndGame", new ArrayList<>(playerMap.values())));
+        switch(stage) {
+            case "Question":
+                setMaxTime(stagePair.getValue());
+                currentQuestion = questionService.makeMultipleChoice(stagePair.getValue());
+                insertQuestionIntoDiff(currentQuestion);
+                break;
+
+            case "CorrectAns":
+                insertCorrectAnswerIntoDiff();
+                break;
+
+            case "Estimate":
+                setMaxTime(stagePair.getValue());
+                currentQuestion = questionService.makeEstimate(stagePair.getValue());
+                insertQuestionIntoDiff(currentQuestion);
+                break;
+
+            case "Leaderboard":
+                if (playerMap.size() == 1) {
+                    initializeStage();
+                }
+                setMaxTime(stagePair.getValue());
+                insertMessageIntoDiff(new ShowLeaderboardMessage("ShowLeaderboard", new ArrayList<>(playerMap.values())));
+                break;
+
+            case "End":
+                setMaxTime(stagePair.getValue());
+                insertMessageIntoDiff(new ShowLeaderboardMessage("EndGame", new ArrayList<>(playerMap.values())));
+                break;
+
+            case "Waiting":
+                setMaxTime(stagePair.getValue());
+                break;
         }
     }
 
@@ -104,6 +129,13 @@ public class Game {
         }
     }
 
+    public void insertCorrectAnswerIntoDiff(){
+        for (Long id : diffMap.keySet()){
+            CorrectAnswerMessage answerMessage = new CorrectAnswerMessage("ShowCorrectAnswer", playerMap.get(id).getScore(), currentQuestion.getAnswer());
+            diffMap.put(id, answerMessage);
+        }
+
+    }
     public void insertMessageIntoDiff(Message message){
         diffMap.replaceAll((i, v) -> message);
     }

@@ -21,7 +21,7 @@ public class CorrectAnswerMessage extends Message {
      * @param type  the type
      * @param score the score
      */
-    public CorrectAnswerMessage(String type, int score) {
+    public CorrectAnswerMessage(String type, int score, Long correctAnswer) {
         super(type);
         this.score = score;
     }
