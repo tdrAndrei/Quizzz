@@ -1,9 +1,6 @@
 package server;
 
-import commons.Messages.Message;
-import commons.Messages.NewPlayersMessage;
-import commons.Messages.NewQuestionMessage;
-import commons.Messages.ShowLeaderboardMessage;
+import commons.Messages.*;
 import commons.Player;
 import commons.Question;
 import commons.User;
@@ -23,7 +20,7 @@ public class Game {
     private final Long id;
     private final QuestionService questionService;
     private final Map<Long, Player> playerMap = new HashMap<>();
-    private int playerLimit;
+    //private int playerLimit;
     private Date startTime;
     public Map<Long, Integer> maxTime = new HashMap<>();
     private final Queue<Pair<String, Integer>> stageQueue = new LinkedList<>();
@@ -78,7 +75,9 @@ public class Game {
     }
 
     public Message getUpdate(Long id){
-        return diffMap.get(id);
+        Message update = diffMap.get(id);
+        diffMap.put(id, new NullMessage("None"));
+        return update;
     }
 
     public void halfTimeJoker(Long jokerUserId){
