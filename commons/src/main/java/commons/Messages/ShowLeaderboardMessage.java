@@ -1,8 +1,9 @@
 package commons.Messages;
 
 import commons.LeaderboardEntry;
-import commons.Messages.Message;
+import commons.Player;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -10,6 +11,7 @@ import java.util.Objects;
  * The type Show leaderboard message.
  */
 public class ShowLeaderboardMessage extends Message {
+    private List<Player> players;
     private List<LeaderboardEntry> entries;
 
     /**
@@ -22,49 +24,58 @@ public class ShowLeaderboardMessage extends Message {
      * Instantiates a new Show leaderboard message.
      *
      * @param type    the type
-     * @param entries the entries
+     * @param players the players
      */
-    public ShowLeaderboardMessage(String type, List<LeaderboardEntry> entries) {
+    public ShowLeaderboardMessage(String type, List<Player> players) {
         super(type);
-        this.entries = entries;
+        this.players = players;
+        setLeaderboardEntries();
     }
 
     /**
-     * Gets entries.
+     * Gets playes.
      *
-     * @return the entries
+     * @return the players
      */
-    public List<LeaderboardEntry> getEntries() {
-        return entries;
+    public List<Player> getPlayers() {
+        return this.players;
     }
 
     /**
-     * Sets entries.
+     * Sets players.
      *
-     * @param entries the entries
+     * @param players the players
      */
-    public void setEntries(List<LeaderboardEntry> entries) {
-        this.entries = entries;
+    public void setPlayers(List<Player> players) {
+        this.players = players;
+    }
+
+    public void setLeaderboardEntries(){
+        List<LeaderboardEntry> leaderboardEntries = new ArrayList<>();
+        for (Player player : players) {
+            entries.add(new LeaderboardEntry(player.getUser().getName(), player.getScore()));
+        }
+        this.entries = leaderboardEntries;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof ShowLeaderboardMessage)) return false;
         if (!super.equals(o)) return false;
         ShowLeaderboardMessage that = (ShowLeaderboardMessage) o;
-        return Objects.equals(entries, that.entries);
+        return Objects.equals(players, that.players);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), entries);
+        return Objects.hash(super.hashCode(), players);
     }
 
     @Override
     public String toString() {
         return "ShowLeaderboardMessage{" +
-                "entries=" + entries +
+                "players=" + players +
                 '}';
     }
 }

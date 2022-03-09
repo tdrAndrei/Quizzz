@@ -1,77 +1,91 @@
 package server;
 
+import commons.Messages.Message;
+import commons.Messages.NewPlayersMessage;
+import commons.Messages.NewQuestionMessage;
+import commons.Messages.ShowLeaderboardMessage;
 import commons.Player;
+import commons.User;
+import org.apache.commons.lang3.tuple.MutablePair;
+import org.apache.commons.lang3.tuple.Pair;
+import org.springframework.beans.factory.annotation.Autowired;
+import server.service.QuestionService;
 
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * The type Game.
  */
-public abstract class Game {
+public class Game {
 
-    private List<Player> players;
     private Long id;
-    //missing the list of questions but this can't be implemented yet since we don't have the questions
+    private QuestionService questionService;
+    private Map<Long, Player> playerMap;
+    private int playerLimit;
+    private Date startTime;
+    public Map<Long, Integer> maxTime;
+    private Queue<Pair<String, Integer>> stageQueue;
+    private Map<Long, Message> diffMap;
 
-
-    /**
-     * Instantiates a new Game, note that right now we are missing the list of questions
-     *
-     * @param players the players
-     * @param id      the id
-     */
-    public Game(List<Player> players, Long id) {
-        this.players = players;
+    @Autowired
+    public Game(Long id, QuestionService questionService) {
         this.id = id;
+        this.questionService = questionService;
+        this.playerMap = new HashMap<>();
+        this.maxTime = new HashMap<>();
+        this.diffMap = new HashMap<>();
+        this.stageQueue = new LinkedList<>();
+        stageQueue.add(new MutablePair<String, Integer>("Waiting", Integer.MAX_VALUE));
     }
 
-    /**
-     * Gets the list of players in this game
-     *
-     * @return the players
-     */
-    public List<Player> getPlayers() {
-        return players;
+    public void addPlayer(User user){
+        Player newPlayer = new Player(user);
+        playerMap.put(user.getId(), newPlayer);
+        insertMessageIntoDiff(new NewPlayersMessage("NewPlayers", new ArrayList<>(playerMap.values())));
     }
 
-    /**
-     * Gets the id of the current game
-     *
-     * @return the id
-     */
-    public Long getId() {
-        return id;
+    public void initializeStage(){
+        Pair<String, Integer> stagePair = stageQueue.poll();
+        if (stagePair == null){
+            return;
+        }
+        String stage = stagePair.getKey();
+        startTime = new Date();
+        if (stage.equals("Waiting")){
+            setMaxTime(stagePair.getValue());
+            return;
+        }
+        if (stage.equals("Leaderboard")){
+            setMaxTime(stagePair.getValue());
+            insertMessageIntoDiff(new ShowLeaderboardMessage("ShowLeaderboard", new ArrayList<>(playerMap.values())));
+        }
+        if (stage.equals("Question")){
+            setMaxTime(stagePair.getValue());
+            insertMessageIntoDiff(new NewQuestionMessage());
+        }
+        if (stage.equals("End")){
+            setMaxTime(stagePair.getValue());
+            //update diff with final leaderboard
+        }
     }
 
-    /**
-     * Sets the playerlist
-     *
-     * @param players the players
-     */
-    public void setPlayers(List<Player> players) {
-        this.players = players;
+    //public Message getUpdate(Long id){
+    //    return diff.get(id);
+    //}
+
+    public void ifStageEnded(){
+
     }
 
-    /**
-     * Sets the game id
-     *
-     * @param id the id
-     */
-    public void setId(Long id) {
-        this.id = id;
+    public void insertMessageIntoDiff(Message message){
+        for (Long id : diffMap.keySet()){
+            diffMap.put(id, message);
+        }
+    }
+    public void setMaxTime(Integer time){
+        for (Long id : maxTime.keySet()){
+            maxTime.put(id, time);
+        }
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Game)) return false;
-        Game game = (Game) o;
-        return Objects.equals(players, game.players) && Objects.equals(id, game.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(players, id);
-    }
 }
