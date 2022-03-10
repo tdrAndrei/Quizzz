@@ -21,7 +21,7 @@ public class Game {
     private final Map<Long, Player> playerMap = new HashMap<>();
     //private int playerLimit;
     private Date startTime;
-    private Map<Long, Integer> maxTime = new HashMap<>();
+    private final Map<Long, Integer> maxTime = new HashMap<>();
     private final Queue<Pair<String, Integer>> stageQueue = new LinkedList<>();
     private final Map<Long, Message> diffMap = new HashMap<>();
     private static int amountAnswered = 0;
@@ -43,10 +43,11 @@ public class Game {
     }
 
     //When joining a game, a client sends its user object, if already in game, a client just sends it's userid
-    public void addPlayer(User user){
+    public void addPlayer(User user) {
         Player newPlayer = new Player(user);
         playerMap.put(user.getId(), newPlayer);
         diffMap.put(user.getId(), new NullMessage("None"));
+        maxTime.put(user.getId(), Integer.MAX_VALUE);
         insertMessageIntoDiff(new NewPlayersMessage("NewPlayers", new ArrayList<>(playerMap.values())));
     }
 
@@ -163,4 +164,76 @@ public class Game {
         maxTime.replaceAll((i, v) -> time);
     }
 
+    public Question getCurrentQuestion() {
+        return currentQuestion;
+    }
+
+    public void setCurrentQuestion(Question currentQuestion) {
+        this.currentQuestion = currentQuestion;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public QuestionService getQuestionService() {
+        return questionService;
+    }
+
+    public Map<Long, Player> getPlayerMap() {
+        return playerMap;
+    }
+
+    public Date getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
+    }
+
+    public Map<Long, Integer> getMaxTime() {
+        return maxTime;
+    }
+
+    public Queue<Pair<String, Integer>> getStageQueue() {
+        return stageQueue;
+    }
+
+    public Map<Long, Message> getDiffMap() {
+        return diffMap;
+    }
+
+    public static int getAmountAnswered() {
+        return amountAnswered;
+    }
+
+    public static void setAmountAnswered(int amountAnswered) {
+        Game.amountAnswered = amountAnswered;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Game game = (Game) o;
+        return Objects.equals(currentQuestion, game.currentQuestion) && Objects.equals(id, game.id) && Objects.equals(questionService, game.questionService) && Objects.equals(playerMap, game.playerMap) && Objects.equals(startTime, game.startTime) && Objects.equals(maxTime, game.maxTime) && Objects.equals(stageQueue, game.stageQueue) && Objects.equals(diffMap, game.diffMap);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(currentQuestion, id, questionService, playerMap, startTime, maxTime, stageQueue, diffMap);
+    }
+
+    @Override
+    public String toString() {
+        return "Game{" +
+                "id=" + id +
+                ", playerMap=" + playerMap +
+                ", startTime=" + startTime +
+                ", maxTime=" + maxTime +
+                ", stageQueue=" + stageQueue +
+                ", diffMap=" + diffMap +
+                '}';
+    }
 }
