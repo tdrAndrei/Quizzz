@@ -123,7 +123,7 @@ class GameTest {
         game.setCurrentQuestion(testMCQ);
         game.insertCorrectAnswerIntoDiff();
         boolean allEqual = true;
-        for(Message msg : game.getDiffMap().values()) {
+        for (Message msg : game.getDiffMap().values()) {
             if (!(msg instanceof CorrectAnswerMessage)) {       // check answer if changed in Message class?
                 allEqual = false;
                 break;
@@ -137,7 +137,7 @@ class GameTest {
         Message message = new Message("Test");
         game.insertMessageIntoDiff(message);
         boolean allEqual = true;
-        for(Message msg : game.getDiffMap().values()) {
+        for (Message msg : game.getDiffMap().values()) {
             if (!msg.equals(message)) {
                 allEqual = false;
                 break;
@@ -151,7 +151,7 @@ class GameTest {
         Question testMCQ = new MultiChoiceQuestion("Test", 2, new ArrayList<>(), 10);
         game.insertQuestionIntoDiff(testMCQ);
         boolean allEqual = true;
-        for(Message msg : game.getDiffMap().values()) {
+        for (Message msg : game.getDiffMap().values()) {
             if (!(msg instanceof NewQuestionMessage) || !((NewQuestionMessage) msg).getQuestion().equals(testMCQ)) {
                 allEqual = false;
                 break;
@@ -199,7 +199,7 @@ class GameTest {
     void getMaxTimeTest() {
         game.setMaxTime(137);
         boolean allEqual = true;
-        for(Integer time: game.getMaxTime().values()) {
+        for (Integer time: game.getMaxTime().values()) {
             if (time != 137) {
                 allEqual = false;
                 break;
