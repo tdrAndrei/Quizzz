@@ -36,10 +36,12 @@ public class Game {
             stageQueue.add(new MutablePair<>("Question", 20));
             stageQueue.add(new MutablePair<>("CorrectAns", 3));
         }
+        stageQueue.add(new MutablePair<>("Leaderboard", 7));
         for (int i = 0; i < 10; i++) {
             stageQueue.add(new MutablePair<>("Estimate", 20));
             stageQueue.add(new MutablePair<>("CorrectAns", 3));
         }
+        stageQueue.add(new MutablePair<>("End", 15));
     }
 
     public void addPlayer(User user){
