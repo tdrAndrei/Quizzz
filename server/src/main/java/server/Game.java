@@ -6,7 +6,6 @@ import commons.Question;
 import commons.User;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-import org.springframework.beans.factory.annotation.Autowired;
 import server.service.QuestionService;
 
 import java.util.*;
@@ -22,12 +21,11 @@ public class Game {
     private final Map<Long, Player> playerMap = new HashMap<>();
     //private int playerLimit;
     private Date startTime;
-    public Map<Long, Integer> maxTime = new HashMap<>();
+    private Map<Long, Integer> maxTime = new HashMap<>();
     private final Queue<Pair<String, Integer>> stageQueue = new LinkedList<>();
     private final Map<Long, Message> diffMap = new HashMap<>();
     private static int amountAnswered = 0;
 
-    @Autowired
     public Game(Long id, QuestionService questionService) {
         this.id = id;
         this.questionService = questionService;
@@ -44,15 +42,17 @@ public class Game {
         stageQueue.add(new MutablePair<>("End", 15));
     }
 
+    //When joining a game, a client sends its user object, if already in game, a client just sends it's userid
     public void addPlayer(User user){
         Player newPlayer = new Player(user);
         playerMap.put(user.getId(), newPlayer);
+        diffMap.put(user.getId(), new NullMessage("None"));
         insertMessageIntoDiff(new NewPlayersMessage("NewPlayers", new ArrayList<>(playerMap.values())));
     }
 
     public void initializeStage(){
         amountAnswered = 0;
-        Pair<String, Integer> stagePair = stageQueue.poll();
+        Pair<String, Integer> stagePair = stageQueue.peek();
         if (stagePair == null){
             return;
         }
@@ -101,10 +101,21 @@ public class Game {
         amountAnswered++;
     }
 
-    public Message getUpdate(Long id){
+    public Message getUpdate(Long userId){
         Message update = diffMap.get(id);
         diffMap.put(id, new NullMessage("None"));
         return update;
+    }
+
+    public void removePlayer(Long userId) {
+        Player removedPlayer = playerMap.remove(userId);
+        removedPlayer = null; //Dereference player so it can be garbage collected
+
+        //If we are still in waiting screen, inform clients of updated player list
+        Pair<String, Integer> pair = stageQueue.peek();
+        if (pair != null && pair.getKey().equals("Waiting")) {
+            insertMessageIntoDiff(new NewPlayersMessage("NewPlayers", new ArrayList<>(playerMap.values())));
+        }
     }
 
     public void halfTimeJoker(Long jokerUserId){
@@ -127,6 +138,7 @@ public class Game {
             if (!(date.getTime() - startTime.getTime() > maxTime)){
                 break;
             }
+            stageQueue.poll();
             initializeStage();
         }
     }
