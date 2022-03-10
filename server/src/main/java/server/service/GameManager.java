@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import server.Game;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @Service
@@ -18,50 +19,51 @@ public class GameManager {
     @Autowired
     public GameManager(QuestionService questionService){
         this.questionService = questionService;
+        this.gameMap = new HashMap<>();
     }
 
-    public Long joinSolo(User user) {
-        Long gameId = idCounter++;
+    public long joinSolo(User user) {
+        long gameId = idCounter++;
         Game newGame = new Game(gameId, questionService);
         newGame.addPlayer(user);
         gameMap.put(gameId, newGame);
         startGame(gameId);
         return gameId;
     }
-    
-    public Message getUpdate(Long gameId, Long userId) {
+
+    public Message getUpdate(long gameId, long userId) {
         Game game = gameMap.get(gameId);
         game.ifStageEnded();
         return game.getUpdate(userId);
     }
 
-    public Long joinMulti(User user) {
+    public long joinMulti(User user) {
         for (Game game : gameMap.values()) {
             if (game.getStageQueue().peek().getKey().equals("Waiting")) {
                 game.addPlayer(user);
                 return game.getId();
             }
         }
-        Long gameId = idCounter++;
+        long gameId = idCounter++;
         Game newGame = new Game(gameId, questionService);
         newGame.addPlayer(user);
         gameMap.put(gameId, newGame);
         return gameId;
     }
 
-    public void startGame(Long gameId) {
+    public void startGame(long gameId) {
         Game game = gameMap.get(gameId);
         //Removes current stage from head and loads new one
         game.getStageQueue().poll();
         game.initializeStage();
     }
 
-    public void processAnswer(Long userId, Long userAnswer, Long gameId) {
+    public void processAnswer(long userId, long userAnswer, long gameId) {
         Game game = gameMap.get(gameId);
         game.processAnswer(userAnswer, userId);
     }
 
-    public void disconnectPlayer(Long userId, Long gameId) {
+    public void disconnectPlayer(long userId, long gameId) {
         Game game = gameMap.get(gameId);
         game.removePlayer(userId);
         if (game.getPlayerMap().isEmpty()){
@@ -69,7 +71,7 @@ public class GameManager {
         }
     }
 
-    public void useTimeJoker(Long gameId, Long userId) {
+    public void useTimeJoker(long gameId, long userId) {
         Game game = gameMap.get(gameId);
         game.halfTimeJoker(userId);
     }

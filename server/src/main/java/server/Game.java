@@ -16,7 +16,7 @@ import java.util.*;
 public class Game {
 
     private Question currentQuestion;
-    private final Long id;
+    private final long id;
     private final QuestionService questionService;
     private final Map<Long, Player> playerMap = new HashMap<>();
     //private int playerLimit;
@@ -26,17 +26,17 @@ public class Game {
     private final Map<Long, Message> diffMap = new HashMap<>();
     private static int amountAnswered = 0;
 
-    public Game(Long id, QuestionService questionService) {
+    public Game(long id, QuestionService questionService) {
         this.id = id;
         this.questionService = questionService;
         stageQueue.add(new MutablePair<>("Waiting", Integer.MAX_VALUE));
         for (int i = 0; i < 10; i++) {
-            stageQueue.add(new MutablePair<>("Question", 20));
+            stageQueue.add(new MutablePair<>("Question", 700));
             stageQueue.add(new MutablePair<>("CorrectAns", 3));
         }
         stageQueue.add(new MutablePair<>("Leaderboard", 7));
         for (int i = 0; i < 10; i++) {
-            stageQueue.add(new MutablePair<>("Estimate", 20));
+            stageQueue.add(new MutablePair<>("Estimate", 7));
             stageQueue.add(new MutablePair<>("CorrectAns", 3));
         }
         stageQueue.add(new MutablePair<>("End", 15));
@@ -69,6 +69,7 @@ public class Game {
                 break;
 
             case "CorrectAns":
+                setMaxTime(stagePair.getValue());
                 insertCorrectAnswerIntoDiff();
                 break;
 
@@ -97,20 +98,20 @@ public class Game {
         }
     }
 
-    public void processAnswer(Long userAnswer, Long userId){
+    public void processAnswer(long userAnswer, long userId){
         int elapsed = ((int) (new Date().getTime() - startTime.getTime()) / 1000);
         Player currPlayer = playerMap.get(userId);
         currPlayer.setScore(currPlayer.getScore() + currentQuestion.calculateScore(userAnswer, elapsed));
         amountAnswered++;
     }
 
-    public Message getUpdate(Long userId){
-        Message update = diffMap.get(id);
-        diffMap.put(id, new NullMessage("None"));
+    public Message getUpdate(long userId){
+        Message update = diffMap.get(userId);
+        diffMap.put(userId, new NullMessage("None"));
         return update;
     }
 
-    public void removePlayer(Long userId) {
+    public void removePlayer(long userId) {
         playerMap.remove(userId);
         diffMap.remove(userId);
         maxTime.remove(userId);
@@ -122,9 +123,9 @@ public class Game {
         }
     }
 
-    public void halfTimeJoker(Long jokerUserId){
-        for (Long otherPlayerId : playerMap.keySet()){
-            if (otherPlayerId.equals(jokerUserId)) {
+    public void halfTimeJoker(long jokerUserId){
+        for (long otherPlayerId : playerMap.keySet()){
+            if (otherPlayerId == (jokerUserId)) {
                 continue;
             }
             maxTime.put(otherPlayerId, maxTime.get(otherPlayerId) / 2);
@@ -139,7 +140,7 @@ public class Game {
         }
 
         for (int maxTime : maxTime.values()){
-            if (!(date.getTime() - startTime.getTime() > maxTime)){
+            if (!((date.getTime() - startTime.getTime()) / 1000 > maxTime)){
                 break;
             }
             stageQueue.poll();
@@ -148,7 +149,7 @@ public class Game {
     }
 
     public void insertCorrectAnswerIntoDiff(){
-        for (Long id : diffMap.keySet()){
+        for (long id : diffMap.keySet()){
             CorrectAnswerMessage answerMessage = new CorrectAnswerMessage("ShowCorrectAnswer", playerMap.get(id).getScore(), currentQuestion.getAnswer());
             diffMap.put(id, answerMessage);
         }
@@ -158,7 +159,7 @@ public class Game {
         diffMap.replaceAll((i, v) -> message);
     }
     public void insertQuestionIntoDiff(Question question){
-        for (Long id : diffMap.keySet()){
+        for (long id : diffMap.keySet()){
             NewQuestionMessage questionMessage = new NewQuestionMessage("NewQuestion", question, playerMap.get(id).getScore());
             diffMap.put(id, questionMessage);
         }
@@ -175,7 +176,7 @@ public class Game {
         this.currentQuestion = currentQuestion;
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
