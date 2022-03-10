@@ -53,7 +53,7 @@ public class ShowLeaderboardMessage extends Message {
     public void setLeaderboardEntries(){
         List<LeaderboardEntry> leaderboardEntries = new ArrayList<>();
         for (Player player : players) {
-            entries.add(new LeaderboardEntry(player.getUser().getName(), player.getScore()));
+            leaderboardEntries.add(new LeaderboardEntry(player.getUser().getName(), player.getScore()));
         }
         this.entries = leaderboardEntries;
     }

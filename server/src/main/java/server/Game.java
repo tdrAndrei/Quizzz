@@ -40,6 +40,8 @@ public class Game {
             stageQueue.add(new MutablePair<>("CorrectAns", 3));
         }
         stageQueue.add(new MutablePair<>("End", 15));
+
+        initializeStage();
     }
 
     //When joining a game, a client sends its user object, if already in game, a client just sends it's userid
@@ -109,8 +111,9 @@ public class Game {
     }
 
     public void removePlayer(Long userId) {
-        Player removedPlayer = playerMap.remove(userId);
-        removedPlayer = null; //Dereference player so it can be garbage collected
+        playerMap.remove(userId);
+        diffMap.remove(userId);
+        maxTime.remove(userId);
 
         //If we are still in waiting screen, inform clients of updated player list
         Pair<String, Integer> pair = stageQueue.peek();
