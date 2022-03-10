@@ -174,6 +174,7 @@ class GameTest {
 
     @Test
     void getQuestionServiceTest() {
+        return;
         //TODO
     }
 
@@ -215,6 +216,7 @@ class GameTest {
 
     @Test
     void getDiffMapTest() {
+        return;
         //TODO
     }
 
@@ -226,16 +228,19 @@ class GameTest {
 
     @Test
     void equalsTest() {
+        return;
         //TODO
     }
 
     @Test
     void hashCodeTest() {
+        return;
         //TODO
     }
 
     @Test
     void toStringTest() {
+        return;
         //TODO ? (String is huge!)
     }
 
