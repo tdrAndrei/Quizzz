@@ -16,7 +16,7 @@ import java.util.*;
 public class Game {
 
     private Question currentQuestion;
-    private final long id;
+    private final Long id;
     private final QuestionService questionService;
     private final Map<Long, Player> playerMap = new HashMap<>();
     //private int playerLimit;
@@ -24,24 +24,22 @@ public class Game {
     private final Map<Long, Integer> maxTime = new HashMap<>();
     private final Queue<Pair<String, Integer>> stageQueue = new LinkedList<>();
     private final Map<Long, Message> diffMap = new HashMap<>();
-    private static int amountAnswered = 0;
+    private int amountAnswered = 0;
 
-    public Game(long id, QuestionService questionService) {
+    public Game(Long id, QuestionService questionService) {
         this.id = id;
         this.questionService = questionService;
         stageQueue.add(new MutablePair<>("Waiting", Integer.MAX_VALUE));
         for (int i = 0; i < 10; i++) {
-            stageQueue.add(new MutablePair<>("Question", 700));
+            stageQueue.add(new MutablePair<>("Question", 20));
             stageQueue.add(new MutablePair<>("CorrectAns", 3));
         }
         stageQueue.add(new MutablePair<>("Leaderboard", 7));
         for (int i = 0; i < 10; i++) {
-            stageQueue.add(new MutablePair<>("Estimate", 7));
+            stageQueue.add(new MutablePair<>("Estimate", 20));
             stageQueue.add(new MutablePair<>("CorrectAns", 3));
         }
         stageQueue.add(new MutablePair<>("End", 15));
-
-        initializeStage();
     }
 
     //When joining a game, a client sends its user object, if already in game, a client just sends it's userid
@@ -69,7 +67,6 @@ public class Game {
                 break;
 
             case "CorrectAns":
-                setMaxTime(stagePair.getValue());
                 insertCorrectAnswerIntoDiff();
                 break;
 
@@ -98,23 +95,22 @@ public class Game {
         }
     }
 
-    public void processAnswer(long userAnswer, long userId){
+    public void processAnswer(Long userAnswer, Long userId){
         int elapsed = ((int) (new Date().getTime() - startTime.getTime()) / 1000);
         Player currPlayer = playerMap.get(userId);
         currPlayer.setScore(currPlayer.getScore() + currentQuestion.calculateScore(userAnswer, elapsed));
         amountAnswered++;
     }
 
-    public Message getUpdate(long userId){
-        Message update = diffMap.get(userId);
-        diffMap.put(userId, new NullMessage("None"));
+    public Message getUpdate(Long userId){
+        Message update = diffMap.get(id);
+        diffMap.put(id, new NullMessage("None"));
         return update;
     }
 
-    public void removePlayer(long userId) {
-        playerMap.remove(userId);
-        diffMap.remove(userId);
-        maxTime.remove(userId);
+    public void removePlayer(Long userId) {
+        Player removedPlayer = playerMap.remove(userId);
+        removedPlayer = null; //Dereference player so it can be garbage collected
 
         //If we are still in waiting screen, inform clients of updated player list
         Pair<String, Integer> pair = stageQueue.peek();
@@ -123,16 +119,16 @@ public class Game {
         }
     }
 
-    public void halfTimeJoker(long jokerUserId){
-        for (long otherPlayerId : playerMap.keySet()){
-            if (otherPlayerId == (jokerUserId)) {
+    public void halfTimeJoker(Long jokerUserId){
+        for (Long otherPlayerId : playerMap.keySet()){
+            if (otherPlayerId.equals(jokerUserId)) {
                 continue;
             }
             maxTime.put(otherPlayerId, maxTime.get(otherPlayerId) / 2);
         }
     }
 
-    public void ifStageEnded(){
+    public void ifStageEnded() {
         Date date = new Date();
         if (amountAnswered == playerMap.size()){
             initializeStage();
@@ -140,7 +136,7 @@ public class Game {
         }
 
         for (int maxTime : maxTime.values()){
-            if (!((date.getTime() - startTime.getTime()) / 1000 > maxTime)){
+            if (!(date.getTime() - startTime.getTime() > maxTime)){
                 break;
             }
             stageQueue.poll();
@@ -149,7 +145,7 @@ public class Game {
     }
 
     public void insertCorrectAnswerIntoDiff(){
-        for (long id : diffMap.keySet()){
+        for (Long id : diffMap.keySet()){
             CorrectAnswerMessage answerMessage = new CorrectAnswerMessage("ShowCorrectAnswer", playerMap.get(id).getScore(), currentQuestion.getAnswer());
             diffMap.put(id, answerMessage);
         }
@@ -159,7 +155,7 @@ public class Game {
         diffMap.replaceAll((i, v) -> message);
     }
     public void insertQuestionIntoDiff(Question question){
-        for (long id : diffMap.keySet()){
+        for (Long id : diffMap.keySet()){
             NewQuestionMessage questionMessage = new NewQuestionMessage("NewQuestion", question, playerMap.get(id).getScore());
             diffMap.put(id, questionMessage);
         }
@@ -176,7 +172,7 @@ public class Game {
         this.currentQuestion = currentQuestion;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
@@ -208,12 +204,12 @@ public class Game {
         return diffMap;
     }
 
-    public static int getAmountAnswered() {
+    public int getAmountAnswered() {
         return amountAnswered;
     }
 
-    public static void setAmountAnswered(int amountAnswered) {
-        Game.amountAnswered = amountAnswered;
+    public void setAmountAnswered(int amountAnswered) {
+        this.amountAnswered = amountAnswered;
     }
 
     @Override
