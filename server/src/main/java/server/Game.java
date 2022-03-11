@@ -131,8 +131,8 @@ public class Game {
     public void ifStageEnded() {
         Date date = new Date();
         if (amountAnswered == playerMap.size()){
+            stageQueue.poll();
             initializeStage();
-            return;
         }
 
         for (int maxTime : maxTime.values()){

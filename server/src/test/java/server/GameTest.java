@@ -1,14 +1,13 @@
 package server;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import commons.Messages.CorrectAnswerMessage;
-import commons.Messages.Message;
-import commons.Messages.NewPlayersMessage;
-import commons.Messages.NewQuestionMessage;
+import commons.Messages.*;
 import commons.MultiChoiceQuestion;
 import commons.Player;
 import commons.Question;
 import commons.User;
+import org.apache.commons.lang3.tuple.MutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import server.service.QuestionService;
@@ -30,7 +29,7 @@ class GameTest {
     @BeforeEach
     public void before() throws JsonProcessingException {
         this.testActivityRepository = new TestActivityRepository();
-        Rand rand = new Rand(0);
+        Random rand = new Random();
         this.questionService = new QuestionService(testActivityRepository, rand);
         game = new Game(1L, questionService);
         game.addPlayer(userOne);
@@ -41,7 +40,7 @@ class GameTest {
     @Test
     public void constructorTest() {
         assertNotNull(game);
-        //TODO
+        assertNotEquals(game.getStageQueue().size(), 0);
     }
 
     @Test
@@ -70,8 +69,23 @@ class GameTest {
 
     @Test
     void initializeStageTest() {
-        game.initializeStage();
-        //TODO
+        game.getStageQueue().clear();
+        Question testMCQ = new MultiChoiceQuestion("Test", 2, new ArrayList<>(), 10);
+        game.setCurrentQuestion(testMCQ);
+        game.getStageQueue().offer(new MutablePair<>("Question", 1));
+        game.getStageQueue().offer(new MutablePair<>("CorrectAns", 1));
+        game.getStageQueue().offer(new MutablePair<>("Leaderboard", 1));
+        game.getStageQueue().offer(new MutablePair<>("Estimate", 1));
+        game.getStageQueue().offer(new MutablePair<>("CorrectAns", 1));
+        game.getStageQueue().offer(new MutablePair<>("End", 1));
+        game.setStartTime(new Date());
+        int countDown = 6;
+        while (!game.getStageQueue().isEmpty()) {
+            game.setAmountAnswered(game.getPlayerMap().size());
+            game.ifStageEnded();
+            countDown--;
+            assertEquals(countDown, game.getStageQueue().size());
+        }
     }
 
     @Test
@@ -100,7 +114,13 @@ class GameTest {
     void getUpdateTest() {
         game.addPlayer(userThree);
         assertTrue(game.getUpdate(3L) instanceof NewPlayersMessage);
-        //TODO ?
+        assertTrue(game.getUpdate(3L) instanceof NullMessage);
+        insertQuestionIntoDiffTest();
+        assertTrue(game.getUpdate(3L) instanceof NewQuestionMessage);
+        assertTrue(game.getUpdate(3L) instanceof NullMessage);
+        insertCorrectAnswerIntoDiffTest();
+        assertTrue(game.getUpdate(3L) instanceof CorrectAnswerMessage);
+        assertTrue(game.getUpdate(3L) instanceof NullMessage);
     }
 
     @Test
@@ -110,11 +130,22 @@ class GameTest {
     }
 
     @Test
-    void ifStageEndedTest() {
+    void ifStageNotEndedTest() {
+        Pair<String, Integer> nextStage = game.getStageQueue().peek();
         game.setMaxTime(1000);
         game.setStartTime(new Date());
         game.ifStageEnded();
-        //TODO
+        assertEquals(nextStage, game.getStageQueue().peek());
+    }
+
+    @Test
+    void ifStageEndedTest() throws InterruptedException {
+        Pair<String, Integer> nextStage = game.getStageQueue().peek();
+        game.setMaxTime(1);
+        game.setStartTime(new Date());
+        Thread.sleep(1000);
+        game.ifStageEnded();
+        assertNotEquals(nextStage, game.getStageQueue().peek());
     }
 
     @Test
@@ -173,12 +204,6 @@ class GameTest {
     }
 
     @Test
-    void getQuestionServiceTest() {
-        return;
-        //TODO
-    }
-
-    @Test
     void getPlayerMapTest() {
         Map<Long, Player> playerMap = game.getPlayerMap();
         Map<Long, Player> testPlayerMap = new HashMap<>();
@@ -209,59 +234,8 @@ class GameTest {
     }
 
     @Test
-    void getStageQueueTest() {
-        assertNotNull(game.getStageQueue());
-        //TODO
-    }
-
-    @Test
-    void getDiffMapTest() {
-        return;
-        //TODO
-    }
-
-    @Test
     void getAmountAnsweredTest() {
         game.setAmountAnswered(3);
         assertEquals(game.getAmountAnswered(), 3);
-    }
-
-    @Test
-    void equalsTest() {
-        return;
-        //TODO
-    }
-
-    @Test
-    void hashCodeTest() {
-        return;
-        //TODO
-    }
-
-    @Test
-    void toStringTest() {
-        return;
-        //TODO ? (String is huge!)
-    }
-
-    private static class Rand extends Random {
-
-        int predetermined;
-        int next;
-
-        public Rand(int predetermined) {
-            super();
-            this.predetermined = predetermined;
-            this.next = 0;
-        }
-
-        @Override
-        public int nextInt(int bound) {
-            if (bound == 2)
-                return predetermined;
-            else
-                return next++;
-        }
-
     }
 }
