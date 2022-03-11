@@ -13,8 +13,8 @@ import java.util.Map;
 public class GameManager {
 
     private final QuestionService questionService;
-    private Map<Long, Game> gameMap;
-    private static long idCounter = 0L;
+    private final Map<Long, Game> gameMap;
+    private long idCounter = 0L;
 
     @Autowired
     public GameManager(QuestionService questionService){
@@ -74,5 +74,9 @@ public class GameManager {
     public void useTimeJoker(long gameId, long userId) {
         Game game = gameMap.get(gameId);
         game.halfTimeJoker(userId);
+    }
+
+    public Map<Long, Game> getGameMap() {
+        return this.gameMap;
     }
 }
