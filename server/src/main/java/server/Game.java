@@ -68,6 +68,7 @@ public class Game {
                 break;
 
             case "CorrectAns":
+                setMaxTime(stagePair.getValue());
                 insertCorrectAnswerIntoDiff();
                 break;
 
