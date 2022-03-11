@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.Group?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ButtonBar?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.Tooltip?>
@@ -11,41 +9,60 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-<VBox prefHeight="282.0" prefWidth="506.0" stylesheets="@/client.css/application.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.LoginController">
-  <children>
-    <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="267.0" prefWidth="506.0" style="-fx-background-color: #fff4d1;" VBox.vgrow="ALWAYS">
-      <children>
-            <VBox layoutX="81.0" layoutY="143.0" prefHeight="200.0" prefWidth="390.0">
-               <children>
-                  <TextField fx:id="nameBox" onAction="#submit" prefHeight="26.0" prefWidth="304.0">
-                     <tooltip>
-                        <Tooltip text="This is how other player will see you." />
-                     </tooltip>
-                  </TextField>
-                  <TextField fx:id="urlBox" text="http://localhost:8080/">
-                     <VBox.margin>
-                        <Insets top="25.0" />
-                     </VBox.margin>
-                  </TextField>
-                  <ButtonBar prefHeight="40.0" prefWidth="200.0">
-                    <buttons>
-                      <Button fx:id="submitButton" mnemonicParsing="false" onAction="#submit" text="Submit" />
-                        <Button fx:id="quitButton" mnemonicParsing="false" onAction="#quit" text="Quit" />
-                    </buttons>
-                     <VBox.margin>
-                        <Insets right="130.0" top="30.0" />
-                     </VBox.margin>
-                  </ButtonBar>
-               </children>
-            </VBox>
-            <Group layoutX="39.0" layoutY="156.0">
-               <children>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Name" />
-                  <Text layoutX="5.0" layoutY="53.0" strokeType="OUTSIDE" strokeWidth="0.0" text="URL" />
-               </children>
-            </Group>
-            <Label fx:id="warnBox" alignment="CENTER" layoutX="56.0" layoutY="120.0" prefHeight="18.0" prefWidth="224.0" />
-      </children>
-    </AnchorPane>
-  </children>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.RowConstraints?>
+<VBox prefHeight="282.0" prefWidth="506.0" stylesheets="@/client.css/application.css" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.LoginController">
+    <children>
+        <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="396.0" prefWidth="531.0" style="-fx-background-color: #fff4d1;" VBox.vgrow="ALWAYS">
+            <children>
+                <GridPane fx:id="grid" prefHeight="282.0" prefWidth="506.0">
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="ALWAYS" maxWidth="5000.0" minWidth="10.0" prefWidth="131.0" />
+                        <ColumnConstraints hgrow="ALWAYS" maxWidth="5000.0" minWidth="0.0" prefWidth="141.2" />
+                        <ColumnConstraints hgrow="ALWAYS" maxWidth="5000.0" minWidth="10.0" prefWidth="134.2" />
+                        <ColumnConstraints hgrow="ALWAYS" maxWidth="5000.0" minWidth="2.6000000000000227" prefWidth="57.60000000000002" />
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints maxHeight="5000" minHeight="10.0" prefHeight="91.4" vgrow="ALWAYS" />
+                        <RowConstraints maxHeight="5000" minHeight="10.0" prefHeight="81.0" vgrow="ALWAYS" />
+                        <RowConstraints maxHeight="5000" minHeight="10.0" prefHeight="70.19999999999999" vgrow="ALWAYS" />
+                    </rowConstraints>
+                    <children>
+                        <Label fx:id="warnBox" alignment="CENTER" prefHeight="18.0" prefWidth="224.0" GridPane.columnIndex="1" />
+                        <TextField fx:id="nameBox" maxWidth="700.0" onAction="#submit" prefHeight="26.0" prefWidth="397.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.valignment="BOTTOM">
+                            <tooltip>
+                                <Tooltip text="This is how other player will see you." />
+                            </tooltip>
+                        </TextField>
+                        <TextField fx:id="urlBox" maxWidth="700.0" text="http://localhost:8080/" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1">
+                            <GridPane.margin>
+                                <Insets />
+                            </GridPane.margin>
+                        </TextField>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Name" GridPane.halignment="RIGHT" GridPane.valignment="BOTTOM">
+                            <GridPane.margin>
+                                <Insets right="10.0" />
+                            </GridPane.margin>
+                        </Text>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="URL" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
+                            <GridPane.margin>
+                                <Insets right="10.0" />
+                            </GridPane.margin>
+                        </Text>
+                        <Button fx:id="submitButton" mnemonicParsing="false" onAction="#submit" text="Submit" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
+                        <Button fx:id="quitButton" mnemonicParsing="false" onAction="#quit" text="Quit" GridPane.columnIndex="2" GridPane.rowIndex="2">
+                            <GridPane.margin>
+                                <Insets />
+                            </GridPane.margin>
+                        </Button>
+                    </children>
+                    <padding>
+                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                    </padding>
+                </GridPane>
+            </children>
+        </AnchorPane>
+    </children>
 </VBox>
+

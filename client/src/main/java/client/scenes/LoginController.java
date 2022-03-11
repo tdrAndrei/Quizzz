@@ -7,6 +7,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.GridPane;
 
 import javax.inject.Inject;
 import java.io.IOException;
@@ -24,6 +25,9 @@ public class LoginController {
 
     @FXML
     private Label warnBox;
+
+    @FXML
+    private GridPane grid;
 
     @Inject
     public LoginController(ServerUtils server, MainCtrl mainCtrl) {
@@ -46,6 +50,15 @@ public class LoginController {
     public void quit(ActionEvent event) throws IOException {
         mainCtrl.quit();
     }
+
+    public void resizeWidth(double width){
+        grid.setPrefWidth(width);
+    }
+
+    public void resizeHeight(double height){
+        grid.setPrefHeight(height);
+    }
+
 }
 
 

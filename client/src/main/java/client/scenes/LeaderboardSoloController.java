@@ -9,6 +9,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.layout.GridPane;
 import javafx.stage.Modality;
 
 import javax.inject.Inject;
@@ -77,6 +78,9 @@ public class LeaderboardSoloController implements Initializable {
 
     @FXML
     private TextField score;
+
+    @FXML
+    private GridPane grid;
 
     private ObservableList<LeaderboardEntryLabel> data;
 
@@ -170,6 +174,14 @@ public class LeaderboardSoloController implements Initializable {
         for (LeaderboardEntry rawEntry : allTimeEntries) {
             addLabel(rawEntry.getName(), rawEntry.getScore());
         }
+    }
+
+    public void resizeWidth(double width){
+        grid.setPrefWidth(width);
+    }
+
+    public void resizeHeight(double height){
+        grid.setPrefHeight(height);
     }
 
 
