@@ -111,10 +111,10 @@ public class Game {
     }
 
     public void removePlayer(Long userId) {
-        Player removedPlayer = playerMap.remove(userId);
-        removedPlayer = null; //Dereference player so it can be garbage collected
+        playerMap.remove(userId);
+        diffMap.remove(userId);
+        maxTime.remove(userId);
 
-        //If we are still in waiting screen, inform clients of updated player list
         Pair<String, Integer> pair = stageQueue.peek();
         if (pair != null && pair.getKey().equals("Waiting")) {
             insertMessageIntoDiff(new NewPlayersMessage("NewPlayers", new ArrayList<>(playerMap.values())));
@@ -138,7 +138,7 @@ public class Game {
         }
 
         for (int maxTime : maxTime.values()){
-            if (!(date.getTime() - startTime.getTime() > maxTime)){
+            if (!((date.getTime() - startTime.getTime()) / 1000 > maxTime)) {
                 break;
             }
             stageQueue.poll();
