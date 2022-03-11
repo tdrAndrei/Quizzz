@@ -78,4 +78,8 @@ public class ShowLeaderboardMessage extends Message {
                 "players=" + players +
                 '}';
     }
+
+    public List<LeaderboardEntry> getEntries() {
+        return entries;
+    }
 }
