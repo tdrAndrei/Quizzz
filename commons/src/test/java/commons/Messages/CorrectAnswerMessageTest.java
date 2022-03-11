@@ -12,7 +12,7 @@ class CorrectAnswerMessageTest {
     void setUp() {
         int score = 999;
         String mess = "ShowCorrectAnswer";
-        message = new CorrectAnswerMessage(mess, score,999L);
+        message = new CorrectAnswerMessage(mess, score, 999L);
     }
 
     @Test
@@ -28,7 +28,7 @@ class CorrectAnswerMessageTest {
 
     @Test
     void testEquals() {
-        CorrectAnswerMessage message2 = new CorrectAnswerMessage("ShowCorrectAnswer", 999,999L);
+        CorrectAnswerMessage message2 = new CorrectAnswerMessage("ShowCorrectAnswer", 999, 999L);
         assertEquals(message2, message);
     }
 
