@@ -143,7 +143,7 @@ class GameTest {
         Pair<String, Integer> nextStage = game.getStageQueue().peek();
         game.setMaxTime(1);
         game.setStartTime(new Date());
-        Thread.sleep(1000);
+        Thread.sleep(1001);
         game.ifStageEnded();
         assertNotEquals(nextStage, game.getStageQueue().peek());
     }

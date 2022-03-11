@@ -141,12 +141,13 @@ public class Game {
         }
 
         for (int maxTime : maxTime.values()) {
-            if (!((date.getTime() - startTime.getTime()) / 1000 > maxTime)) {
-                break;
+            double elapsed = ((double) date.getTime() - (double) startTime.getTime()) / 1000;
+            if (!(elapsed > maxTime)) {
+                return;
             }
-            stageQueue.poll();
-            initializeStage();
         }
+        stageQueue.poll();
+        initializeStage();
     }
 
     public void insertCorrectAnswerIntoDiff() {
