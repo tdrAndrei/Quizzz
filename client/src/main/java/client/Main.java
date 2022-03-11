@@ -25,8 +25,6 @@ import client.scenes.LoginController;
 import client.scenes.MainMenuController;
 import client.scenes.MultiQuestionController;
 import com.google.inject.Injector;
-
-
 import client.scenes.MainCtrl;
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -50,5 +48,7 @@ public class Main extends Application {
         var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
         var leaderboardSolo = FXML.load(LeaderboardSoloController.class, "client", "scenes", "LeaderboardSolo.fxml");
         mainCtrl.initialize(primaryStage, login, mainMenu, multiQuestion, leaderboardSolo);
+
     }
+
 }
