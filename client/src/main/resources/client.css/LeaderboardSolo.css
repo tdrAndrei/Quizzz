@@ -38,6 +38,10 @@
     -fx-background-color: transparent;
 }
 
+.table-view .column-header-background .filler {
+    -fx-background-color: transparent;
+}
+
 .table-view .column-header-background .label{
     -fx-background-color: transparent;
     -fx-font-size: 120%;
@@ -111,7 +115,12 @@
     -fx-shape: "M 0 100 L 1600 100 L 1700 50 L 1600 0 L 0 0 L 0 100 z";
 }
 
+#colName {
+    -fx-alignment: baseline-left;
+    -fx-padding: 2 42 2 0;
+}
+
 #colScore {
     -fx-alignment: baseline-right;
-    -fx-padding: 2 42 2 0;
+    -fx-padding: 2 64 2 0;
 }
