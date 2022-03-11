@@ -15,16 +15,17 @@ public class GameManager {
     private final QuestionService questionService;
     private final Map<Long, Game> gameMap;
     private long idCounter = 0L;
-
+    private LeaderBoardEntryService leaderBoardEntryService;
     @Autowired
-    public GameManager(QuestionService questionService){
+    public GameManager(QuestionService questionService, LeaderBoardEntryService leaderBoardEntryService){
+        this.leaderBoardEntryService = leaderBoardEntryService;
         this.questionService = questionService;
         this.gameMap = new HashMap<>();
     }
 
     public long joinSolo(User user) {
         long gameId = idCounter++;
-        Game newGame = new Game(gameId, questionService);
+        Game newGame = new Game(gameId, questionService, leaderBoardEntryService);
         newGame.addPlayer(user);
         gameMap.put(gameId, newGame);
         startGame(gameId);
@@ -45,7 +46,7 @@ public class GameManager {
             }
         }
         long gameId = idCounter++;
-        Game newGame = new Game(gameId, questionService);
+        Game newGame = new Game(gameId, questionService, leaderBoardEntryService);
         newGame.addPlayer(user);
         gameMap.put(gameId, newGame);
         return gameId;

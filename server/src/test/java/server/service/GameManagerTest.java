@@ -51,7 +51,7 @@ public class GameManagerTest {
                         "/"));
                 return new EstimateQuestion("title", 1, fakeActivities, seconds);
             }
-        });
+        }, new LeaderBoardEntryService(new TestLeaderboardEntryRepo()));
     }
 
     @Test

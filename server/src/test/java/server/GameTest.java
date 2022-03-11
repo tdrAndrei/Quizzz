@@ -10,8 +10,10 @@ import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import server.service.LeaderBoardEntryService;
 import server.service.QuestionService;
 import server.service.TestActivityRepository;
+import server.service.TestLeaderboardEntryRepo;
 
 import java.util.*;
 
@@ -31,7 +33,7 @@ class GameTest {
         this.testActivityRepository = new TestActivityRepository();
         Random rand = new Random();
         this.questionService = new QuestionService(testActivityRepository, rand);
-        game = new Game(1L, questionService);
+        game = new Game(1L, questionService, new LeaderBoardEntryService(new TestLeaderboardEntryRepo()));
         game.addPlayer(userOne);
         game.addPlayer(userTwo);
         game.addPlayer(userThree);

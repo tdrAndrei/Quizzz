@@ -1,11 +1,13 @@
 package server;
 
+import commons.LeaderboardEntry;
 import commons.Messages.*;
 import commons.Player;
 import commons.Question;
 import commons.User;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import server.service.LeaderBoardEntryService;
 import server.service.QuestionService;
 
 import java.util.*;
@@ -25,9 +27,11 @@ public class Game {
     private final Queue<Pair<String, Integer>> stageQueue = new LinkedList<>();
     private final Map<Long, Message> diffMap = new HashMap<>();
     private int amountAnswered = 0;
+    private LeaderBoardEntryService leaderBoardEntryService;
 
-    public Game(long id, QuestionService questionService) {
+    public Game(long id, QuestionService questionService, LeaderBoardEntryService leaderBoardEntryService) {
         this.id = id;
+        this.leaderBoardEntryService = leaderBoardEntryService;
         this.questionService = questionService;
         stageQueue.add(new MutablePair<>("Waiting", Integer.MAX_VALUE));
         for (int i = 0; i < 10; i++) {
@@ -88,6 +92,10 @@ public class Game {
                 break;
 
             case "End":
+                if (playerMap.size() == 1) {
+                    Player player = playerMap.entrySet().iterator().next().getValue();
+                    leaderBoardEntryService.insert(new LeaderboardEntry(player.getUser().getName(), player.getScore()));
+                }
                 setMaxTime(stagePair.getValue());
                 insertMessageIntoDiff(new ShowLeaderboardMessage("EndGame", new ArrayList<>(playerMap.values())));
                 break;
