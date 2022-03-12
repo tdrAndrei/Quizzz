@@ -28,7 +28,7 @@
       <children>
           <TableView fx:id="leaderboardEntries" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="1" GridPane.rowSpan="2">
                <columns>
-                  <TableColumn fx:id="colName" maxWidth="867.199951171875" minWidth="-1.0" prefWidth="459.20001220703125" sortable="false" text="name" />
+                  <TableColumn fx:id="colName" maxWidth="1920.199951171875" minWidth="-1.0" prefWidth="459.20001220703125" sortable="false" text="name" />
                   <TableColumn fx:id="colScore" maxWidth="130.0" minWidth="130.0" prefWidth="130.0" resizable="false" sortable="false" text="points" />
                </columns>
             <columnResizePolicy>
