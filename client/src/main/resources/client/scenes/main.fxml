@@ -12,29 +12,29 @@
    <children>
       <Button fx:id="quitButton" layoutX="35.0" layoutY="23.0" mnemonicParsing="false" onAction="#quit" prefHeight="39.0" prefWidth="100.0" text="QUIT" textFill="WHITE">
          <font>
-            <Font size="18.0" />
+            <Font size="18.0" name="Comicbon" />
          </font></Button>
       <Button fx:id="multiplayerButton" layoutX="497.0" layoutY="179.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="175.0" text="MULTIPLAYER" textFill="WHITE">
          <font>
-            <Font size="18.0" />
+            <Font size="18.0" name="Comicbon"/>
          </font></Button>
       <Button fx:id="soloButton" layoutX="208.0" layoutY="179.0" mnemonicParsing="false" onAction="#startSolo" prefHeight="50.0" prefWidth="175.0" text="SOLO" textFill="WHITE">
          <font>
-            <Font size="18.0" />
+            <Font size="18.0" name="Comicbon"/>
          </font></Button>
       <Label fx:id="underSoloText" alignment="CENTER" layoutX="213.0" layoutY="242.0" prefHeight="17.0" prefWidth="166.0" text="Practice your knowledge">
          <font>
-            <Font size="14.0" />
+            <Font size="14.0" name="Comicbon"/>
          </font>
       </Label>
       <Label fx:id="underMultiplayerText" alignment="CENTER" layoutX="435.0" layoutY="242.0" prefHeight="20.0" prefWidth="298.0" text="Enter a contest with your peers">
          <font>
-            <Font size="14.0" />
+            <Font size="14.0" name="Comicbon"/>
          </font>
       </Label>
       <Button fx:id="leaderboardButton" layoutX="264.0" layoutY="286.0" mnemonicParsing="false" onAction="#showLeaderboard" prefHeight="50.0" prefWidth="348.0" text="ALL TIME SOLO LEADERBOARD" textFill="WHITE">
          <font>
-            <Font size="18.0" />
+            <Font size="18.0" name="Comicbon"/>
          </font></Button>
       <Label fx:id="factQuestion" layoutX="547.0" layoutY="404.0" prefHeight="21.0" prefWidth="175.0" text="Did you know that...">
          <font>
@@ -63,7 +63,7 @@
       </Group>
       <Text fx:id="factText" layoutX="527.0" layoutY="461.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Insert text..." textAlignment="CENTER" wrappingWidth="221.33673095703125">
          <font>
-            <Font name="System Bold Italic" size="18.0" />
+            <Font name="Comicbon" size="18.0" />
          </font></Text>
       <Group fx:id="titleEdges" layoutX="181.0" layoutY="16.0">
          <SVGPath fx:id="horizontalEdge" content="M36 143L36 118.283" stroke="black" strokeLineCap="ROUND" strokeWidth="6" />
@@ -76,7 +76,7 @@
          </Group>
          <Text fx:id="title" layoutX="154.0" layoutY="102.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Quizzzz!" wrappingWidth="269.28314208984375">
             <font>
-               <Font size="64.0" />
+               <Font name="Comicbon" size="64.0" />
             </font>
          </Text>
       </Group>
