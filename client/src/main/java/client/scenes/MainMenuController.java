@@ -5,6 +5,9 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.text.Text;
@@ -49,6 +52,12 @@ public class MainMenuController {
     private SVGPath rvEdge;
     @FXML
     private SVGPath lvEdge;
+    @FXML
+    private GridPane grid;
+    @FXML
+    private Button soloButton;
+    @FXML
+    private Label underSoloText;
 
     private final MainCtrl mainCtrl;
     private Thread animator;
@@ -89,6 +98,14 @@ public class MainMenuController {
     public void showLeaderboard(){
         stopAnimatorThread();
         mainCtrl.showLeaderboardSolo();
+    }
+
+    public void resizeScene(double width, double height) {
+        if ( width < grid.getMinWidth() || height < grid.getMinHeight() )
+            return;
+        grid.setPrefSize(width, height);
+
+
     }
 
     /**
@@ -208,7 +225,8 @@ public class MainMenuController {
      * Interrupts the animator thread.
      */
     public void stopAnimatorThread() {
-        animator.interrupt();
+        if (animator != null)
+            animator.interrupt();
     }
 
     /**
