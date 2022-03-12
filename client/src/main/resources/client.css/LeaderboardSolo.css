@@ -25,7 +25,7 @@
     -fx-font-size: 150%;
     -fx-alignment: baseline-left;
     -fx-text-fill: white;
-    -fx-padding: 500%;
+    -fx-padding: 5 0 5 10;
 }
 
 .table-view {
@@ -40,13 +40,13 @@
 
 .table-view .column-header-background .label{
     -fx-background-color: transparent;
-    -fx-padding: 2 20 2 20;
     -fx-font-size: 120%;
     -fx-text-fill: black;
 }
 
 .table-view .column-header {
     -fx-background-color: transparent;
+    -fx-padding: 2 0 2 15;
 }
 
 .table-row-cell{
@@ -109,4 +109,9 @@
     -fx-max-width: 400;
     -fx-background-color: #ff8182;
     -fx-shape: "M 0 100 L 1600 100 L 1700 50 L 1600 0 L 0 0 L 0 100 z";
+}
+
+#colScore {
+    -fx-alignment: baseline-right;
+    -fx-padding: 2 42 2 0;
 }

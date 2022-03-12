@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="580.0" prefWidth="880.0" stylesheets="@/client.css/questions.css" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.MultiQuestionController">
+<AnchorPane prefHeight="580.0" prefWidth="880.0" stylesheets="@/client.css/questions.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.MultiQuestionController">
    <children>
       <Button fx:id="exitButton" layoutX="57.0" layoutY="515.0" mnemonicParsing="false" onAction="#quit" text="Exit Game">
          <font>
