@@ -44,6 +44,9 @@ public class MainCtrl {
     private LeaderboardSoloController leaderboardSoloController;
     private Scene leaderboardSoloScene;
 
+    private EstimateQuestionController estimateQuestionController;
+    private Scene estimateQuestionScene;
+
     @Inject
     private ServerUtils server;
 
@@ -51,7 +54,8 @@ public class MainCtrl {
     public void initialize(Stage primaryStage, Pair<LoginController, Parent> login,
                            Pair<MainMenuController, Parent> mainMenu,
                            Pair<MultiQuestionController, Parent> multiQuestion,
-                           Pair<LeaderboardSoloController, Parent> leaderboardSolo) {
+                           Pair<LeaderboardSoloController, Parent> leaderboardSolo,
+                           Pair<EstimateQuestionController, Parent> estimateQuestion) {
         this.primaryStage = primaryStage;
 
         this.loginController = login.getKey();
@@ -65,6 +69,9 @@ public class MainCtrl {
 
         this.leaderboardSoloController = leaderboardSolo.getKey();
         this.leaderboardSoloScene = new Scene(leaderboardSolo.getValue());
+
+        this.estimateQuestionController = estimateQuestion.getKey();
+        this.estimateQuestionScene = new Scene(estimateQuestion.getValue());
 
         showLogin();
         primaryStage.show();
@@ -83,6 +90,17 @@ public class MainCtrl {
         primaryStage.setTitle("Quizzzz!");
         leaderboardSoloController.refresh();
         primaryStage.setScene(leaderboardSoloScene);
+    }
+
+    public void showEstimate(){
+        primaryStage.setTitle("Quizzzz!");
+        primaryStage.setScene(estimateQuestionScene);
+        estimateQuestionScene.widthProperty().addListener(e -> {
+            estimateQuestionController.resizeWidth(estimateQuestionScene.getWidth());
+        });
+        estimateQuestionScene.heightProperty().addListener(e -> {
+            estimateQuestionController.resizeHeight(estimateQuestionScene.getHeight());
+        });
     }
 
     public void showLogin() {

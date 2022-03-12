@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="550.0" prefWidth="880.0" stylesheets="@/client.css/questions.css" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.EstimateQuestionController">
+   <children>
+      <GridPane fx:id="grid" prefHeight="550.0" prefWidth="880.0">
+        <columnConstraints>
+            <ColumnConstraints hgrow="ALWAYS" maxWidth="90" minWidth="10.0" prefWidth="82.8" />
+            <ColumnConstraints hgrow="ALWAYS" maxWidth="90" minWidth="0.0" prefWidth="89.2" />
+          <ColumnConstraints hgrow="ALWAYS" maxWidth="90" minWidth="0.0" prefWidth="86.39998474121097" />
+            <ColumnConstraints hgrow="ALWAYS" maxWidth="900" minWidth="10.0" prefWidth="423.6000152587891" />
+            <ColumnConstraints hgrow="ALWAYS" maxWidth="700" minWidth="10.0" prefWidth="104.39999999999998" />
+          <ColumnConstraints hgrow="ALWAYS" maxWidth="200" minWidth="10.0" prefWidth="100.39999999999998" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints maxHeight="130.4" minHeight="10.0" prefHeight="130.4" vgrow="ALWAYS" />
+          <RowConstraints maxHeight="141.20000000000002" minHeight="10.0" prefHeight="137.20000000000002" vgrow="ALWAYS" />
+            <RowConstraints maxHeight="254.40000000000003" minHeight="10.0" prefHeight="44.19999999999999" vgrow="ALWAYS" />
+            <RowConstraints maxHeight="162.39999999999998" minHeight="10.0" prefHeight="130.40000000000003" vgrow="ALWAYS" />
+          <RowConstraints maxHeight="162.39999999999998" minHeight="10.0" prefHeight="112.39999999999998" vgrow="ALWAYS" />
+        </rowConstraints>
+         <children>
+            <Button fx:id="exitButton" mnemonicParsing="false" onAction="#quit" prefHeight="33.0" prefWidth="86.0" text="Exit Game" textAlignment="CENTER" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="CENTER">
+               <font>
+                  <Font name="Roboto Light" size="14.0" />
+               </font>
+            </Button>
+             <ImageView fx:id="eliminateJoker" fitHeight="112.0" fitWidth="70.0" layoutX="12.0" layoutY="7.0" onMouseClicked="#changeJoker1" pickOnBounds="true" preserveRatio="true" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                 <image>
+                     <Image url="@/client.photos/jokerOneAnswer.png" />
+                 </image>
+                 <cursor>
+                     <Cursor fx:constant="HAND" />
+                 </cursor>
+             </ImageView>
+             <ImageView fx:id="doublePointsJoker" fitHeight="112.0" fitWidth="70.0" layoutX="88.0" layoutY="7.0" onMouseClicked="#changeJoker2" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                 <image>
+                     <Image url="@/client.photos/doubleJoker.png" />
+                 </image>
+                 <cursor>
+                     <Cursor fx:constant="HAND" />
+                 </cursor>
+             </ImageView>
+             <ImageView fx:id="timeJoker" fitHeight="112.0" fitWidth="70.0" layoutX="164.0" layoutY="7.0" onMouseClicked="#changeJoker3" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                 <image>
+                     <Image url="@/client.photos/timeJoker.png" />
+                 </image>
+                 <cursor>
+                     <Cursor fx:constant="HAND" />
+                 </cursor>
+             </ImageView>
+            <ProgressBar fx:id="timeLeftBar" prefHeight="25.0" prefWidth="300.0" progress="0.0" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.valignment="BOTTOM" />
+            <Label fx:id="questionTxt" alignment="CENTER" prefHeight="104.0" prefWidth="365.0" text="Question Text" textAlignment="CENTER" wrapText="true" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+               <font>
+                  <Font name="Roboto Light" size="18.0" />
+               </font>
+            </Label>
+            <Label fx:id="scoreTxt" prefHeight="36.0" prefWidth="187.0" text="Score: &lt;...&gt;" GridPane.columnIndex="4" GridPane.columnSpan="2" GridPane.halignment="LEFT" GridPane.valignment="CENTER">
+               <font>
+                  <Font name="Roboto Light" size="14.0" />
+               </font>
+            </Label>
+            <Slider fx:id="answerSlider" prefHeight="38.0" prefWidth="389.0" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
+            <Label fx:id="minAnswer" alignment="CENTER" prefHeight="22.0" prefWidth="69.0" text="MinAnswer" GridPane.columnIndex="3" GridPane.halignment="LEFT" GridPane.rowIndex="3" GridPane.valignment="TOP">
+               <font>
+                  <Font name="Roboto Light" size="12.0" />
+               </font>
+            </Label>
+            <Label fx:id="maxAnswer" alignment="CENTER" layoutX="264.0" layoutY="314.0" prefHeight="22.0" prefWidth="69.0" text="MaxAnswer" GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.rowIndex="3" GridPane.valignment="TOP">
+               <font>
+                  <Font name="Roboto Light" size="12.0" />
+               </font>
+            </Label>
+            <Label prefHeight="43.0" prefWidth="211.0" text="React" GridPane.columnIndex="4" GridPane.columnSpan="2" GridPane.halignment="LEFT" GridPane.rowIndex="4" GridPane.valignment="CENTER">
+               <font>
+                  <Font name="Roboto Light" size="14.0" />
+               </font>
+            </Label>
+            <Label alignment="CENTER" prefHeight="33.0" prefWidth="116.0" text="Time Left " textAlignment="CENTER" wrapText="true" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+               <font>
+                  <Font name="Roboto Light" size="14.0" />
+               </font>
+            </Label>
+            <Label alignment="TOP_CENTER" prefHeight="34.0" prefWidth="87.0" text="Jokers" GridPane.columnSpan="3" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP">
+               <font>
+                  <Font name="Roboto Light" size="14.0" />
+               </font>
+            </Label>
+         </children>
+      </GridPane>
+   </children>
+</AnchorPane>
