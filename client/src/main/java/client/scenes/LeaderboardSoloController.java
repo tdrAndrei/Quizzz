@@ -114,19 +114,27 @@ public class LeaderboardSoloController implements Initializable {
             Label label = new Label();
             label.setText(name);
             int range = scoreUpperBound-scoreLowerBound;
+            int minWidth = (int) grid.getPrefWidth()/3;
             if (sc >= (scoreLowerBound+range*5/6)) {
                 label.getStyleClass().add("greenBar");
             } else if (sc >= (scoreLowerBound+range*4/6)) {
                 label.getStyleClass().add("greenYellowBar");
+                minWidth+=25;
             } else if (sc >= (scoreLowerBound+range*3/6)) {
                 label.getStyleClass().add("yellowBar");
+                minWidth+=50;
             } else if (sc >= (scoreLowerBound+range*2/6)) {
                 label.getStyleClass().add("yellowOrangeBar");
+                minWidth+=75;
             } else if (sc >= (scoreLowerBound+range*1/6)) {
                 label.getStyleClass().add("orangeBar");
+                minWidth+=100;
             } else {
                 label.getStyleClass().add("redBar");
+                minWidth+=125;
             }
+            label.setStyle("-fx-shape: \"M 0 100 L "+(minWidth)+" 100 L "+(minWidth+25)+" 50 L "+(minWidth)+" 0 L 0 0 L 0 100 z\"");
+            label.setMinWidth(minWidth);
             entries.add(getNearestIndex(sc, 0, entries.size() - 1), new LeaderboardEntryLabel(label, sc));
             data = FXCollections.observableList(entries);
             leaderboardEntries.setItems(data);
@@ -178,6 +186,7 @@ public class LeaderboardSoloController implements Initializable {
 
     public void resizeWidth(double width){
         grid.setPrefWidth(width);
+        refresh();
     }
 
     public void resizeHeight(double height){
