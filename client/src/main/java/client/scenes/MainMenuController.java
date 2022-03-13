@@ -62,6 +62,8 @@ public class MainMenuController {
     private final MainCtrl mainCtrl;
     private Thread animator;
     private List<String> factsList;
+    private double currentWidth;
+    private double currentHeight;
 
     /**
      * Instantiates a new Main menu controller.
@@ -100,12 +102,27 @@ public class MainMenuController {
         mainCtrl.showLeaderboardSolo();
     }
 
+    public void setCurrentSize(double width, double height) {
+        currentWidth = width;
+        currentHeight = height;
+    }
+
     public void resizeScene(double width, double height) {
         if ( width < grid.getMinWidth() || height < grid.getMinHeight() )
             return;
         grid.setPrefSize(width, height);
 
+        double ratioW = width / currentWidth;
+        double ratioH = height / currentHeight;
+        for ( Node element : grid.getChildren() ) {
+            if ( element instanceof Button  ) {
+                Button e = (Button) element;
+                e.setMaxHeight(Math.min(e.getHeight() * ratioH, e.getMaxHeight()));
+                e.setMaxHeight(Math.min(e.getWidth() * ratioW, e.getMaxWidth()));
+            }
+        }
 
+        setCurrentSize(width, height);
     }
 
     /**

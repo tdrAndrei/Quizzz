@@ -91,6 +91,8 @@ public class MainCtrl {
 
     public void showMainMenu(){
         primaryStage.setScene(mainMenuScene);
+        mainMenuController.setCurrentSize(mainMenuScene.getWidth(), mainMenuScene.getHeight());
+
         mainMenuScene.widthProperty().addListener(e -> {
             mainMenuController.resizeScene(mainMenuScene.getWidth(), mainMenuScene.getHeight());
         });
