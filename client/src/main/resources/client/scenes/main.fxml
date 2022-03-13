@@ -9,13 +9,14 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.SVGPath?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane fx:id="mainMenuPane" prefHeight="715.0" prefWidth="942.0" styleClass="root" stylesheets="@client.css/application.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.MainMenuController">
+<AnchorPane fx:id="mainMenuPane" prefHeight="800.0" prefWidth="1200.0" styleClass="root" stylesheets="@client.css/application.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.MainMenuController">
    <children>
-      <GridPane fx:id="grid" layoutX="-1.0" minHeight="700.0" minWidth="900.0" prefHeight="800.0" prefWidth="1000.0">
+      <GridPane fx:id="grid" layoutX="-1.0" minHeight="700.0" minWidth="1000.0" prefHeight="800.0" prefWidth="1200.0">
         <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" maxWidth="380.66663106282556" minWidth="10.0" percentWidth="17.0" prefWidth="342.66663106282556" />
           <ColumnConstraints hgrow="SOMETIMES" maxWidth="674.0" minWidth="10.0" percentWidth="33.0" prefWidth="586.3333740234375" />
@@ -29,7 +30,7 @@
             <RowConstraints maxHeight="406.66668701171875" minHeight="10.0" percentHeight="33.0" prefHeight="244.3333740234375" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <Button fx:id="quitButton" mnemonicParsing="false" onAction="#quit" prefHeight="39.0" prefWidth="100.0" text="QUIT" textFill="WHITE" GridPane.halignment="LEFT" GridPane.valignment="TOP">
+            <Button fx:id="quitButton" minHeight="39.0" minWidth="100.0" mnemonicParsing="false" onAction="#quit" prefHeight="39.0" prefWidth="100.0" text="QUIT" textFill="WHITE" GridPane.halignment="LEFT" GridPane.valignment="TOP">
                <font>
                   <Font name="Comicbon" size="18.0" />
                </font>
@@ -37,7 +38,7 @@
                   <Insets left="20.0" top="20.0" />
                </GridPane.margin>
             </Button>
-            <Group fx:id="titleEdges" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.valignment="BOTTOM">
+            <Group fx:id="titleEdges" translateX="-5.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.valignment="BOTTOM">
                <SVGPath fx:id="horizontalEdge" content="M36 143L36 118.283" stroke="black" strokeLineCap="ROUND" strokeWidth="6" />
                <SVGPath fx:id="rvEdge" content="M479 142.999L479 84" stroke="black" strokeLineCap="ROUND" strokeWidth="6" />
                <SVGPath fx:id="lvEdge" content="M36.3519 142.999H479" stroke="black" strokeLineCap="ROUND" strokeWidth="6" />
@@ -60,14 +61,14 @@
                   <Insets bottom="20.0" />
                </GridPane.margin>
             </Group>
-            <Group GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="1" GridPane.valignment="BOTTOM">
+            <VBox fx:id="soloVBox" alignment="BOTTOM_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="80.0" minWidth="200.0" prefHeight="80.0" prefWidth="200.0" spacing="5.0" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.valignment="BOTTOM" GridPane.vgrow="ALWAYS">
                <children>
-                  <Button fx:id="soloButton" layoutX="28.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#startSolo" prefHeight="50.0" prefWidth="175.0" text="SOLO" textFill="WHITE">
+                  <Button fx:id="soloButton" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#startSolo" prefHeight="50.0" prefWidth="175.0" text="SOLO" textAlignment="CENTER" textFill="WHITE" VBox.vgrow="ALWAYS">
                      <font>
                         <Font name="Comicbon" size="18.0" />
                      </font>
                   </Button>
-                  <Label fx:id="underSoloText" alignment="CENTER" layoutX="5.0" layoutY="63.0" prefHeight="23.0" prefWidth="219.0" text="Practice your knowledge">
+                  <Label fx:id="underSoloText" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="23.0" prefWidth="200.0" text="Practice your knowledge" textAlignment="CENTER" VBox.vgrow="ALWAYS">
                      <font>
                         <Font name="Comicbon" size="14.0" />
                      </font>
@@ -76,25 +77,25 @@
                <GridPane.margin>
                   <Insets right="20.0" />
                </GridPane.margin>
-            </Group>
-            <Group GridPane.columnIndex="2" GridPane.halignment="LEFT" GridPane.rowIndex="1" GridPane.valignment="BOTTOM">
+            </VBox>
+            <VBox fx:id="multiVBox" alignment="BOTTOM_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="80.0" minWidth="200.0" prefHeight="80.0" prefWidth="200.0" spacing="5.0" GridPane.columnIndex="2" GridPane.halignment="LEFT" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.valignment="BOTTOM" GridPane.vgrow="ALWAYS">
+               <GridPane.margin>
+                  <Insets left="20.0" />
+               </GridPane.margin>
                <children>
-                  <Button fx:id="multiplayerButton" layoutX="22.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="175.0" text="MULTIPLAYER" textFill="WHITE">
+                  <Button fx:id="multiplayerButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefHeight="50.0" prefWidth="175.0" text="MULTIPLAYER" textFill="WHITE" VBox.vgrow="ALWAYS">
                      <font>
                         <Font name="Comicbon" size="18.0" />
                      </font>
                   </Button>
-                  <Label fx:id="underMultiplayerText" alignment="CENTER" layoutY="63.0" prefHeight="23.0" prefWidth="219.0" text="Enter a contest with your peers">
+                  <Label fx:id="underMultiplayerText" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="23.0" prefWidth="200.0" text="Join a multiplayer game" textAlignment="CENTER" VBox.vgrow="ALWAYS">
                      <font>
                         <Font name="Comicbon" size="14.0" />
                      </font>
                   </Label>
                </children>
-               <GridPane.margin>
-                  <Insets left="20.0" />
-               </GridPane.margin>
-            </Group>
-            <Button fx:id="leaderboardButton" mnemonicParsing="false" onAction="#showLeaderboard" prefHeight="50.0" prefWidth="348.0" text="ALL TIME SOLO LEADERBOARD" textFill="WHITE" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
+            </VBox>
+            <Button fx:id="leaderboardButton" minHeight="50.0" minWidth="348.0" mnemonicParsing="false" onAction="#showLeaderboard" prefHeight="50.0" prefWidth="348.0" text="ALL TIME SOLO LEADERBOARD" textFill="WHITE" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
                <font>
                   <Font name="Comicbon" size="18.0" />
                </font>
@@ -102,24 +103,27 @@
                   <Insets />
                </GridPane.margin>
             </Button>
-            <Group GridPane.columnIndex="2" GridPane.halignment="LEFT" GridPane.rowIndex="3" GridPane.valignment="TOP">
+            <VBox maxHeight="-Infinity" maxWidth="-Infinity" spacing="15.0" GridPane.columnIndex="2" GridPane.halignment="LEFT" GridPane.rowIndex="3" GridPane.valignment="TOP">
                <children>
-                  <Label fx:id="factQuestion" layoutX="20.0" prefHeight="21.0" prefWidth="175.0" text="Did you know that...">
+                  <Label fx:id="factQuestion" alignment="TOP_LEFT" text="Did you know that...">
                      <font>
                         <Font name="Comicbon" size="18.0" />
                      </font>
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
                   </Label>
-                  <Text fx:id="factText" layoutY="73.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Insert text..." textAlignment="CENTER" wrappingWidth="221.33673095703125">
-                     <font>
-                        <Font name="Comicbon" size="18.0" />
-                     </font>
-                  </Text>
+                  <Label fx:id="factText" text="Label" textAlignment="CENTER" wrapText="true">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                  </Label>
                </children>
-               <GridPane.margin>
-                  <Insets left="30.0" top="20.0" />
-               </GridPane.margin>
-            </Group>
-            <Pane maxHeight="248.0" maxWidth="329.0" prefHeight="248.0" prefWidth="329.0" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="3" GridPane.valignment="TOP">
+               <padding>
+                  <Insets left="40.0" />
+               </padding>
+            </VBox>
+            <Pane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="248.0" prefWidth="329.0" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="3" GridPane.valignment="TOP">
                <children>
                   <Group layoutX="9.0" layoutY="-75.0">
                      <children>
@@ -144,6 +148,9 @@
             </SVGPath>
                   </Group>
                </children>
+               <GridPane.margin>
+                  <Insets right="20.0" top="-10.0" />
+               </GridPane.margin>
             </Pane>
          </children>
          <padding>

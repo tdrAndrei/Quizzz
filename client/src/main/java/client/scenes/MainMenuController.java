@@ -3,27 +3,34 @@ package client.scenes;
 import javafx.animation.*;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Labeled;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.SVGPath;
-import javafx.scene.text.Text;
+
 import javafx.util.Duration;
 
 import javax.inject.Inject;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.ResourceBundle;
 
 /**
  * The type Main menu controller.
  */
-public class MainMenuController {
-
+public class MainMenuController implements Initializable {
+    @FXML
+    private AnchorPane mainMenuPane;
     @FXML
     private SVGPath rightWheelExterior;
     @FXML
@@ -35,7 +42,9 @@ public class MainMenuController {
     @FXML
     private SVGPath lightning;
     @FXML
-    private Text factText;
+    private Label factQuestion;
+    @FXML
+    private Label factText;
     @FXML
     private Group lightBulb;
     @FXML
@@ -58,12 +67,24 @@ public class MainMenuController {
     private Button soloButton;
     @FXML
     private Label underSoloText;
+    @FXML
+    private Button multiplayerButton;
+    @FXML
+    private Label underMultiplayerText;
+    @FXML
+    private VBox soloVBox;
+    @FXML
+    private VBox multiVBox;
+    @FXML
+    private Button leaderboardButton;
+    @FXML
+    private Button quitButton;
 
     private final MainCtrl mainCtrl;
     private Thread animator;
     private List<String> factsList;
-    private double currentWidth;
-    private double currentHeight;
+    private double baseWidth;
+    private double baseHeight;
 
     /**
      * Instantiates a new Main menu controller.
@@ -71,8 +92,22 @@ public class MainMenuController {
      * @param mainCtrl the main ctrl
      */
     @Inject
-    public MainMenuController(MainCtrl mainCtrl){
+    public MainMenuController(MainCtrl mainCtrl) {
         this.mainCtrl = mainCtrl;
+    }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        baseWidth = grid.getPrefWidth();
+        baseHeight = grid.getPrefHeight();
+
+        mainMenuPane.widthProperty().addListener(e -> {
+            resizeScene(mainMenuPane.getWidth(), mainMenuPane.getHeight());
+        });
+
+        mainMenuPane.heightProperty().addListener(e -> {
+            resizeScene(mainMenuPane.getWidth(), mainMenuPane.getHeight());
+        });
     }
 
     /**
@@ -88,7 +123,7 @@ public class MainMenuController {
      * Start solo.
      * The method also stops the animation thread when it switches to the game screen
      */
-    public void startSolo(){
+    public void startSolo() {
         stopAnimatorThread();
         mainCtrl.showMultiQuestion();
     }
@@ -97,32 +132,43 @@ public class MainMenuController {
      * Show leaderboard.
      * The method also stops the animation thread when it switches to the leaderboard screen
      */
-    public void showLeaderboard(){
+    public void showLeaderboard() {
         stopAnimatorThread();
         mainCtrl.showLeaderboardSolo();
     }
 
-    public void setCurrentSize(double width, double height) {
-        currentWidth = width;
-        currentHeight = height;
-    }
-
     public void resizeScene(double width, double height) {
-        if ( width < grid.getMinWidth() || height < grid.getMinHeight() )
+        if (width < grid.getMinWidth() || height < grid.getMinHeight())
             return;
         grid.setPrefSize(width, height);
 
-        double ratioW = width / currentWidth;
-        double ratioH = height / currentHeight;
-        for ( Node element : grid.getChildren() ) {
-            if ( element instanceof Button  ) {
-                Button e = (Button) element;
-                e.setMaxHeight(Math.min(e.getHeight() * ratioH, e.getMaxHeight()));
-                e.setMaxHeight(Math.min(e.getWidth() * ratioW, e.getMaxWidth()));
-            }
-        }
+        double ratioH = height / baseHeight;
+        double ratioW = width / baseWidth;
+        double scaleForText = 0.5 * (ratioW + ratioH);
 
-        setCurrentSize(width, height);
+        if (!(ratioH > 0 && ratioH < 3 && ratioW > 0 && ratioW < 3))
+            return;
+
+        soloVBox.setPrefWidth(Math.min(ratioW * soloVBox.getMinWidth(), 1.5 * soloVBox.getMinWidth()));
+        soloVBox.setPrefHeight(Math.min(ratioH * soloVBox.getMinHeight(), 1.5 * soloVBox.getMinHeight()));
+        setFontSize(soloButton, 20, 30, scaleForText);
+        setFontSize(underSoloText, 15, 20, scaleForText);
+
+        multiVBox.setPrefWidth(Math.min(ratioW * multiVBox.getMinWidth(), 1.5 * multiVBox.getMinWidth()));
+        multiVBox.setPrefHeight(Math.min(ratioH * multiVBox.getMinHeight(), 1.5 * multiVBox.getMinHeight()));
+        setFontSize(multiplayerButton, 20, 30, scaleForText);
+        setFontSize(underMultiplayerText, 15, 20, scaleForText);
+
+        leaderboardButton.setPrefHeight(Math.min(ratioH * leaderboardButton.getMinHeight(), 1.5 * leaderboardButton.getMinHeight()));
+        leaderboardButton.setPrefWidth(Math.min(ratioW * leaderboardButton.getMinWidth(), 1.5 * leaderboardButton.getMinWidth()));
+        setFontSize(leaderboardButton, 20, 30, scaleForText);
+
+        quitButton.setPrefHeight(Math.min(ratioH * quitButton.getMinHeight(), 1.5 * quitButton.getMinHeight()));
+        quitButton.setPrefWidth(Math.min(ratioW * quitButton.getMinWidth(), 1.5 * quitButton.getMinWidth()));
+        setFontSize(quitButton, 18, 25, scaleForText);
+
+        setFontSize(factQuestion, 20, 30, scaleForText);
+        setFontSize(factText, 18, 25, scaleForText);
     }
 
     /**
@@ -150,18 +196,18 @@ public class MainMenuController {
      * Make fill transition.
      * Fill transition starts when one clicks on the bulb vector / socket vector, and it acts upon both groups the vectors take part in
      */
-    public void makeFillTransition(){
+    public void makeFillTransition() {
 
         FillTransition fill;
 
-        for (Node shape : lightBulb.getChildren()){
+        for (Node shape : lightBulb.getChildren()) {
             fill = new FillTransition(Duration.millis(4000), (SVGPath) shape, Color.BLACK, Color.YELLOW);
             fill.setCycleCount(2);
             fill.setAutoReverse(true);
             fill.play();
         }
 
-        for (Node shape : socket.getChildren()){
+        for (Node shape : socket.getChildren()) {
             fill = new FillTransition(Duration.millis(4000), (SVGPath) shape, Color.BLACK, Color.YELLOW);
             fill.setCycleCount(2);
             fill.setAutoReverse(true);
@@ -173,7 +219,7 @@ public class MainMenuController {
     /**
      * Make stroke transition.
      */
-    public void makeStrokeTransition(){
+    public void makeStrokeTransition() {
 
         StrokeTransition stroke = new StrokeTransition(Duration.millis(3000), lightning, Color.BLACK, Color.YELLOW);
         stroke.setCycleCount(Animation.INDEFINITE);
@@ -187,7 +233,7 @@ public class MainMenuController {
      * Each time a text is shown on the screen, it is taken randomly from the factsList.
      * The method calls animateTypingText() where the actual animation takes place.
      */
-    public void getAnimatingText(){
+    public void getAnimatingText() {
 
         Random getRandomText = new Random();
         int i = getRandomText.nextInt(factsList.size());
@@ -198,6 +244,7 @@ public class MainMenuController {
     /**
      * Animate typing text.
      * The animation plays in a new thread (animator)
+     *
      * @param text the text
      */
     public void animateTypingText(String text) {
@@ -224,7 +271,7 @@ public class MainMenuController {
 
             try {
                 Thread.sleep(2000);                                //text which has just been written stays on screen for 2 seconds before another one is generated
-            } catch (InterruptedException ignored){
+            } catch (InterruptedException ignored) {
                 return; //exit thread
             }
 
@@ -248,9 +295,10 @@ public class MainMenuController {
 
     /**
      * Makes the rotation animation of the gears vectors
+     *
      * @param svg
      */
-    public void makeRotateAnimation(SVGPath svg){
+    public void makeRotateAnimation(SVGPath svg) {
 
         RotateTransition rotate = new RotateTransition(Duration.seconds(3), svg);
         rotate.setCycleCount(Animation.INDEFINITE);  //set the rotation period to infinity
@@ -263,8 +311,9 @@ public class MainMenuController {
 
     /**
      * Method to resize SVGs
+     *
      * @param svg
-     * @param width width to resize to
+     * @param width  width to resize to
      * @param height height to resize to
      */
     public void resizeSvg(SVGPath svg, double width, double height) {
@@ -280,49 +329,53 @@ public class MainMenuController {
 
     }
 
+    public void setFontSize(Labeled object, double minSize, double maxSize, double scale) {
+        object.setStyle("-fx-font-size: " + Math.min(scale * minSize, maxSize) + "px");
+    }
+
     /**
      * Create factsList list.
      * The list has some hardcoded facts about energy consumption, which will be randomly generated on the screen
+     *
      * @return the list
      */
-    public List<String> createFactsList(){
+    public List<String> createFactsList() {
 
         factsList = new ArrayList<>();
-        String text = "Our demand for energy grows by about 3% per year.";
+        String text = "Our demand for energy grows by about 3% per year?";
         factsList.add(text);
-        text = "We spend 10% of our electricity bills on lighting.";
+        text = "We spend 10% of our electricity bills on lighting?";
         factsList.add(text);
-        text = "A single lightning bolt unleashes five times more heat than the sun.";
+        text = "A single lightning bolt unleashes five times more heat than the sun?";
         factsList.add(text);
-        text = "60 minutes of solar energy could power the Earth for a year.";
+        text = "60 minutes of solar energy could power the Earth for a year?";
         factsList.add(text);
-        text = "10 Google searches can power a 60-watt lightbulb.";
+        text = "10 Google searches can power a 60-watt lightbulb?";
         factsList.add(text);
-        text = "A single wind turbine can power 1400 homes.";
+        text = "A single wind turbine can power 1400 homes?";
         factsList.add(text);
-        text = "We can get energy from trash and sewage.";
+        text = "We can get energy from trash and sewage?";
         factsList.add(text);
-        text = "A water heater can consume around up to 13.5 kWh per day, or 405 kWh per month.";
+        text = "A water heater can consume around up to 13.5 kWh per day, or 405 kWh per month?";
         factsList.add(text);
-        text = "More than 20% of energy consumed worldwide is used for transportation.";
+        text = "More than 20% of energy consumed worldwide is used for transportation?";
         factsList.add(text);
-        text = "Oil is the most consumed primary energy fuel in the world.";
+        text = "Oil is the most consumed primary energy fuel in the world?";
         factsList.add(text);
-        text = "China is by far the largest electricity-generating country in the world.";
+        text = "China is by far the largest electricity-generating country in the world?";
         factsList.add(text);
-        text = "Germany produces so much free electricity, it pays people to use it.";
+        text = "Germany produces so much free electricity, it pays people to use it?";
         factsList.add(text);
-        text = "The energy problem that receives most attention is the link between energy access and greenhouse gas emissions.";
+        text = "The energy problem that receives most attention is the link between energy access and greenhouse gas emissions?";
         factsList.add(text);
-        text = "Natural gas is arguably the most important energy source in the Netherlands.";
+        text = "Natural gas is arguably the most important energy source in the Netherlands?";
         factsList.add(text);
-        text = "Approximately 30% of energy used in buildings is used inefficiently or unnecessarily.";
+        text = "Approximately 30% of energy used in buildings is used inefficiently or unnecessarily?";
         factsList.add(text);
-        text = "Food contains energy, which is measured in calories or joules.";
+        text = "Food contains energy, which is measured in calories or joules?";
         factsList.add(text);
         return factsList;
 
     }
-
 }
 

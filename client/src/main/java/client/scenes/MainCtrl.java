@@ -89,26 +89,16 @@ public class MainCtrl {
         primaryStage.setScene(loginScene);
     }
 
-    public void showMainMenu(){
+    public void showMainMenu() {
         primaryStage.setScene(mainMenuScene);
-        mainMenuController.setCurrentSize(mainMenuScene.getWidth(), mainMenuScene.getHeight());
-
-        mainMenuScene.widthProperty().addListener(e -> {
-            mainMenuController.resizeScene(mainMenuScene.getWidth(), mainMenuScene.getHeight());
-        });
-
-        mainMenuScene.heightProperty().addListener(e -> {
-            mainMenuController.resizeScene(mainMenuScene.getWidth(), mainMenuScene.getHeight());
-        });
-
         mainMenuController.makeAnimations();
     }
 
-    public void showMultiQuestion(){
-       primaryStage.setScene(multiScene);
+    public void showMultiQuestion() {
+        primaryStage.setScene(multiScene);
     }
 
-    public void quit() throws IOException{
+    public void quit() throws IOException {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Exit");
         alert.setHeaderText("You are about to exit the application");
@@ -122,7 +112,7 @@ public class MainCtrl {
         }
     }
 
-    public void setUser(User user){
+    public void setUser(User user) {
         this.user = user;
     }
 
