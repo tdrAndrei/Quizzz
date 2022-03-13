@@ -85,7 +85,8 @@ public class Game {
 
             case "Leaderboard":
                 if (playerMap.size() == 1) {
-                    initializeStage();
+                    setMaxTime(0);
+                    break;
                 }
                 setMaxTime(stagePair.getValue());
                 insertMessageIntoDiff(new ShowLeaderboardMessage("ShowLeaderboard", new ArrayList<>(playerMap.values())));
