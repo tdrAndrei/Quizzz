@@ -22,8 +22,7 @@ import java.net.URISyntaxException;
 
 import client.scenes.*;
 import com.google.inject.Injector;
-
-
+import client.scenes.MainCtrl;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
@@ -48,4 +47,5 @@ public class Main extends Application {
         var estimateQuestion = FXML.load(EstimateQuestionController.class, "client", "scenes", "estimateQuestion.fxml");
         mainCtrl.initialize(primaryStage, login, mainMenu, multiQuestion, leaderboardSolo, estimateQuestion);
     }
+
 }

@@ -9,6 +9,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.layout.GridPane;
 import javafx.stage.Modality;
 
 import javax.inject.Inject;
@@ -78,6 +79,9 @@ public class LeaderboardSoloController implements Initializable {
     @FXML
     private TextField score;
 
+    @FXML
+    private GridPane grid;
+
     private ObservableList<LeaderboardEntryLabel> data;
 
     private List<LeaderboardEntryLabel> entries = new ArrayList<>();
@@ -124,8 +128,35 @@ public class LeaderboardSoloController implements Initializable {
                 label.getStyleClass().add("redBar");
             }
             entries.add(getNearestIndex(sc, 0, entries.size() - 1), new LeaderboardEntryLabel(label, sc));
+            resizeLabels();
             data = FXCollections.observableList(entries);
             leaderboardEntries.setItems(data);
+    }
+
+    public void resizeLabels() {
+        for (int i = 0; i < entries.size(); i++) {
+            LeaderboardEntryLabel entry = entries.get(i);
+
+            int range = scoreUpperBound-scoreLowerBound;
+            double minWidth = grid.getPrefWidth()/3;
+            double x = minWidth/100;
+
+            if (entry.getPoints() < (scoreLowerBound+range/6)) {
+                minWidth+=50*x;
+            } else if (entry.getPoints() < (scoreLowerBound+range*2/6)) {
+                minWidth+=40*x;
+            } else if (entry.getPoints() < (scoreLowerBound+range*3/6)) {
+                minWidth+=30*x;
+            } else if (entry.getPoints() < (scoreLowerBound+range*4/6)) {
+                minWidth+=20*x;
+            } else if (entry.getPoints() < (scoreLowerBound+range*5/6)) {
+                minWidth+=10*x;
+            }
+            entries.get(i).getNameLabel().setStyle("-fx-shape: \"M 0 100 L "+(minWidth)+" 100 L "+(minWidth+25)+" 50 L "+(minWidth)+" 0 L 0 0 L 0 100 z\"");
+            entries.get(i).getNameLabel().setMinWidth(minWidth);
+        }
+        data = FXCollections.observableList(entries);
+        leaderboardEntries.setItems(data);
     }
 
     @Override
@@ -170,6 +201,15 @@ public class LeaderboardSoloController implements Initializable {
         for (LeaderboardEntry rawEntry : allTimeEntries) {
             addLabel(rawEntry.getName(), rawEntry.getScore());
         }
+    }
+
+    public void resizeWidth(double width){
+        grid.setPrefWidth(width);
+        resizeLabels();
+    }
+
+    public void resizeHeight(double height){
+        grid.setPrefHeight(height);
     }
 
 

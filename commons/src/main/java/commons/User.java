@@ -38,6 +38,11 @@ public class User {
         this.name = name;
     }
 
+    public User(long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     User(){
 
     }

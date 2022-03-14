@@ -50,7 +50,6 @@ public class MainCtrl {
     @Inject
     private ServerUtils server;
 
-
     public void initialize(Stage primaryStage, Pair<LoginController, Parent> login,
                            Pair<MainMenuController, Parent> mainMenu,
                            Pair<MultiQuestionController, Parent> multiQuestion,
@@ -90,6 +89,12 @@ public class MainCtrl {
         primaryStage.setTitle("Quizzzz!");
         leaderboardSoloController.refresh();
         primaryStage.setScene(leaderboardSoloScene);
+        leaderboardSoloScene.widthProperty().addListener(e -> {
+            leaderboardSoloController.resizeWidth(leaderboardSoloScene.getWidth());
+        });
+        leaderboardSoloScene.heightProperty().addListener(e -> {
+            leaderboardSoloController.resizeHeight(leaderboardSoloScene.getHeight());
+        });
     }
 
     public void showEstimate(){
@@ -106,21 +111,30 @@ public class MainCtrl {
     public void showLogin() {
         primaryStage.setTitle("Quizzzz!");
         primaryStage.setScene(loginScene);
+        loginScene.widthProperty().addListener(e -> {
+            loginController.resizeWidth(loginScene.getWidth());
+        });
+        loginScene.heightProperty().addListener(e -> {
+            loginController.resizeHeight(loginScene.getHeight());
+        });
     }
 
-    public void showMainMenu(){
+    public void showMainMenu() {
         primaryStage.setScene(mainMenuScene);
+        mainMenuController.makeAnimations();
     }
 
-    public void showMultiQuestion(){
-       primaryStage.setScene(multiScene);
+    public void showMultiQuestion() {
+        primaryStage.setScene(multiScene);
     }
-    public void quit() throws IOException{
+
+    public void quit() throws IOException {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Exit");
         alert.setHeaderText("You are about to exit the application");
         if (alert.showAndWait().get() == ButtonType.OK) {
             System.out.println("Goodbye!");
+            mainMenuController.stopAnimatorThread();
             if (user != null) {
                 server.deleteSelf(user);
             }
@@ -128,7 +142,8 @@ public class MainCtrl {
         }
     }
 
-    public void setUser(User user){
+    public void setUser(User user) {
         this.user = user;
     }
+
 }

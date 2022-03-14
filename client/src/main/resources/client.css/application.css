@@ -1,16 +1,27 @@
+@font-face {
+    font-family: 'Comicbon';
+    src: url('Comicbon.ttf');
+}
+
 .root {
     -fx-background-color: #fcebd9;
-    -fx-font-family: Arial;
+    -fx-font-family: 'Comicbon';
+}
+
+#underSoloText, #underMultiplayerText, #factText, #factQuestion, #title {
+    -fx-font-family: 'Comicbon';
+    -fx-font-weight: Bold;
 }
 
 .button {
     -fx-background-color: #c95959;
-    -fx-font-size: 17;
+    -fx-font-size: 20;
     -fx-background-radius: 10;
     -fx-text-fill: white;
     -fx-font-weight: Bold;
     -fx-cursor: hand;
 }
+
 .button:hover {
     -fx-background-color: #e67070;
 }
@@ -28,9 +39,5 @@
 #warnBox {
     -fx-text-fill: #c95959;
 }
-
-/*.shadow {*/
-/*    -fx-effect: dropShadow(three-pass-box,rgba(0,0,0,1),5.0,0.0,0.0,5.0);*/
-/*}*/
 
 
