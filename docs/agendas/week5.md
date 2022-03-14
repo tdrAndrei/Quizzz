@@ -5,3 +5,11 @@ Chair:         Wiktor Grzybko\
 Note taker:     Juan Tarazona
 
 ## Meetings in the 2 past weeks
+Covered by notes provided by Juan which can be found in docs.
+## Opening
+--
+# Agenda points
+- HCI feedback 
+- How should we import activities to our project
+- Buddy Check feedback
+- Discuss the progress
