@@ -44,14 +44,17 @@ public class MainCtrl {
     private LeaderboardSoloController leaderboardSoloController;
     private Scene leaderboardSoloScene;
 
+    private EstimateQuestionController estimateQuestionController;
+    private Scene estimateQuestionScene;
+
     @Inject
     private ServerUtils server;
-
 
     public void initialize(Stage primaryStage, Pair<LoginController, Parent> login,
                            Pair<MainMenuController, Parent> mainMenu,
                            Pair<MultiQuestionController, Parent> multiQuestion,
-                           Pair<LeaderboardSoloController, Parent> leaderboardSolo) {
+                           Pair<LeaderboardSoloController, Parent> leaderboardSolo,
+                           Pair<EstimateQuestionController, Parent> estimateQuestion) {
         this.primaryStage = primaryStage;
 
         this.loginController = login.getKey();
@@ -65,6 +68,9 @@ public class MainCtrl {
 
         this.leaderboardSoloController = leaderboardSolo.getKey();
         this.leaderboardSoloScene = new Scene(leaderboardSolo.getValue());
+
+        this.estimateQuestionController = estimateQuestion.getKey();
+        this.estimateQuestionScene = new Scene(estimateQuestion.getValue());
 
         showLogin();
         primaryStage.show();
@@ -81,27 +87,54 @@ public class MainCtrl {
 
     public void showLeaderboardSolo() {
         primaryStage.setTitle("Quizzzz!");
+        leaderboardSoloController.refresh();
         primaryStage.setScene(leaderboardSoloScene);
+        leaderboardSoloScene.widthProperty().addListener(e -> {
+            leaderboardSoloController.resizeWidth(leaderboardSoloScene.getWidth());
+        });
+        leaderboardSoloScene.heightProperty().addListener(e -> {
+            leaderboardSoloController.resizeHeight(leaderboardSoloScene.getHeight());
+        });
+    }
+
+    public void showEstimate(){
+        primaryStage.setTitle("Quizzzz!");
+        primaryStage.setScene(estimateQuestionScene);
+        estimateQuestionScene.widthProperty().addListener(e -> {
+            estimateQuestionController.resizeWidth(estimateQuestionScene.getWidth());
+        });
+        estimateQuestionScene.heightProperty().addListener(e -> {
+            estimateQuestionController.resizeHeight(estimateQuestionScene.getHeight());
+        });
     }
 
     public void showLogin() {
         primaryStage.setTitle("Quizzzz!");
         primaryStage.setScene(loginScene);
+        loginScene.widthProperty().addListener(e -> {
+            loginController.resizeWidth(loginScene.getWidth());
+        });
+        loginScene.heightProperty().addListener(e -> {
+            loginController.resizeHeight(loginScene.getHeight());
+        });
     }
 
-    public void showMainMenu(){
+    public void showMainMenu() {
         primaryStage.setScene(mainMenuScene);
+        mainMenuController.makeAnimations();
     }
 
-    public void showMultiQuestion(){
-       primaryStage.setScene(multiScene);
+    public void showMultiQuestion() {
+        primaryStage.setScene(multiScene);
     }
-    public void quit() throws IOException{
+
+    public void quit() throws IOException {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Exit");
         alert.setHeaderText("You are about to exit the application");
         if (alert.showAndWait().get() == ButtonType.OK) {
             System.out.println("Goodbye!");
+            mainMenuController.stopAnimatorThread();
             if (user != null) {
                 server.deleteSelf(user);
             }
@@ -109,7 +142,8 @@ public class MainCtrl {
         }
     }
 
-    public void setUser(User user){
+    public void setUser(User user) {
         this.user = user;
     }
+
 }

@@ -4,13 +4,14 @@ import com.google.inject.Inject;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ProgressBar;
+import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
 
 import java.io.IOException;
 
-public class MultiQuestionController {
+public class EstimateQuestionController {
 
     @FXML
     private ImageView doublePointsJoker;
@@ -19,42 +20,41 @@ public class MultiQuestionController {
     private ImageView eliminateJoker;
 
     @FXML
+    private ImageView timeJoker;
+
+    @FXML
     private Button exitButton;
 
     @FXML
-    private ProgressBar progressBar;
+    private Label questionTxt;
 
     @FXML
-    private ImageView question1Image;
+    private Label scoreTxt;
 
     @FXML
-    private ImageView question3Image;
+    private Slider answerSlider;
 
     @FXML
-    private ImageView question2Image;
+    private Label maxAnswer;
 
     @FXML
-    private Label questionLabel;
+    private Label minAnswer;
 
     @FXML
-    private Label timeButton;
+    private GridPane grid;
 
-    @FXML
-    private ImageView timeJoker;
-
-    private MainCtrl mainCtrl;
-    // ImageView imageView;
+    private final MainCtrl mainCtrl;
     Image image = new Image("/client.photos/usedJoker.png");
 
     @Inject
-    public MultiQuestionController(MainCtrl mainCtrl){
+    public EstimateQuestionController(MainCtrl mainCtrl){
         this.mainCtrl = mainCtrl;
     }
-
 
     public void quit() throws IOException {
         mainCtrl.showMainMenu();
     }
+
     public void changeJoker1() {
         eliminateJoker.setImage(image);
     }
@@ -65,11 +65,12 @@ public class MultiQuestionController {
         timeJoker.setImage(image);
     }
 
-    public void showEstimate() {
-        mainCtrl.showEstimate();
+    public void resizeWidth(double width){
+        grid.setPrefWidth(width);
     }
 
-
+    public void resizeHeight(double height){
+        grid.setPrefHeight(height);
+    }
 
 }
-

@@ -32,8 +32,9 @@ public class QuestionService {
         answers.add(activityList.get(index1));
 
         int index2 = rm.nextInt(activityList.size());
-        while (Math.abs(index1 - index2) <= 1)
+        while (Math.abs(index1 - index2) <= 1) {
             index2 = rm.nextInt(activityList.size());
+        }
         answers.add(activityList.get(index2));
 
         int index3 = (index1 + index2) / 2;

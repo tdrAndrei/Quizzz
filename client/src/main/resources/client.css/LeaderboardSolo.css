@@ -25,7 +25,7 @@
     -fx-font-size: 150%;
     -fx-alignment: baseline-left;
     -fx-text-fill: white;
-    -fx-padding: 500%;
+    -fx-padding: 5 0 5 10;
 }
 
 .table-view {
@@ -38,15 +38,19 @@
     -fx-background-color: transparent;
 }
 
+.table-view .column-header-background .filler {
+    -fx-background-color: transparent;
+}
+
 .table-view .column-header-background .label{
     -fx-background-color: transparent;
-    -fx-padding: 2 20 2 20;
     -fx-font-size: 120%;
     -fx-text-fill: black;
 }
 
 .table-view .column-header {
     -fx-background-color: transparent;
+    -fx-padding: 2 0 2 15;
 }
 
 .table-row-cell{
@@ -81,32 +85,60 @@
 
 
 .greenBar {
+/*
     -fx-max-width: 300;
     -fx-shape: "M 0 100 L 1100 100 L 1200 50 L 1100 0 L 0 0 L 0 100 z";
+
+ */
     -fx-background-color: #80da94;
 }
 .greenYellowBar {
-    -fx-max-width: 320;
-    -fx-background-color: #bee8a0;
-    -fx-shape: "M 0 100 L 1200 100 L 1300 50 L 1200 0 L 0 0 L 0 100 z";
+/*
+-fx-max-width: 320;
+-fx-shape: "M 0 100 L 1200 100 L 1300 50 L 1200 0 L 0 0 L 0 100 z";
+
+ */
+-fx-background-color: #bee8a0;
 }
 .yellowBar {
-    -fx-max-width: 340;
-    -fx-background-color: #fef292;
-    -fx-shape: "M 0 100 L 1300 100 L 1400 50 L 1300 0 L 0 0 L 0 100 z";
+/*
+-fx-max-width: 340;
+-fx-shape: "M 0 100 L 1300 100 L 1400 50 L 1300 0 L 0 0 L 0 100 z";
+
+ */
+-fx-background-color: #fef292;
 }
 .yellowOrangeBar {
-    -fx-max-width: 360;
-    -fx-background-color: #fedaa0;
-    -fx-shape: "M 0 100 L 1400 100 L 1500 50 L 1400 0 L 0 0 L 0 100 z";
+/*
+-fx-max-width: 360;
+-fx-shape: "M 0 100 L 1400 100 L 1500 50 L 1400 0 L 0 0 L 0 100 z";
+
+ */
+-fx-background-color: #fedaa0;
 }
 .orangeBar {
-    -fx-max-width: 380;
-    -fx-background-color: #fdb38e;
+/*
+-fx-max-width: 380;
     -fx-shape: "M 0 100 L 1500 100 L 1600 50 L 1500 0 L 0 0 L 0 100 z";
+
+ */
+-fx-background-color: #fdb38e;
 }
 .redBar {
-    -fx-max-width: 400;
-    -fx-background-color: #ff8182;
-    -fx-shape: "M 0 100 L 1600 100 L 1700 50 L 1600 0 L 0 0 L 0 100 z";
+/*
+-fx-max-width: 400;
+-fx-shape: "M 0 100 L 1600 100 L 1700 50 L 1600 0 L 0 0 L 0 100 z";
+
+ */
+-fx-background-color: #ff8182;
+}
+
+#colName {
+-fx-alignment: baseline-left;
+-fx-padding: 2 42 2 0;
+}
+
+#colScore {
+-fx-alignment: baseline-right;
+-fx-padding: 2 64 2 0;
 }
