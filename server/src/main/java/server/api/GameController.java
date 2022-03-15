@@ -32,6 +32,7 @@ public class GameController {
         return gameManager.getUpdate(gameId, userId);
     }
 
+
     @PostMapping(path = "/start/{gameId}")
     public void startGame(@PathVariable("gameId") long gameId){
         gameManager.startGame(gameId);
@@ -46,7 +47,22 @@ public class GameController {
     public void leaveGame(@PathVariable("gameId") long gameId, @RequestParam(required = true) long userId) {
         gameManager.disconnectPlayer(userId, gameId);
     }
-    
+
+    @PostMapping(path = "/joker/eliminate/{gameId}")
+    public long useEliminateJoker(@PathVariable("gameId") long gameId) {
+        return gameManager.useEliminateAnswer(gameId);
+    }
+
+    @PostMapping(path = "/joker/new/{gameId}")
+    public void useNewQuestionJoker(@PathVariable("gameId") long gameId) {
+        gameManager.useNewQuestionJoker(gameId);
+    }
+
+    @PostMapping(path = "/joker/double/{gameId}")
+    public void useDoublePointsJoker(@PathVariable("gameId") long gameId, @RequestParam(required = true) long userId) {
+        gameManager.useDoublePointsJoker(gameId, userId);
+    }
+
     @PostMapping(path = "/joker/time/{gameId}")
     public void useTimeJoker(@PathVariable("gameId") long gameId, @RequestParam(required = true) long userId) {
         gameManager.useTimeJoker(gameId, userId);
