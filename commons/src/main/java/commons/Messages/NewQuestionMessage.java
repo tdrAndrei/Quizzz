@@ -1,14 +1,17 @@
 package commons.Messages;
 
-import commons.Question;
+import commons.Activity;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
  * The type New question message.
  */
 public class NewQuestionMessage extends Message {
-    private Question question;
+    private String title;
+    private List<Activity> activities;
+    private int time;
     private int score;
 
     /**
@@ -20,32 +23,72 @@ public class NewQuestionMessage extends Message {
     /**
      * Instantiates a new New question message.
      *
-     * @param type     the type
-     * @param question the question
-     * @param score    the score
+     * @param type       the type
+     * @param title      the title
+     * @param activities the activities
+     * @param time       the time
+     * @param score      the score
      */
-    public NewQuestionMessage(String type, Question question, int score) {
+    public NewQuestionMessage(String type, String title, List<Activity> activities, int time, int score) {
         super(type);
-        this.question = question;
+        this.title = title;
+        this.activities = activities;
+        this.time = time;
         this.score = score;
     }
 
     /**
-     * Gets question.
+     * Gets title.
      *
-     * @return the question
+     * @return the title
      */
-    public Question getQuestion() {
-        return question;
+    public String getTitle() {
+        return title;
     }
 
     /**
-     * Sets question.
+     * Sets title.
      *
-     * @param question the question
+     * @param title the title
      */
-    public void setQuestion(Question question) {
-        this.question = question;
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    /**
+     * Gets activities.
+     *
+     * @return the activities
+     */
+    public List<Activity> getActivities() {
+        return activities;
+    }
+
+    /**
+     * Sets activities.
+     *
+     * @param activities the activities
+     */
+    public void setActivities(List<Activity> activities) {
+        this.activities = activities;
+    }
+
+    /**
+     * Gets time.
+     *
+     * @return the time
+     */
+    public int getTime() {
+        return time;
+    }
+
+    /**
+     * Sets time.
+     *
+     * @param time the time
+     */
+    public void setTime(int time) {
+        this.time = time;
     }
 
     /**
@@ -72,19 +115,21 @@ public class NewQuestionMessage extends Message {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         NewQuestionMessage that = (NewQuestionMessage) o;
-        return score == that.score && Objects.equals(question, that.question);
+        return time == that.time && score == that.score && Objects.equals(title, that.title) && Objects.equals(activities, that.activities);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), question, score);
+        return Objects.hash(super.hashCode(), title, activities, time, score);
     }
 
     @Override
     public String toString() {
         return "NewQuestionMessage{" +
                 "type='" + type + '\'' +
-                ", question=" + question +
+                ", title='" + title + '\'' +
+                ", activities=" + activities +
+                ", time=" + time +
                 ", score=" + score +
                 '}';
     }

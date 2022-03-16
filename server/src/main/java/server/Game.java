@@ -171,7 +171,7 @@ public class Game {
     }
     public void insertQuestionIntoDiff(Question question) {
         for (long id : diffMap.keySet()) {
-            NewQuestionMessage questionMessage = new NewQuestionMessage("NewQuestion", question, playerMap.get(id).getScore());
+            NewQuestionMessage questionMessage = new NewQuestionMessage("NewQuestion", question.getTitle(), question.getActivities(), question.getTime(), playerMap.get(id).getScore());
             diffMap.put(id, questionMessage);
         }
     }

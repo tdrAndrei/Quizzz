@@ -185,7 +185,7 @@ class GameTest {
         game.insertQuestionIntoDiff(testMCQ);
         boolean allEqual = true;
         for (Message msg : game.getDiffMap().values()) {
-            if (!(msg instanceof NewQuestionMessage) || !((NewQuestionMessage) msg).getQuestion().equals(testMCQ)) {
+            if (!(msg instanceof NewQuestionMessage) || !((NewQuestionMessage) msg).getActivities().equals(testMCQ.getActivities())) {
                 allEqual = false;
                 break;
             }
