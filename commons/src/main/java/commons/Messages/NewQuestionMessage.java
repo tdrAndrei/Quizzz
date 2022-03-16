@@ -9,6 +9,7 @@ import java.util.Objects;
  * The type New question message.
  */
 public class NewQuestionMessage extends Message {
+    private String title;
     private List<Activity> activities;
     private int time;
     private int score;
@@ -23,15 +24,35 @@ public class NewQuestionMessage extends Message {
      * Instantiates a new New question message.
      *
      * @param type       the type
+     * @param title      the title
      * @param activities the activities
      * @param time       the time
      * @param score      the score
      */
-    public NewQuestionMessage(String type, List<Activity> activities, int time, int score) {
+    public NewQuestionMessage(String type, String title, List<Activity> activities, int time, int score) {
         super(type);
+        this.title = title;
         this.activities = activities;
         this.time = time;
         this.score = score;
+    }
+
+    /**
+     * Gets title.
+     *
+     * @return the title
+     */
+    public String getTitle() {
+        return title;
+    }
+
+    /**
+     * Sets title.
+     *
+     * @param title the title
+     */
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     /**
@@ -94,18 +115,19 @@ public class NewQuestionMessage extends Message {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         NewQuestionMessage that = (NewQuestionMessage) o;
-        return time == that.time && score == that.score && Objects.equals(activities, that.activities);
+        return time == that.time && score == that.score && Objects.equals(title, that.title) && Objects.equals(activities, that.activities);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), activities, time, score);
+        return Objects.hash(super.hashCode(), title, activities, time, score);
     }
 
     @Override
     public String toString() {
         return "NewQuestionMessage{" +
                 "type='" + type + '\'' +
+                ", title='" + title + '\'' +
                 ", activities=" + activities +
                 ", time=" + time +
                 ", score=" + score +
