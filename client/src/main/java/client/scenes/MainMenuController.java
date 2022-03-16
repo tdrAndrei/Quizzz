@@ -125,7 +125,7 @@ public class MainMenuController implements Initializable {
      */
     public void startSolo() {
         stopAnimatorThread();
-        mainCtrl.showMultiQuestion();
+        mainCtrl.joinSolo();
     }
 
     /**

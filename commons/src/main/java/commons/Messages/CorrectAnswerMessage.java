@@ -7,6 +7,7 @@ import java.util.Objects;
  */
 public class CorrectAnswerMessage extends Message {
     private int score;
+    private Long correctAnswer;
 
     /**
      * Instantiates a new Correct answer message.
@@ -24,6 +25,11 @@ public class CorrectAnswerMessage extends Message {
     public CorrectAnswerMessage(String type, int score, Long correctAnswer) {
         super(type);
         this.score = score;
+        this.correctAnswer = correctAnswer;
+    }
+
+    public Long getCorrectAnswer() {
+        return correctAnswer;
     }
 
     /**

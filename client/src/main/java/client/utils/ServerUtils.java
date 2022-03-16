@@ -22,6 +22,7 @@ import java.net.URL;
 import java.util.List;
 
 import commons.LeaderboardEntry;
+import commons.Messages.Message;
 import commons.User;
 import org.glassfish.jersey.client.ClientConfig;
 
@@ -98,5 +99,8 @@ public class ServerUtils {
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
                 .post(Entity.entity(quote, APPLICATION_JSON), Quote.class);
+    }
+    public Message getUpdate() {
+        return new Message("newMessage");
     }
 }
