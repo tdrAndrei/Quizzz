@@ -1,9 +1,29 @@
+@font-face {
+    font-family: 'Comicbon';
+    src: url('Comicbon.ttf');
+}
 .root{
     -fx-background-color: #ffc5ac;
+    -fx-font-family: 'Comicbon';
 }
 #progressBar {
     -fx-accent: #f37500;
+    -fx-font-family: 'Comicbon';
 }
 .button {
     -fx-background-color: #fdecd8;
+    -fx-font-family: 'Comicbon';
+}
+.questionBackground {
+    -fx-background-color: #fef8a0;
+    -fx-font-size: 15px;
+}
+#scoreBox {
+    -fx-font-size: 20px;
+    -fx-font-family: 'Comicbon';
+}
+#questionLabel {
+    -fx-font-size: 30px;
+    -fx-font-family: 'Comicbon';
+    -fx-text-alignment: center;
 }
