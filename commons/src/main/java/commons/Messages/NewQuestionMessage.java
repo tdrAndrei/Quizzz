@@ -1,14 +1,16 @@
 package commons.Messages;
 
-import commons.Question;
+import commons.Activity;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
  * The type New question message.
  */
 public class NewQuestionMessage extends Message {
-    private Question question;
+    private List<Activity> activities;
+    private int time;
     private int score;
 
     /**
@@ -20,32 +22,52 @@ public class NewQuestionMessage extends Message {
     /**
      * Instantiates a new New question message.
      *
-     * @param type     the type
-     * @param question the question
-     * @param score    the score
+     * @param type       the type
+     * @param activities the activities
+     * @param time       the time
+     * @param score      the score
      */
-    public NewQuestionMessage(String type, Question question, int score) {
+    public NewQuestionMessage(String type, List<Activity> activities, int time, int score) {
         super(type);
-        this.question = question;
+        this.activities = activities;
+        this.time = time;
         this.score = score;
     }
 
     /**
-     * Gets question.
+     * Gets activities.
      *
-     * @return the question
+     * @return the activities
      */
-    public Question getQuestion() {
-        return question;
+    public List<Activity> getActivities() {
+        return activities;
     }
 
     /**
-     * Sets question.
+     * Sets activities.
      *
-     * @param question the question
+     * @param activities the activities
      */
-    public void setQuestion(Question question) {
-        this.question = question;
+    public void setActivities(List<Activity> activities) {
+        this.activities = activities;
+    }
+
+    /**
+     * Gets time.
+     *
+     * @return the time
+     */
+    public int getTime() {
+        return time;
+    }
+
+    /**
+     * Sets time.
+     *
+     * @param time the time
+     */
+    public void setTime(int time) {
+        this.time = time;
     }
 
     /**
@@ -72,19 +94,20 @@ public class NewQuestionMessage extends Message {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         NewQuestionMessage that = (NewQuestionMessage) o;
-        return score == that.score && Objects.equals(question, that.question);
+        return time == that.time && score == that.score && Objects.equals(activities, that.activities);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), question, score);
+        return Objects.hash(super.hashCode(), activities, time, score);
     }
 
     @Override
     public String toString() {
         return "NewQuestionMessage{" +
                 "type='" + type + '\'' +
-                ", question=" + question +
+                ", activities=" + activities +
+                ", time=" + time +
                 ", score=" + score +
                 '}';
     }
