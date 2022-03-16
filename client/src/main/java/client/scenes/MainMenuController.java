@@ -1,22 +1,16 @@
 package client.scenes;
 
-import javafx.animation.*;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Labeled;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.SVGPath;
-
-import javafx.util.Duration;
-
 import javax.inject.Inject;
 import java.io.IOException;
 import java.net.URL;
@@ -42,6 +36,10 @@ public class MainMenuController implements Initializable {
     @FXML
     private SVGPath lightning;
     @FXML
+    private SVGPath leftEdge;
+    @FXML
+    private SVGPath rightEdge;
+    @FXML
     private Label factQuestion;
     @FXML
     private Label factText;
@@ -50,11 +48,19 @@ public class MainMenuController implements Initializable {
     @FXML
     private SVGPath bulb;
     @FXML
+    private SVGPath bulbLine;
+    @FXML
+    private SVGPath bulbLine2;
+    @FXML
     private Group socket;
+    @FXML
+    private Group titleEdges;
     @FXML
     private SVGPath mainSocket;
     @FXML
-    private Group titleEdges;
+    private SVGPath socketLine;
+    @FXML
+    private SVGPath socketLine2;
     @FXML
     private SVGPath horizontalEdge;
     @FXML
@@ -79,12 +85,15 @@ public class MainMenuController implements Initializable {
     private Button leaderboardButton;
     @FXML
     private Button quitButton;
+    @FXML
+    private Label title;
 
     private final MainCtrl mainCtrl;
     private Thread animator;
     private List<String> factsList;
     private double baseWidth;
     private double baseHeight;
+    private List<MySvg> svgs;
 
     /**
      * Instantiates a new Main menu controller.
@@ -98,6 +107,7 @@ public class MainMenuController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
         baseWidth = grid.getPrefWidth();
         baseHeight = grid.getPrefHeight();
 
@@ -108,6 +118,25 @@ public class MainMenuController implements Initializable {
         mainMenuPane.heightProperty().addListener(e -> {
             resizeScene(mainMenuPane.getWidth(), mainMenuPane.getHeight());
         });
+
+        svgs = new ArrayList<>();
+        svgs.add(new MySvg(rightWheelExterior, 100, 100));
+        svgs.add(new MySvg(rightWheelInterior, 55, 55));
+        svgs.add(new MySvg(lightning));
+        svgs.add(new MySvg(leftWheelExterior, 100, 100));
+        svgs.add(new MySvg(leftWheelInterior, 55, 55));
+        svgs.add(new MySvg(leftEdge));
+        svgs.add(new MySvg(rightEdge));
+        svgs.add(new MySvg(bulb, 67, 73));
+        svgs.add(new MySvg(bulbLine));
+        svgs.add(new MySvg(bulbLine2));
+        svgs.add(new MySvg(mainSocket, 40, 40));
+        svgs.add(new MySvg(socketLine));
+        svgs.add(new MySvg(socketLine2));
+        svgs.add(new MySvg(lvEdge));
+        svgs.add(new MySvg(horizontalEdge));
+        svgs.add(new MySvg(rvEdge));
+
     }
 
     /**
@@ -138,6 +167,7 @@ public class MainMenuController implements Initializable {
     }
 
     public void resizeScene(double width, double height) {
+
         if (width < grid.getMinWidth() || height < grid.getMinHeight())
             return;
         grid.setPrefSize(width, height);
@@ -169,6 +199,8 @@ public class MainMenuController implements Initializable {
 
         setFontSize(factQuestion, 20, 30, scaleForText);
         setFontSize(factText, 18, 25, scaleForText);
+        setFontSize(title, 72, 72, scaleForText);
+
     }
 
     /**
@@ -176,16 +208,9 @@ public class MainMenuController implements Initializable {
      */
     public void makeAnimations() {
 
-        resizeSvg(rightWheelExterior, 100, 100);
-        resizeSvg(rightWheelInterior, 55, 55);
-        resizeSvg(leftWheelExterior, 100, 100);
-        resizeSvg(leftWheelInterior, 55, 55);
-        resizeSvg(bulb, 67, 73);
-        resizeSvg(mainSocket, 40, 40);
-
-        makeRotateAnimation(rightWheelExterior);
-        makeRotateAnimation(leftWheelExterior);
-        makeStrokeTransition();
+        svgs.get(0).makeRotateAnimation();
+        svgs.get(3).makeRotateAnimation();
+        svgs.get(2).makeStrokeTransition();
 
         factsList = createFactsList();
         getAnimatingText();
@@ -198,33 +223,8 @@ public class MainMenuController implements Initializable {
      */
     public void makeFillTransition() {
 
-        FillTransition fill;
-
-        for (Node shape : lightBulb.getChildren()) {
-            fill = new FillTransition(Duration.millis(4000), (SVGPath) shape, Color.BLACK, Color.YELLOW);
-            fill.setCycleCount(2);
-            fill.setAutoReverse(true);
-            fill.play();
-        }
-
-        for (Node shape : socket.getChildren()) {
-            fill = new FillTransition(Duration.millis(4000), (SVGPath) shape, Color.BLACK, Color.YELLOW);
-            fill.setCycleCount(2);
-            fill.setAutoReverse(true);
-            fill.play();
-        }
-
-    }
-
-    /**
-     * Make stroke transition.
-     */
-    public void makeStrokeTransition() {
-
-        StrokeTransition stroke = new StrokeTransition(Duration.millis(3000), lightning, Color.BLACK, Color.YELLOW);
-        stroke.setCycleCount(Animation.INDEFINITE);
-        stroke.setAutoReverse(true);
-        stroke.play();
+        for (int i = 7; i <= 12; i++)
+            svgs.get(i).fillTransition();
 
     }
 
@@ -293,42 +293,6 @@ public class MainMenuController implements Initializable {
             animator.interrupt();
     }
 
-    /**
-     * Makes the rotation animation of the gears vectors
-     *
-     * @param svg
-     */
-    public void makeRotateAnimation(SVGPath svg) {
-
-        RotateTransition rotate = new RotateTransition(Duration.seconds(3), svg);
-        rotate.setCycleCount(Animation.INDEFINITE);  //set the rotation period to infinity
-        rotate.setInterpolator(Interpolator.LINEAR); //makes the rotation run linearly
-        rotate.setFromAngle(0);
-        rotate.setToAngle(360);
-        rotate.play();
-
-    }
-
-    /**
-     * Method to resize SVGs
-     *
-     * @param svg
-     * @param width  width to resize to
-     * @param height height to resize to
-     */
-    public void resizeSvg(SVGPath svg, double width, double height) {
-
-        double originalWidth = svg.prefWidth(-1);
-        double originalHeight = svg.prefHeight(originalWidth);
-
-        double scaleX = width / originalWidth;
-        double scaleY = height / originalHeight;
-
-        svg.setScaleX(scaleX);
-        svg.setScaleY(scaleY);
-
-    }
-
     public void setFontSize(Labeled object, double minSize, double maxSize, double scale) {
         object.setStyle("-fx-font-size: " + Math.min(scale * minSize, maxSize) + "px");
     }
@@ -377,5 +341,6 @@ public class MainMenuController implements Initializable {
         return factsList;
 
     }
+
 }
 
