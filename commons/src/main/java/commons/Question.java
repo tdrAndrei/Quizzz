@@ -47,6 +47,9 @@ public abstract class Question {
         return time;
     }
 
+    public Long getAnswer(){
+        return this.answer;
+    }
     public void setTime(int time) {
         this.time = time;
     }
