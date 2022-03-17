@@ -24,7 +24,6 @@ import java.util.List;
 import commons.LeaderboardEntry;
 import commons.Messages.Message;
 import commons.User;
-import jakarta.ws.rs.client.Client;
 import org.glassfish.jersey.client.ClientConfig;
 
 import commons.Quote;
