@@ -1,0 +1,57 @@
+package client.scenes;
+
+
+import client.utils.ServerUtils;
+import commons.Messages.Message;
+import jakarta.inject.Inject;
+import javafx.scene.Parent;
+import javafx.util.Pair;
+
+import java.util.Timer;
+import java.util.TimerTask;
+
+public class ClientGameController {
+
+    private MultiQuestionController multiQuestionController;
+    private EstimateQuestionController estimateQuestionController;
+
+
+    @Inject
+    private  MainCtrl mainController;
+
+    @Inject
+    private ServerUtils serverUtils;
+
+
+
+
+    public void initialize(Pair<MultiQuestionController, Parent> multiQuestion,
+                           Pair<EstimateQuestionController, Parent> estimateQuestion) {
+        this.multiQuestionController = multiQuestion.getKey();
+        this.estimateQuestionController = estimateQuestion.getKey();
+    }
+
+    public void startPolling() {
+
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate( new TimerTask() {
+            @Override
+            public void run() {
+                Message message = serverUtils.getUpdate();
+                interpretMessage(message);
+            }
+        } , 0, 500);
+    }
+
+    public void interpretMessage(Message message) {
+        switch (message.getType()) {
+            case "":
+                break;
+        }
+
+    }
+
+
+
+
+}
