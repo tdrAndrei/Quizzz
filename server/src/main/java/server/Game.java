@@ -22,7 +22,9 @@ public class Game {
     private final QuestionService questionService;
     private final Map<Long, Player> playerMap = new HashMap<>();
     //private int playerLimit;
+    private boolean isSolo = false;
     private Date startTime;
+    private final Map<Long, Boolean> doublePointsMap = new HashMap<>();
     private final Map<Long, Integer> maxTime = new HashMap<>();
     private final Queue<Pair<String, Integer>> stageQueue = new LinkedList<>();
     private final Map<Long, Message> diffMap = new HashMap<>();
@@ -54,6 +56,7 @@ public class Game {
         playerMap.put(user.getId(), newPlayer);
         diffMap.put(user.getId(), new NullMessage("None"));
         maxTime.put(user.getId(), Integer.MAX_VALUE);
+        doublePointsMap.put(user.getId(), false);
         insertMessageIntoDiff(new NewPlayersMessage("NewPlayers", new ArrayList<>(playerMap.values())));
     }
 
@@ -84,7 +87,7 @@ public class Game {
                 break;
 
             case "Leaderboard":
-                if (playerMap.size() == 1) {
+                if (isSolo) {
                     setMaxTime(0);
                     break;
                 }
@@ -93,7 +96,7 @@ public class Game {
                 break;
 
             case "End":
-                if (playerMap.size() == 1) {
+                if (isSolo) {
                     Player player = playerMap.entrySet().iterator().next().getValue();
                     leaderBoardEntryService.insert(new LeaderboardEntry(player.getUser().getName(), player.getScore()));
                 }
@@ -110,7 +113,12 @@ public class Game {
     public void processAnswer(long userAnswer, long userId) {
         int elapsed = ((int) (new Date().getTime() - startTime.getTime()) / 1000);
         Player currPlayer = playerMap.get(userId);
-        currPlayer.setScore(currPlayer.getScore() + currentQuestion.calculateScore(userAnswer, elapsed));
+        if (doublePointsMap.get(userId)) {
+            currPlayer.setScore(currPlayer.getScore() + (2 * (currentQuestion.calculateScore(userAnswer, elapsed))));
+            doublePointsMap.put(userId, false);
+        } else {
+            currPlayer.setScore(currPlayer.getScore() + currentQuestion.calculateScore(userAnswer, elapsed));
+        }
         amountAnswered++;
     }
 
@@ -124,7 +132,7 @@ public class Game {
         playerMap.remove(userId);
         diffMap.remove(userId);
         maxTime.remove(userId);
-
+        doublePointsMap.remove(userId);
         //If we are still in waiting screen, inform clients of updated player list
         Pair<String, Integer> pair = stageQueue.peek();
         if (pair != null && pair.getKey().equals("Waiting")) {
@@ -139,6 +147,24 @@ public class Game {
             }
             maxTime.put(otherPlayerId, maxTime.get(otherPlayerId) / 2);
         }
+    }
+
+    public long eliminateJoker() {
+        long correctAns = currentQuestion.getAnswer();
+        Random rand = new Random();
+        long randomVal = rand.nextInt(4);
+        if (correctAns == randomVal) {
+            return (randomVal + 1) % 3;
+        }
+        return randomVal;
+    }
+
+    public void doublePointsJoker(long userId) {
+        doublePointsMap.put(userId, true);
+    }
+
+    public void newQuestionJoker() {
+        initializeStage();
     }
 
     public void ifStageEnded() {
@@ -250,5 +276,9 @@ public class Game {
                 ", stageQueue=" + stageQueue +
                 ", diffMap=" + diffMap +
                 '}';
+    }
+
+    public void setSolo(boolean solo) {
+        isSolo = solo;
     }
 }

@@ -28,6 +28,7 @@ public class GameManager {
         Game newGame = new Game(gameId, questionService, leaderBoardEntryService);
         newGame.addPlayer(user);
         gameMap.put(gameId, newGame);
+        newGame.setSolo(true);
         startGame(gameId);
         return gameId;
     }
@@ -50,6 +51,21 @@ public class GameManager {
         newGame.addPlayer(user);
         gameMap.put(gameId, newGame);
         return gameId;
+    }
+
+    public long useEliminateAnswer(long gameId) {
+        Game game = gameMap.get(gameId);
+        return game.eliminateJoker();
+    }
+
+    public void useDoublePointsJoker(long gameId, long userId) {
+        Game game = gameMap.get(gameId);
+        game.doublePointsJoker(userId);
+    }
+
+    public void useNewQuestionJoker(long gameId) {
+        Game game = gameMap.get(gameId);
+        game.newQuestionJoker();
     }
 
     public void startGame(long gameId) {
