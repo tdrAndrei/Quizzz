@@ -156,6 +156,7 @@ public class MainCtrl {
         this.user = user;
     }
 
-
-
+    public User getUser() {
+        return user;
+    }
 }

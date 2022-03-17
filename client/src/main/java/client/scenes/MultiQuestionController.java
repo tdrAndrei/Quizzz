@@ -107,66 +107,68 @@ public class MultiQuestionController implements Initializable {
     }
 
     public void makeNewQuestion(NewQuestionMessage message) {
-
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-
-        baseWidth = grid.getPrefWidth();
-        baseHeight = grid.getPrefHeight();
-
-        grid.widthProperty().addListener(e -> {
-            resize(grid.getWidth(), grid.getHeight());
-        });
-        grid.heightProperty().addListener(e -> {
-            resize(grid.getWidth(), grid.getHeight());
-        });
-
-
-        for (Node node : grid.lookupAll(".highlightable")) {
-            node.setOnMouseEntered(e -> {
-                new Timeline(new KeyFrame(Duration.seconds(0), new KeyValue(node.scaleXProperty(), 1), new KeyValue(node.scaleYProperty(), 1)),
-                             new KeyFrame(Duration.seconds(.2), new KeyValue(node.scaleXProperty(), 1.05), new KeyValue(node.scaleYProperty(), 1.05))).play();
-            });
-            node.setOnMouseExited(e -> {
-                node.setScaleX(1);
-                node.setScaleY(1);
-            });
         }
-    }
 
-    public void resize(double width, double height) {
-        if ( width < grid.getMinWidth() || height < grid.getMinHeight() )
-            return;
 
-        double ratioW = width / baseWidth;
-        double ratioH = height / baseHeight;
+        @Override
+        public void initialize (URL location, ResourceBundle resources){
 
-        exitButton.setPrefWidth(Math.min(1.5, ratioW) * exitButton.getMinWidth());
-        exitButton.setPrefHeight(Math.min(1.5, ratioH) * exitButton.getMinHeight());
-        exitButton.setStyle("-fx-font-size: " + Math.min(ratioW * 19, 21) + "px");
+            baseWidth = grid.getPrefWidth();
+            baseHeight = grid.getPrefHeight();
 
-        for (Node node : grid.lookupAll(".questionBackground")) {
-            AnchorPane pane = (AnchorPane) node;
-            pane.setPrefWidth(Math.min(2, ratioW) * pane.getMinWidth());
-            pane.setPrefHeight(Math.min(2, ratioH) * pane.getMinHeight());
+            grid.widthProperty().addListener(e -> {
+                resize(grid.getWidth(), grid.getHeight());
+            });
+            grid.heightProperty().addListener(e -> {
+                resize(grid.getWidth(), grid.getHeight());
+            });
 
-            GridPane questionCardGrid = (GridPane) pane.getChildren().get(0);
-            for (Node e : questionCardGrid.getChildren()) {
-                if (e instanceof ImageView) {
-                    ImageView img = (ImageView) e;
-                    img.setFitHeight(0.8 * 0.9 * pane.getPrefHeight());
-                    img.setFitWidth(0.9 * pane.getPrefWidth());
+
+            for (Node node : grid.lookupAll(".highlightable")) {
+                node.setOnMouseEntered(e -> {
+                    new Timeline(new KeyFrame(Duration.seconds(0), new KeyValue(node.scaleXProperty(), 1), new KeyValue(node.scaleYProperty(), 1)),
+                            new KeyFrame(Duration.seconds(.2), new KeyValue(node.scaleXProperty(), 1.05), new KeyValue(node.scaleYProperty(), 1.05))).play();
+                });
+                node.setOnMouseExited(e -> {
+                    node.setScaleX(1);
+                    node.setScaleY(1);
+                });
+            }
+        }
+
+        public void resize ( double width, double height){
+            if (width < grid.getMinWidth() || height < grid.getMinHeight())
+                return;
+
+            double ratioW = width / baseWidth;
+            double ratioH = height / baseHeight;
+
+            exitButton.setPrefWidth(Math.min(1.5, ratioW) * exitButton.getMinWidth());
+            exitButton.setPrefHeight(Math.min(1.5, ratioH) * exitButton.getMinHeight());
+            exitButton.setStyle("-fx-font-size: " + Math.min(ratioW * 19, 21) + "px");
+
+            for (Node node : grid.lookupAll(".questionBackground")) {
+                AnchorPane pane = (AnchorPane) node;
+                pane.setPrefWidth(Math.min(2, ratioW) * pane.getMinWidth());
+                pane.setPrefHeight(Math.min(2, ratioH) * pane.getMinHeight());
+
+                GridPane questionCardGrid = (GridPane) pane.getChildren().get(0);
+                for (Node e : questionCardGrid.getChildren()) {
+                    if (e instanceof ImageView) {
+                        ImageView img = (ImageView) e;
+                        img.setFitHeight(0.8 * 0.9 * pane.getPrefHeight());
+                        img.setFitWidth(0.9 * pane.getPrefWidth());
+                    }
+                }
+            }
+
+            for (Node node : jokerContainer.getChildren()) {
+                if (node instanceof ImageView) {
+                    ImageView img = (ImageView) node;
+                    img.setFitHeight(Math.min(ratioH * 150, 225));
+                    img.setFitWidth(Math.min(ratioW * 94, 141));
                 }
             }
         }
-
-        for (Node node : jokerContainer.getChildren()) {
-            if (node instanceof ImageView) {
-                ImageView img = (ImageView) node;
-                img.setFitHeight(Math.min(ratioH * 150, 225));
-                img.setFitWidth(Math.min(ratioW * 94, 141));
-            }
-        }
     }
-}
 

@@ -14,10 +14,11 @@ public class ClientGameController {
 
     private MultiQuestionController multiQuestionController;
     private EstimateQuestionController estimateQuestionController;
+    private Long gameId;
 
 
     @Inject
-    private  MainCtrl mainController;
+    private MainCtrl mainController;
 
     @Inject
     private ServerUtils serverUtils;
@@ -32,12 +33,12 @@ public class ClientGameController {
     }
 
     public void startPolling() {
-
+        gameId = serverUtils.joinSolo(mainController.getUser());
         Timer timer = new Timer();
         timer.scheduleAtFixedRate( new TimerTask() {
             @Override
             public void run() {
-                Message message = serverUtils.getUpdate();
+                Message message = serverUtils.pollUpdate(gameId, mainController.getUser().getId());
                 interpretMessage(message);
             }
         } , 0, 500);
@@ -67,7 +68,3 @@ public class ClientGameController {
 
     }
 
-
-
-
-}
