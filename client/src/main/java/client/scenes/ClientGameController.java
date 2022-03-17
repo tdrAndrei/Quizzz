@@ -3,7 +3,6 @@ package client.scenes;
 
 import client.utils.ServerUtils;
 import commons.Messages.Message;
-import jakarta.inject.Inject;
 import javafx.scene.Parent;
 import javafx.util.Pair;
 
@@ -17,14 +16,14 @@ public class ClientGameController {
     private Long gameId;
 
 
-    @Inject
-    private MainCtrl mainController;
+    private final MainCtrl mainController;
+    private final ServerUtils serverUtils;
 
-    @Inject
-    private ServerUtils serverUtils;
-
-
-
+    @javax.inject.Inject
+    public ClientGameController(MainCtrl mainController, ServerUtils serverUtils) {
+        this.mainController = mainController;
+        this.serverUtils = serverUtils;
+    }
 
     public void initialize(Pair<MultiQuestionController, Parent> multiQuestion,
                            Pair<EstimateQuestionController, Parent> estimateQuestion) {
