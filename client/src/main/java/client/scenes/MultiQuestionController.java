@@ -1,6 +1,9 @@
 package client.scenes;
 
 import com.google.inject.Inject;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
@@ -8,11 +11,13 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.util.Duration;
 
 import java.io.IOException;
 import java.net.URL;
@@ -48,10 +53,22 @@ public class MultiQuestionController implements Initializable {
     private ImageView question2Image;
 
     @FXML
+    private Label activity1Label;
+
+    @FXML
+    private Label activity2Label;
+
+    @FXML
+    private Label activity3Label;
+
+    @FXML
     private Label questionLabel;
 
     @FXML
     private Label timer;
+
+    @FXML
+    private Label pointsLabel;
 
     @FXML
     private GridPane grid;
@@ -100,6 +117,18 @@ public class MultiQuestionController implements Initializable {
         grid.heightProperty().addListener(e -> {
             resize(grid.getWidth(), grid.getHeight());
         });
+
+
+        for (Node node : grid.lookupAll(".highlightable")) {
+            node.setOnMouseEntered(e -> {
+                new Timeline(new KeyFrame(Duration.seconds(0), new KeyValue(node.scaleXProperty(), 1), new KeyValue(node.scaleYProperty(), 1)),
+                             new KeyFrame(Duration.seconds(.2), new KeyValue(node.scaleXProperty(), 1.05), new KeyValue(node.scaleYProperty(), 1.05))).play();
+            });
+            node.setOnMouseExited(e -> {
+                node.setScaleX(1);
+                node.setScaleY(1);
+            });
+        }
     }
 
     public void resize(double width, double height) {
@@ -135,7 +164,6 @@ public class MultiQuestionController implements Initializable {
                 img.setFitWidth(Math.min(ratioW * 94, 141));
             }
         }
-        jokerContainer.setOpaqueInsets(new Insets(0, 0, 0, 20 * ratioW));
     }
 }
 

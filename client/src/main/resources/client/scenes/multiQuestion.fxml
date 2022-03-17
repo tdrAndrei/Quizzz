@@ -44,7 +44,7 @@
                </GridPane.margin>
                <children>
                   <Label maxHeight="1.7976931348623157E308" text="Your Score:" />
-                  <Label maxHeight="1.7976931348623157E308" text="0 Pts" />
+                  <Label fx:id="pointsLabel" maxHeight="1.7976931348623157E308" text="0 Pts" />
                </children>
             </HBox>
             <HBox id="scor" fx:id="jokerContainer" alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" spacing="20.0" GridPane.halignment="LEFT" GridPane.valignment="TOP">
@@ -109,7 +109,7 @@
                         <RowConstraints maxHeight="95.99999237060547" minHeight="10.0" percentHeight="25.0" prefHeight="72.00003051757812" vgrow="SOMETIMES" />
                      </rowConstraints>
                      <children>
-                        <Label maxHeight="-Infinity" maxWidth="-Infinity" text="Fully charging the laptop project laptop (HP ZBook Power G7)" textAlignment="CENTER" wrapText="true" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+                        <Label fx:id="activity1Label" maxHeight="-Infinity" maxWidth="-Infinity" text="Fully charging the laptop project laptop (HP ZBook Power G7)" textAlignment="CENTER" wrapText="true" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
                         <ImageView fx:id="question1Image" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
                            <image>
                               <Image url="@/client.photos/clothing-iron.jpg" />
@@ -136,7 +136,7 @@
                         <RowConstraints maxHeight="95.99999237060547" minHeight="10.0" percentHeight="25.0" prefHeight="42.66667429606119" vgrow="SOMETIMES" />
                      </rowConstraints>
                      <children>
-                        <Label maxHeight="-Infinity" maxWidth="-Infinity" text="Boiling 1.7 Litres of water in an electric kettle" textAlignment="CENTER" wrapText="true" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+                        <Label fx:id="activity2Label" maxHeight="-Infinity" maxWidth="-Infinity" text="Boiling 1.7 Litres of water in an electric kettle" textAlignment="CENTER" wrapText="true" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
                         <ImageView fx:id="question2Image" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
                            <image>
                               <Image url="@/client.photos/oven.jpg" />
@@ -166,7 +166,7 @@
                         <RowConstraints maxHeight="95.99999237060547" minHeight="10.0" percentHeight="25.0" prefHeight="42.66667429606119" vgrow="SOMETIMES" />
                      </rowConstraints>
                      <children>
-                        <Label maxHeight="-Infinity" maxWidth="-Infinity" text="Heating up the water in a home using the electric water heater for a month" textAlignment="CENTER" wrapText="true" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+                        <Label fx:id="activity3Label" maxHeight="-Infinity" maxWidth="-Infinity" text="Heating up the water in a home using the electric water heater for a month" textAlignment="CENTER" wrapText="true" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
                         <ImageView fx:id="question3Image" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
                            <image>
                               <Image url="@/client.photos/vacuuming.jpeg" />

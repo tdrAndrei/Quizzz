@@ -170,7 +170,6 @@ public class MainMenuController implements Initializable {
 
         if (width < grid.getMinWidth() || height < grid.getMinHeight())
             return;
-        //grid.setPrefSize(width, height);
 
         double ratioH = height / baseHeight;
         double ratioW = width / baseWidth;
