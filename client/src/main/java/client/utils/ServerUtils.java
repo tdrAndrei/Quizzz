@@ -22,7 +22,9 @@ import java.net.URL;
 import java.util.List;
 
 import commons.LeaderboardEntry;
+import commons.Messages.Message;
 import commons.User;
+import jakarta.ws.rs.client.Client;
 import org.glassfish.jersey.client.ClientConfig;
 
 import commons.Quote;
@@ -90,6 +92,92 @@ public class ServerUtils {
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
                 .post(Entity.entity(user, APPLICATION_JSON), User.class);
+    }
+
+    public long joinSolo(User user){
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/game/joinSolo")
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .post(Entity.entity(user, APPLICATION_JSON), Long.class);
+    }
+
+    public long joinMulti(User user){
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/game/joinMulti")
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .post(Entity.entity(user, APPLICATION_JSON), Long.class);
+    }
+
+    public Message pollUpdate(long gameId, long userId){
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/game/" + gameId)
+                .queryParam("userId", userId)
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .get(Message.class);
+    }
+
+    public void startGame(long gameId){
+        ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/game/start/" + gameId)
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .get();
+    }
+
+    public void submitAnswer(long gameId, long userId, long userAnswer){
+        ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/game/submit/" + gameId)
+                .queryParam("userId", userId)
+                .queryParam("userAnswer", userAnswer)
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .get();
+    }
+
+    public void leaveGame(long gameId, long userId){
+        ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/game/leave/" + gameId)
+                .queryParam("userId", userId)
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .get();
+    }
+
+    public long eliminateJoker(long gameId){
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/game/joker/eliminate/" + gameId)
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .get(Long.class);
+    }
+
+    public void useNewQuestionJoker(long gameId){
+        ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/game/joker/new/" + gameId)
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .get();
+    }
+
+    public void useTimeJoker(long gameId, long userId){
+        ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/game/joker/time/" + gameId)
+                .queryParam("userId", userId)
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .get();
+    }
+
+    public void useDoublePointsJoker(long gameId, long userId){
+        ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/game/joker/double/" + gameId)
+                .queryParam("userId", userId)
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .get();
     }
 
     public Quote addQuote(Quote quote) {
