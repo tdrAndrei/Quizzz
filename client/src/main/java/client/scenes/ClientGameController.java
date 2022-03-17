@@ -45,8 +45,24 @@ public class ClientGameController {
 
     public void interpretMessage(Message message) {
         switch (message.getType()) {
-            case "":
+            case "None":
                 break;
+            case "NewPlayers":
+                break;
+            case "NewQuestionMC":
+                break;
+            case "NewQuestionEstimate":
+                break;
+            case "ShowLeaderBoard":
+                break;
+            case "EndGame":
+                break;
+            case "ShowCorrectAnswer":
+                break;
+            default:
+        }
+
+
         }
 
     }
