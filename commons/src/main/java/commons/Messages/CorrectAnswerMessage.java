@@ -1,10 +1,13 @@
 package commons.Messages;
 
+import com.fasterxml.jackson.annotation.JsonTypeName;
+
 import java.util.Objects;
 
 /**
  * The type Correct answer message.
  */
+@JsonTypeName("ShowCorrectAnswer")
 public class CorrectAnswerMessage extends Message {
     private int score;
     private Long correctAnswer;

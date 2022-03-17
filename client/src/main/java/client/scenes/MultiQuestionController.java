@@ -1,13 +1,11 @@
 package client.scenes;
 
 import com.google.inject.Inject;
+import commons.Messages.CorrectAnswerMessage;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
-import commons.Activity;
-import commons.Messages.Message;
 import commons.Messages.NewQuestionMessage;
-import commons.Question;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
@@ -79,17 +77,20 @@ public class MultiQuestionController implements Initializable {
     private double baseHeight;
 
     private MainCtrl mainCtrl;
+    private final ClientGameController clientGameController;
 
     // ImageView imageView;
     Image image = new Image("/client.photos/usedJoker.png");
 
     @Inject
-    public MultiQuestionController(MainCtrl mainCtrl){
+    public MultiQuestionController(MainCtrl mainCtrl, ClientGameController clientGameController){
         this.mainCtrl = mainCtrl;
+        this.clientGameController = clientGameController;
     }
 
 
     public void quit() throws IOException {
+        clientGameController.exitGame();
         mainCtrl.showMainMenu();
     }
     public void changeJoker1() {
@@ -106,8 +107,13 @@ public class MultiQuestionController implements Initializable {
         mainCtrl.showEstimate();
     }
 
-    public void makeNewQuestion(NewQuestionMessage message) {
-        }
+    public void showQuestion(NewQuestionMessage message) {
+        questionLabel.setText(message.getTitle());
+    }
+
+    public void showAnswer(CorrectAnswerMessage message) {
+        questionLabel.setText("The answer is "+message.getCorrectAnswer());
+    }
 
 
         @Override

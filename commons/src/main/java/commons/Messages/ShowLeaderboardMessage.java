@@ -1,5 +1,6 @@
 package commons.Messages;
 
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import commons.LeaderboardEntry;
 import commons.Player;
 
@@ -10,7 +11,9 @@ import java.util.Objects;
 /**
  * The type Show leaderboard message.
  */
+@JsonTypeName("ShowLeaderboard")
 public class ShowLeaderboardMessage extends Message {
+    private String gameProgress;
     private List<Player> players;
     private List<LeaderboardEntry> entries;
 
@@ -26,14 +29,34 @@ public class ShowLeaderboardMessage extends Message {
      * @param type    the type
      * @param players the players
      */
-    public ShowLeaderboardMessage(String type, List<Player> players) {
+    public ShowLeaderboardMessage(String type, String gameProgress, List<Player> players) {
         super(type);
+        this.gameProgress = gameProgress;
         this.players = players;
         setLeaderboardEntries();
     }
 
     /**
-     * Gets playes.
+     * Gets the game progress. This indicates which of the leaderboards is sent:
+     * Mid (when sending mid-game scores), or End (when sending end-game scores).
+     *
+     * @return the game progress
+     */
+    public String getGameProgress() {
+        return gameProgress;
+    }
+
+    /**
+     * Sets game progress
+     *
+     * @param gameProgress the game progress
+     */
+    public void setGameProgress(String gameProgress) {
+        this.gameProgress = gameProgress;
+    }
+
+    /**
+     * Gets players.
      *
      * @return the players
      */
