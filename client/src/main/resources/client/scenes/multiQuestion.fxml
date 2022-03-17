@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.String?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
@@ -14,9 +15,9 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="800.0" prefWidth="1200.0" stylesheets="@/client.css/questions.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.MultiQuestionController">
+<AnchorPane minHeight="600.0" minWidth="900.0" prefHeight="800.0" prefWidth="1200.0" stylesheets="@/client.css/questions.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.MultiQuestionController">
    <children>
-      <GridPane prefHeight="800.0" prefWidth="1200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <GridPane fx:id="grid" minHeight="600.0" minWidth="900.0" prefHeight="800.0" prefWidth="1200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="34.0" prefWidth="100.0" />
           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="32.0" prefWidth="100.0" />
@@ -29,10 +30,13 @@
           <RowConstraints maxHeight="167.3333740234375" minHeight="10.0" percentHeight="13.0" prefHeight="107.3333740234375" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <Button fx:id="exitButton" mnemonicParsing="false" onAction="#quit" text="Exit Game" GridPane.rowIndex="3">
+            <Button fx:id="exitButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="40.0" minWidth="130.0" mnemonicParsing="false" onAction="#quit" prefHeight="40.0" prefWidth="130.0" text="Exit Game" GridPane.rowIndex="3">
                <font>
                   <Font size="19.0" />
                </font>
+               <GridPane.margin>
+                  <Insets left="30.0" />
+               </GridPane.margin>
             </Button>
             <HBox id="scoreBox" fx:id="scoreBox" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="35.0" prefWidth="200.0" spacing="10.0" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.valignment="TOP">
                <GridPane.margin>
@@ -43,9 +47,9 @@
                   <Label maxHeight="1.7976931348623157E308" text="0 Pts" />
                </children>
             </HBox>
-            <HBox id="scor" maxHeight="-Infinity" maxWidth="-Infinity" spacing="20.0" GridPane.halignment="CENTER" GridPane.valignment="TOP">
+            <HBox id="scor" fx:id="jokerContainer" alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" spacing="20.0" GridPane.halignment="LEFT" GridPane.valignment="TOP">
                <children>
-                  <ImageView fx:id="eliminateJoker" fitHeight="150.0" fitWidth="94.0" onMouseClicked="#changeJoker1" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="eliminateJoker" fitHeight="150.0" fitWidth="94.0" onMouseClicked="#changeJoker1" pickOnBounds="true" preserveRatio="true" styleClass="highlightable" HBox.hgrow="ALWAYS">
                      <image>
                         <Image url="@/client.photos/jokerOneAnswer.png" />
                      </image>
@@ -53,7 +57,7 @@
                         <Cursor fx:constant="HAND" />
                      </cursor>
                   </ImageView>
-                  <ImageView fx:id="doublePointsJoker" fitHeight="150.0" fitWidth="94.0" onMouseClicked="#changeJoker2" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="doublePointsJoker" fitHeight="150.0" fitWidth="94.0" onMouseClicked="#changeJoker2" pickOnBounds="true" preserveRatio="true" styleClass="highlightable" HBox.hgrow="ALWAYS">
                      <image>
                         <Image url="@/client.photos/doubleJoker.png" />
                      </image>
@@ -61,7 +65,7 @@
                         <Cursor fx:constant="HAND" />
                      </cursor>
                   </ImageView>
-                  <ImageView fx:id="timeJoker" fitHeight="150.0" fitWidth="94.0" onMouseClicked="#changeJoker3" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="timeJoker" fitHeight="150.0" fitWidth="94.0" onMouseClicked="#changeJoker3" pickOnBounds="true" preserveRatio="true" styleClass="highlightable" HBox.hgrow="ALWAYS">
                      <image>
                         <Image url="@/client.photos/timeJoker.png" />
                      </image>
@@ -70,6 +74,9 @@
                      </cursor>
                   </ImageView>
                </children>
+               <GridPane.margin>
+                  <Insets left="30.0" />
+               </GridPane.margin>
             </HBox>
             <GridPane maxHeight="-Infinity" vgap="10.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="BOTTOM">
                <columnConstraints>
@@ -80,7 +87,7 @@
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                </rowConstraints>
                <children>
-                  <Label fx:id="timeButton" alignment="CENTER" contentDisplay="CENTER" prefHeight="27.0" prefWidth="51.0" text="10S" textAlignment="CENTER" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                  <Label fx:id="timer" alignment="CENTER" contentDisplay="CENTER" prefHeight="27.0" prefWidth="51.0" text="10S" textAlignment="CENTER" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
                      <font>
                         <Font size="21.0" />
                      </font>
@@ -91,9 +98,9 @@
                   <Insets bottom="20.0" />
                </GridPane.margin>
             </GridPane>
-            <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="270.0" prefWidth="270.0" styleClass="questionBackground" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.rowSpan="2" GridPane.valignment="CENTER">
+            <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="270.0" prefWidth="300.0" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.rowSpan="2" GridPane.valignment="CENTER">
                <children>
-                  <GridPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <GridPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="200.0" prefWidth="200.0" styleClass="questionCardGrid" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <columnConstraints>
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
                      </columnConstraints>
@@ -102,18 +109,25 @@
                         <RowConstraints maxHeight="95.99999237060547" minHeight="10.0" percentHeight="25.0" prefHeight="72.00003051757812" vgrow="SOMETIMES" />
                      </rowConstraints>
                      <children>
-                        <Label prefHeight="65.0" prefWidth="250.0" text="Fully charging the laptop project laptop (HP ZBook Power G7)" textAlignment="CENTER" wrapText="true" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
-                        <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                        <Label maxHeight="-Infinity" maxWidth="-Infinity" text="Fully charging the laptop project laptop (HP ZBook Power G7)" textAlignment="CENTER" wrapText="true" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+                        <ImageView fx:id="question1Image" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                           <image>
+                              <Image url="@/client.photos/clothing-iron.jpg" />
+                           </image></ImageView>
                      </children>
                   </GridPane>
                </children>
                <padding>
                   <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
                </padding>
+               <styleClass>
+                  <String fx:value="questionBackground" />
+                  <String fx:value="highlightable" />
+               </styleClass>
             </AnchorPane>
-            <AnchorPane layoutX="123.0" layoutY="345.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="270.0" prefWidth="270.0" styleClass="questionBackground" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="BOTTOM">
+            <AnchorPane layoutX="123.0" layoutY="345.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="270.0" prefWidth="300.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="BOTTOM">
                <children>
-                  <GridPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <GridPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="200.0" prefWidth="200.0" styleClass="questionCardGrid" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <columnConstraints>
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
                      </columnConstraints>
@@ -122,8 +136,11 @@
                         <RowConstraints maxHeight="95.99999237060547" minHeight="10.0" percentHeight="25.0" prefHeight="42.66667429606119" vgrow="SOMETIMES" />
                      </rowConstraints>
                      <children>
-                        <Label text="Boiling 1.7 Litres of water in an electric kettle" textAlignment="CENTER" wrapText="true" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
-                        <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                        <Label maxHeight="-Infinity" maxWidth="-Infinity" text="Boiling 1.7 Litres of water in an electric kettle" textAlignment="CENTER" wrapText="true" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+                        <ImageView fx:id="question2Image" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                           <image>
+                              <Image url="@/client.photos/oven.jpg" />
+                           </image></ImageView>
                      </children>
                   </GridPane>
                </children>
@@ -133,10 +150,14 @@
                <padding>
                   <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
                </padding>
+               <styleClass>
+                  <String fx:value="questionBackground" />
+                  <String fx:value="highlightable" />
+               </styleClass>
             </AnchorPane>
-            <AnchorPane layoutX="30.0" layoutY="45.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="270.0" prefWidth="270.0" styleClass="questionBackground" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.rowSpan="2" GridPane.valignment="CENTER">
+            <AnchorPane layoutX="30.0" layoutY="45.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="270.0" prefWidth="300.0" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.rowSpan="2" GridPane.valignment="CENTER">
                <children>
-                  <GridPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <GridPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="200.0" prefWidth="200.0" styleClass="questionCardGrid" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <columnConstraints>
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
                      </columnConstraints>
@@ -145,14 +166,21 @@
                         <RowConstraints maxHeight="95.99999237060547" minHeight="10.0" percentHeight="25.0" prefHeight="42.66667429606119" vgrow="SOMETIMES" />
                      </rowConstraints>
                      <children>
-                        <Label text="Heating up the water in a home using the electric water heater for a month" textAlignment="CENTER" wrapText="true" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
-                        <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                        <Label maxHeight="-Infinity" maxWidth="-Infinity" text="Heating up the water in a home using the electric water heater for a month" textAlignment="CENTER" wrapText="true" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+                        <ImageView fx:id="question3Image" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                           <image>
+                              <Image url="@/client.photos/vacuuming.jpeg" />
+                           </image></ImageView>
                      </children>
                   </GridPane>
                </children>
                <padding>
                   <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
                </padding>
+               <styleClass>
+                  <String fx:value="questionBackground" />
+                  <String fx:value="highlightable" />
+               </styleClass>
             </AnchorPane>
             <Label fx:id="questionLabel" contentDisplay="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" text="Which activity takes the most amount of energy?" textAlignment="CENTER" wrapText="true" GridPane.columnSpan="3" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
                <font>
