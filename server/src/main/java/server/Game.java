@@ -72,7 +72,7 @@ public class Game {
             case "Question":
                 setMaxTime(stagePair.getValue());
                 currentQuestion = questionService.makeMultipleChoice(stagePair.getValue());
-                insertQuestionIntoDiff(currentQuestion);
+                insertMCQQuestionIntoDiff(currentQuestion);
                 break;
 
             case "CorrectAns":
@@ -83,7 +83,7 @@ public class Game {
             case "Estimate":
                 setMaxTime(stagePair.getValue());
                 currentQuestion = questionService.makeEstimate(stagePair.getValue());
-                insertQuestionIntoDiff(currentQuestion);
+                insertEstimateQuestionIntoDiff(currentQuestion);
                 break;
 
             case "Leaderboard":
@@ -195,12 +195,20 @@ public class Game {
     public void insertMessageIntoDiff(Message message) {
         diffMap.replaceAll((i, v) -> message);
     }
-    public void insertQuestionIntoDiff(Question question) {
+    public void insertMCQQuestionIntoDiff(Question question) {
         for (long id : diffMap.keySet()) {
-            NewQuestionMessage questionMessage = new NewQuestionMessage("NewQuestion", question.getTitle(), question.getActivities(), question.getTime(), playerMap.get(id).getScore());
+            NewQuestionMessage questionMessage = new NewQuestionMessage("NewQuestionMC", question.getTitle(), question.getActivities(), question.getTime(), playerMap.get(id).getScore());
             diffMap.put(id, questionMessage);
         }
     }
+
+    public void insertEstimateQuestionIntoDiff(Question question) {
+        for (long id : diffMap.keySet()) {
+            NewQuestionMessage questionMessage = new NewQuestionMessage("NewQuestionEstimate", question.getTitle(), question.getActivities(), question.getTime(), playerMap.get(id).getScore());
+            diffMap.put(id, questionMessage);
+        }
+    }
+
     public void setMaxTime(Integer time) {
         maxTime.replaceAll((i, v) -> time);
     }
