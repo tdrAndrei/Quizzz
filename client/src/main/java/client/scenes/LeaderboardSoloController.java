@@ -167,8 +167,8 @@ public class LeaderboardSoloController implements Initializable {
             LeaderboardEntryLabel entry = entries.get(pos);
             if (Objects.equals(entry.getEntryId(), entryId)) {
                 entries.get(pos).getScoreLabel().getStyleClass().add("selectedScore");
-                int width = 42;
-                entries.get(pos).getScoreLabel().setStyle("-fx-shape: \"M 0 50 L 100 100 L 400 100 L 400 0 L 100 0 L 0 50 z\"");
+                int width = 64;
+                entries.get(pos).getScoreLabel().setStyle("-fx-shape: \"M 0 50 L 150 100 L 700 100 L 700 0 L 150 0 L 0 50 z\"");
                 entries.get(pos).getScoreLabel().setMinWidth(width);
                 entries.get(pos).getScoreLabel().setMaxHeight(100);
                 rank.setText("You finished in " + (pos+1) + ordinal(pos+1) + " place!");
