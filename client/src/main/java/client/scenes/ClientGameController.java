@@ -76,6 +76,7 @@ public class ClientGameController {
                     Platform.runLater(() -> {
                         mainController.showMultiQuestion();
                         multiQuestionController.showQuestion(newQuestionMessage);
+                        multiQuestionController.enable();
                     });
                 } else if (newQuestionMessage.getQuestionType().equals("Estimate")) {
                     Platform.runLater(() -> {
@@ -101,6 +102,7 @@ public class ClientGameController {
                 Platform.runLater(() -> {
                     estimateQuestionController.showAnswer(correctAnswerMessage);
                     multiQuestionController.showAnswer(correctAnswerMessage);
+                    multiQuestionController.changeScore(correctAnswerMessage.getScore());
                 });
                 break;
             default:
@@ -123,6 +125,9 @@ public class ClientGameController {
 
     public void setPlaying(boolean playing) {
         isPlaying = playing;
+    }
+    public void submitAnswer(long answer) {
+        serverUtils.submitAnswer(getGameId(), mainController.getUser().getId(), answer);
     }
 }
 

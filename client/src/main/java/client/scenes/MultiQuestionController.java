@@ -1,5 +1,6 @@
 package client.scenes;
 
+import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Messages.CorrectAnswerMessage;
 import javafx.animation.KeyFrame;
@@ -73,19 +74,34 @@ public class MultiQuestionController implements Initializable {
     @FXML
     private GridPane grid;
 
+    @FXML
+    private GridPane answer1;
+
+    @FXML
+    private GridPane answer2;
+
+    @FXML
+    private GridPane answer3;
+
+
+
     private double baseWidth;
     private double baseHeight;
+    private int answer;
+    private boolean disable = false;
 
     private MainCtrl mainCtrl;
     private final ClientGameController clientGameController;
+    private final ServerUtils serverUtils;
 
     // ImageView imageView;
     Image image = new Image("/client.photos/usedJoker.png");
 
     @Inject
-    public MultiQuestionController(MainCtrl mainCtrl, ClientGameController clientGameController){
+    public MultiQuestionController(MainCtrl mainCtrl, ClientGameController clientGameController, ServerUtils serverUtils){
         this.mainCtrl = mainCtrl;
         this.clientGameController = clientGameController;
+        this.serverUtils =serverUtils;
     }
 
 
@@ -94,13 +110,19 @@ public class MultiQuestionController implements Initializable {
         mainCtrl.showMainMenu();
     }
     public void changeJoker1() {
-        eliminateJoker.setImage(image);
+        if (!disable) {
+            eliminateJoker.setImage(image);
+        }
     }
     public void changeJoker2() {
-        doublePointsJoker.setImage(image);
+        if (!disable) {
+            doublePointsJoker.setImage(image);
+        }
     }
     public void changeJoker3() {
-        timeJoker.setImage(image);
+        if (!disable) {
+            timeJoker.setImage(image);
+        }
     }
 
     public void showEstimate() {
@@ -176,5 +198,34 @@ public class MultiQuestionController implements Initializable {
                 }
             }
         }
+
+        public void submit1(){
+            if (!disable) {
+                clientGameController.submitAnswer(0);
+                disable = true;
+
+            }
+        }
+        public void submit2(){
+            if (!disable) {
+                clientGameController.submitAnswer(1);
+                disable = true;
+            }
+        }
+        public void submit3(){
+            if (!disable) {
+                clientGameController.submitAnswer(2);
+                disable = true;
+            }
+        }
+
+        public void changeScore(int score) {
+            pointsLabel.setText(score + "Pts");
+        }
+        public void enable() {
+            disable = false;
+        }
+
+
     }
 
