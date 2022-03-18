@@ -68,7 +68,7 @@ class ActivityTest {
     @Test
     void testEquals2(){
 
-        Activity activity2 = new Activity("00-smartphone", "00/smartphone.png", "Charging your smartphone at night", 10L, "https://9to5mac.com/2021/09/16/iphone-13-battery-life/");
+        Activity activity2 = new Activity(0L, "00/smartphone.png", "Charging your smartphone at night", 10L, "https://9to5mac.com/2021/09/16/iphone-13-battery-life/");
         assertEquals(activity2, activityList.get(1));
 
     }
