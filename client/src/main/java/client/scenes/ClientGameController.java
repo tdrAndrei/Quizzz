@@ -14,6 +14,7 @@ public class ClientGameController {
 
     private MultiQuestionController multiQuestionController;
     private EstimateQuestionController estimateQuestionController;
+    private LeaderboardSoloController leaderboardSoloController;
     private WaitingRoomController waitingRoomController;
     private Long gameId;
 
@@ -30,9 +31,11 @@ public class ClientGameController {
 
     public void initialize(Pair<MultiQuestionController, Parent> multiQuestion,
                            Pair<EstimateQuestionController, Parent> estimateQuestion,
+                           Pair<LeaderboardSoloController, Parent> leaderboard,
                            Pair<WaitingRoomController, Parent> waitingRoom) {
         this.multiQuestionController = multiQuestion.getKey();
         this.estimateQuestionController = estimateQuestion.getKey();
+        this.leaderboardSoloController = leaderboard.getKey();
         this.waitingRoomController = waitingRoom.getKey();
     }
 
@@ -89,6 +92,8 @@ public class ClientGameController {
                 if (showLeaderboardMessage.getGameProgress().equals("End")) {
                     Platform.runLater(() -> {
                         mainController.showLeaderboardSolo();
+                        Long myEntryId = showLeaderboardMessage.getEntryId();
+                        leaderboardSoloController.showMine(myEntryId);
                     });
                 } else if (showLeaderboardMessage.getGameProgress().equals("Mid")) {
                     Platform.runLater(() -> {

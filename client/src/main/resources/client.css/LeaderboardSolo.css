@@ -24,7 +24,6 @@
 .label {
     -fx-font-size: 150%;
     -fx-alignment: baseline-left;
-    -fx-text-fill: white;
     -fx-padding: 5 0 5 10;
 }
 
@@ -82,7 +81,12 @@
     -fx-max-height: 0;
 }
 
-
+.selectedScore {
+    -fx-background-color: #000000;
+    -fx-text-fill: #fff6ed;
+    -fx-padding: 5 5 5 0;
+    -fx-alignment: baseline-right;
+}
 
 .greenBar {
 /*
@@ -91,6 +95,7 @@
 
  */
     -fx-background-color: #80da94;
+    -fx-text-fill: white;
 }
 .greenYellowBar {
 /*
@@ -99,6 +104,8 @@
 
  */
 -fx-background-color: #bee8a0;
+    -fx-text-fill: white;
+
 }
 .yellowBar {
 /*
@@ -107,6 +114,7 @@
 
  */
 -fx-background-color: #fef292;
+    -fx-text-fill: white;
 }
 .yellowOrangeBar {
 /*
@@ -115,6 +123,8 @@
 
  */
 -fx-background-color: #fedaa0;
+    -fx-text-fill: white;
+
 }
 .orangeBar {
 /*
@@ -122,7 +132,9 @@
     -fx-shape: "M 0 100 L 1500 100 L 1600 50 L 1500 0 L 0 0 L 0 100 z";
 
  */
--fx-background-color: #fdb38e;
+    -fx-background-color: #fdb38e;
+    -fx-text-fill: white;
+
 }
 .redBar {
 /*
@@ -130,7 +142,9 @@
 -fx-shape: "M 0 100 L 1600 100 L 1700 50 L 1600 0 L 0 0 L 0 100 z";
 
  */
--fx-background-color: #ff8182;
+    -fx-background-color: #ff8182;
+    -fx-text-fill: white;
+
 }
 
 #colName {
@@ -141,4 +155,9 @@
 #colScore {
 -fx-alignment: baseline-right;
 -fx-padding: 2 64 2 0;
+}
+
+#rank {
+    -fx-font-size: 32;
+    -fx-font-weight: Bold;
 }
