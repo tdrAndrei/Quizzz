@@ -184,7 +184,7 @@
                   <String fx:value="highlightable" />
                </styleClass>
             </AnchorPane>
-            <Label fx:id="questionLabel" contentDisplay="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" text="Which activity takes the most amount of energy?" textAlignment="CENTER" wrapText="true" GridPane.columnSpan="3" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+            <Label fx:id="questionLabel" alignment="TOP_CENTER" contentDisplay="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="66.0" prefWidth="802.0" text="Which activity takes the most amount of energy?" textAlignment="CENTER" wrapText="true" GridPane.columnSpan="3" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
                <font>
                   <Font name="Arial Bold" size="24.0" />
                </font>

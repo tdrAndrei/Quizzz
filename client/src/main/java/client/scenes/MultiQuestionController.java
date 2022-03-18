@@ -76,20 +76,13 @@ public class MultiQuestionController implements Initializable {
     @FXML
     private GridPane grid;
 
-    @FXML
-    private GridPane answer1;
-
-    @FXML
-    private GridPane answer2;
-
-    @FXML
-    private GridPane answer3;
-
-
 
     private double baseWidth;
     private double baseHeight;
-    private int answer;
+    private boolean timeJokerUsed = false;
+    private boolean eliminateJokerUsed = false;
+    private boolean doublePointsJokerUsed = false;
+    private long chosenAnswer;
     private boolean disable = false;
 
     private MainCtrl mainCtrl;
@@ -112,20 +105,24 @@ public class MultiQuestionController implements Initializable {
         mainCtrl.showMainMenu();
     }
     public void changeJoker1() {
-        if (!disable) {
+        if (!disable && !eliminateJokerUsed) {
             eliminateJoker.setImage(image);
+            eliminateJokerUsed = true;
             useEliminateJoker();
         }
     }
     public void changeJoker2() {
-        if (!disable) {
+        if (!disable && !doublePointsJokerUsed) {
             doublePointsJoker.setImage(image);
+            doublePointsJokerUsed = true;
             useDoublePointsJoker();
+
         }
     }
     public void changeJoker3() {
-        if (!disable) {
+        if (!disable && !timeJokerUsed) {
             timeJoker.setImage(image);
+            timeJokerUsed = true;
         }
     }
 
@@ -138,7 +135,20 @@ public class MultiQuestionController implements Initializable {
     }
 
     public void showAnswer(CorrectAnswerMessage message) {
-        questionLabel.setText("The answer is "+message.getCorrectAnswer());
+        long index = message.getCorrectAnswer();
+        String answer = "";
+        if (index == 0) {
+            answer = activity1Label.getText();
+        } else if (index == 1) {
+            answer = activity2Label.getText();
+        } else {
+            answer = activity3Label.getText();
+        }
+        if (chosenAnswer == index) {
+            questionLabel.setText("That's Right!");
+        } else {
+            questionLabel.setText("Unfortunately wrong answer\nThe answer is: " + answer);
+        }
     }
 
 
@@ -205,6 +215,7 @@ public class MultiQuestionController implements Initializable {
 
         public void submit1(){
             if (!disable) {
+                chosenAnswer = 0;
                 clientGameController.submitAnswer(0);
                 disable = true;
 
@@ -212,12 +223,14 @@ public class MultiQuestionController implements Initializable {
         }
         public void submit2(){
             if (!disable) {
+                chosenAnswer = 1;
                 clientGameController.submitAnswer(1);
                 disable = true;
             }
         }
         public void submit3(){
             if (!disable) {
+                chosenAnswer = 2;
                 clientGameController.submitAnswer(2);
                 disable = true;
             }
@@ -257,6 +270,15 @@ public class MultiQuestionController implements Initializable {
                     activity3Label.setText("This answer has been eliminated");
                 }
         }
+
+    public void unableAllJokers() {
+        timeJokerUsed = false;
+        eliminateJokerUsed = false;
+        doublePointsJokerUsed = false;
+        eliminateJoker.setImage(new Image("/client.photos/jokerOneAnswer.png"));
+        doublePointsJoker.setImage(new Image("/client.photos/doubleJoker.png"));
+        timeJoker.setImage(new Image("/client.photos/timeJoker.png"));
+    }
 
 
     }
