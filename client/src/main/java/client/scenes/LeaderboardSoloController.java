@@ -169,7 +169,7 @@ public class LeaderboardSoloController implements Initializable {
                 entries.get(pos).getNameLabel().setText(entries.get(pos).getNameLabel().getText() + " (You)");
                 entries.get(pos).getScoreLabel().getStyleClass().add("selectedScore");
                 int width = 42;
-                entries.get(pos).getScoreLabel().setStyle("-fx-shape: \"M 0 50 L 75 100 L 400 100 L 400 0 L 75 0 L 0 50 z\"");
+                entries.get(pos).getScoreLabel().setStyle("-fx-shape: \"M 0 50 L 100 100 L 400 100 L 400 0 L 100 0 L 0 50 z\"");
                 entries.get(pos).getScoreLabel().setMinWidth(width);
                 entries.get(pos).getScoreLabel().setMaxHeight(100);
                 rank.setText("You finished in " + pos + ordinal(pos) + " place!");
@@ -218,6 +218,10 @@ public class LeaderboardSoloController implements Initializable {
             return getNearestIndex(target, mid+1, high);
         }
         return getNearestIndex(target, low, mid-1);
+    }
+
+    public void reset() {
+        rank.setText("");
     }
 
     public void refresh() {
