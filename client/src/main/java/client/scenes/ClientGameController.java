@@ -14,6 +14,7 @@ public class ClientGameController {
 
     private MultiQuestionController multiQuestionController;
     private EstimateQuestionController estimateQuestionController;
+    private WaitingRoomController waitingRoomController;
     private Long gameId;
 
     private boolean isPlaying = true;
@@ -28,14 +29,22 @@ public class ClientGameController {
     }
 
     public void initialize(Pair<MultiQuestionController, Parent> multiQuestion,
-                           Pair<EstimateQuestionController, Parent> estimateQuestion) {
+                           Pair<EstimateQuestionController, Parent> estimateQuestion,
+                           Pair<WaitingRoomController, Parent> waitingRoom) {
         this.multiQuestionController = multiQuestion.getKey();
         this.estimateQuestionController = estimateQuestion.getKey();
+        this.waitingRoomController = waitingRoom.getKey();
     }
 
-    public void startPolling() {
-        gameId = serverUtils.joinSolo(mainController.getUser());
-        mainController.showMultiQuestion();
+    public void startPolling(boolean isMulti) {
+        isPlaying = true;
+        if (isMulti) {
+            gameId = serverUtils.joinMulti(mainController.getUser());
+            mainController.showWaitingRoom();
+        } else {
+            gameId = serverUtils.joinSolo(mainController.getUser());
+            mainController.showMultiQuestion();
+        }
         Timer timer = new Timer();
         timer.scheduleAtFixedRate( new TimerTask() {
             @Override

@@ -154,7 +154,12 @@ public class MainMenuController implements Initializable {
      */
     public void startSolo() {
         stopAnimatorThread();
-        mainCtrl.joinSolo();
+        mainCtrl.joinGame(false);
+    }
+
+    public void startMulti() {
+        stopAnimatorThread();
+        mainCtrl.joinGame(true);
     }
 
     /**

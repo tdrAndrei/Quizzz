@@ -48,6 +48,9 @@ public class MainCtrl {
     private EstimateQuestionController estimateQuestionController;
     private Scene estimateQuestionScene;
 
+    private WaitingRoomController waitingRoomController;
+    private Scene waitingRoomScene;
+
     private ClientGameController clientGameController;
 
     @Inject
@@ -58,7 +61,7 @@ public class MainCtrl {
                            Pair<MultiQuestionController, Parent> multiQuestion,
                            Pair<LeaderboardSoloController, Parent> leaderboardSolo,
                            Pair<EstimateQuestionController, Parent> estimateQuestion,
-                           ClientGameController clientGameController) {
+                           ClientGameController clientGameController, Pair<WaitingRoomController, Parent> waitingRoom ) {
         this.primaryStage = primaryStage;
 
         this.loginController = login.getKey();
@@ -75,6 +78,9 @@ public class MainCtrl {
 
         this.estimateQuestionController = estimateQuestion.getKey();
         this.estimateQuestionScene = new Scene(estimateQuestion.getValue());
+
+        this.waitingRoomController = waitingRoom.getKey();
+        this.waitingRoomScene = new Scene(waitingRoom.getValue());
 
         this.clientGameController = clientGameController;
 
@@ -134,8 +140,13 @@ public class MainCtrl {
         primaryStage.setScene(multiScene);
     }
 
-    public void joinSolo() {
-        clientGameController.startPolling();
+    public void showWaitingRoom() {
+        primaryStage.setScene(waitingRoomScene);
+    }
+
+
+    public void joinGame(boolean isMulti) {
+        clientGameController.startPolling(isMulti);
     }
 
     public void quit() throws IOException {

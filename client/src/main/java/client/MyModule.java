@@ -37,5 +37,6 @@ public class MyModule implements Module {
         binder.bind(QuoteOverviewCtrl.class).in(Scopes.SINGLETON);
         binder.bind(ClientGameController.class).in(Scopes.SINGLETON);
 
+
     }
 }
