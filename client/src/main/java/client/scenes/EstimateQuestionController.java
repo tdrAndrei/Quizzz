@@ -58,6 +58,7 @@ public class EstimateQuestionController {
 
     public void showQuestion(NewQuestionMessage message) {
         questionTxt.setText(message.getTitle());
+
     }
 
     public void showAnswer(CorrectAnswerMessage message) {
