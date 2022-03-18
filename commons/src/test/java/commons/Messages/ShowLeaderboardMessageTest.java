@@ -25,7 +25,7 @@ class ShowLeaderboardMessageTest {
         playerList.add(p1);
         playerList.add(p2);
         entries = new ArrayList<>();
-        message = new ShowLeaderboardMessage("ShowLeaderboard", playerList);
+        message = new ShowLeaderboardMessage("ShowLeaderboard", "Mid", playerList);
 
     }
 
@@ -89,7 +89,7 @@ class ShowLeaderboardMessageTest {
 
     @Test
     void testEquals() {
-        ShowLeaderboardMessage message2 = new ShowLeaderboardMessage("ShowLeaderboard", playerList);
+        ShowLeaderboardMessage message2 = new ShowLeaderboardMessage("ShowLeaderboard", "Mid", playerList);
         assertEquals(message2, message);
     }
 

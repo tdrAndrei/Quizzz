@@ -1,6 +1,8 @@
 package client.scenes;
 
 import com.google.inject.Inject;
+import commons.Messages.CorrectAnswerMessage;
+import commons.Messages.NewQuestionMessage;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -44,14 +46,26 @@ public class EstimateQuestionController {
     private GridPane grid;
 
     private final MainCtrl mainCtrl;
+    private final ClientGameController clientGameController;
+
     Image image = new Image("/client.photos/usedJoker.png");
 
     @Inject
-    public EstimateQuestionController(MainCtrl mainCtrl){
+    public EstimateQuestionController(MainCtrl mainCtrl, ClientGameController clientGameController){
         this.mainCtrl = mainCtrl;
+        this.clientGameController = clientGameController;
+    }
+
+    public void showQuestion(NewQuestionMessage message) {
+        questionTxt.setText(message.getTitle());
+    }
+
+    public void showAnswer(CorrectAnswerMessage message) {
+        questionTxt.setText("The answer is "+message.getCorrectAnswer());
     }
 
     public void quit() throws IOException {
+        clientGameController.exitGame();
         mainCtrl.showMainMenu();
     }
 

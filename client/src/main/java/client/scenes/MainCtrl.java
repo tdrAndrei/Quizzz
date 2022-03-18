@@ -24,6 +24,7 @@ import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 
+
 import javax.inject.Inject;
 import java.io.IOException;
 
@@ -47,6 +48,11 @@ public class MainCtrl {
     private EstimateQuestionController estimateQuestionController;
     private Scene estimateQuestionScene;
 
+    private WaitingRoomController waitingRoomController;
+    private Scene waitingRoomScene;
+
+    private ClientGameController clientGameController;
+
     @Inject
     private ServerUtils server;
 
@@ -54,7 +60,8 @@ public class MainCtrl {
                            Pair<MainMenuController, Parent> mainMenu,
                            Pair<MultiQuestionController, Parent> multiQuestion,
                            Pair<LeaderboardSoloController, Parent> leaderboardSolo,
-                           Pair<EstimateQuestionController, Parent> estimateQuestion) {
+                           Pair<EstimateQuestionController, Parent> estimateQuestion,
+                           ClientGameController clientGameController, Pair<WaitingRoomController, Parent> waitingRoom ) {
         this.primaryStage = primaryStage;
 
         this.loginController = login.getKey();
@@ -71,6 +78,11 @@ public class MainCtrl {
 
         this.estimateQuestionController = estimateQuestion.getKey();
         this.estimateQuestionScene = new Scene(estimateQuestion.getValue());
+
+        this.waitingRoomController = waitingRoom.getKey();
+        this.waitingRoomScene = new Scene(waitingRoom.getValue());
+
+        this.clientGameController = clientGameController;
 
         showLogin();
         primaryStage.show();
@@ -128,6 +140,15 @@ public class MainCtrl {
         primaryStage.setScene(multiScene);
     }
 
+    public void showWaitingRoom() {
+        primaryStage.setScene(waitingRoomScene);
+    }
+
+
+    public void joinGame(boolean isMulti) {
+        clientGameController.startPolling(isMulti);
+    }
+
     public void quit() throws IOException {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Exit");
@@ -146,4 +167,7 @@ public class MainCtrl {
         this.user = user;
     }
 
+    public User getUser() {
+        return user;
+    }
 }

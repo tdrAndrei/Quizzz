@@ -37,15 +37,15 @@ public class Game {
         this.questionService = questionService;
         stageQueue.add(new MutablePair<>("Waiting", Integer.MAX_VALUE));
         for (int i = 0; i < 10; i++) {
-            stageQueue.add(new MutablePair<>("Question", 7));
-            stageQueue.add(new MutablePair<>("CorrectAns", 3));
+            stageQueue.add(new MutablePair<>("Question", 1));
+            stageQueue.add(new MutablePair<>("CorrectAns", 1));
         }
-        stageQueue.add(new MutablePair<>("Leaderboard", 7));
+        stageQueue.add(new MutablePair<>("Leaderboard", 1));
         for (int i = 0; i < 10; i++) {
-            stageQueue.add(new MutablePair<>("Estimate", 7));
-            stageQueue.add(new MutablePair<>("CorrectAns", 3));
+            stageQueue.add(new MutablePair<>("Estimate", 1));
+            stageQueue.add(new MutablePair<>("CorrectAns", 1));
         }
-        stageQueue.add(new MutablePair<>("End", 15));
+        stageQueue.add(new MutablePair<>("End", 1));
 
         initializeStage();
     }
@@ -72,7 +72,7 @@ public class Game {
             case "Question":
                 setMaxTime(stagePair.getValue());
                 currentQuestion = questionService.makeMultipleChoice(stagePair.getValue());
-                insertQuestionIntoDiff(currentQuestion);
+                insertMCQQuestionIntoDiff(currentQuestion);
                 break;
 
             case "CorrectAns":
@@ -83,7 +83,7 @@ public class Game {
             case "Estimate":
                 setMaxTime(stagePair.getValue());
                 currentQuestion = questionService.makeEstimate(stagePair.getValue());
-                insertQuestionIntoDiff(currentQuestion);
+                insertEstimateQuestionIntoDiff(currentQuestion);
                 break;
 
             case "Leaderboard":
@@ -92,7 +92,7 @@ public class Game {
                     break;
                 }
                 setMaxTime(stagePair.getValue());
-                insertMessageIntoDiff(new ShowLeaderboardMessage("ShowLeaderboard", new ArrayList<>(playerMap.values())));
+                insertMessageIntoDiff(new ShowLeaderboardMessage("ShowLeaderboard", "Mid", new ArrayList<>(playerMap.values())));
                 break;
 
             case "End":
@@ -101,7 +101,7 @@ public class Game {
                     leaderBoardEntryService.insert(new LeaderboardEntry(player.getUser().getName(), player.getScore()));
                 }
                 setMaxTime(stagePair.getValue());
-                insertMessageIntoDiff(new ShowLeaderboardMessage("EndGame", new ArrayList<>(playerMap.values())));
+                insertMessageIntoDiff(new ShowLeaderboardMessage("ShowLeaderboard", "End", new ArrayList<>(playerMap.values())));
                 break;
 
             case "Waiting":
@@ -195,12 +195,20 @@ public class Game {
     public void insertMessageIntoDiff(Message message) {
         diffMap.replaceAll((i, v) -> message);
     }
-    public void insertQuestionIntoDiff(Question question) {
+    public void insertMCQQuestionIntoDiff(Question question) {
         for (long id : diffMap.keySet()) {
-            NewQuestionMessage questionMessage = new NewQuestionMessage("NewQuestion", question.getTitle(), question.getActivities(), question.getTime(), playerMap.get(id).getScore());
+            NewQuestionMessage questionMessage = new NewQuestionMessage("NewQuestion", "MC", question.getTitle(), question.getActivities(), question.getTime(), playerMap.get(id).getScore());
             diffMap.put(id, questionMessage);
         }
     }
+
+    public void insertEstimateQuestionIntoDiff(Question question) {
+        for (long id : diffMap.keySet()) {
+            NewQuestionMessage questionMessage = new NewQuestionMessage("NewQuestion", "Estimate", question.getTitle(), question.getActivities(), question.getTime(), playerMap.get(id).getScore());
+            diffMap.put(id, questionMessage);
+        }
+    }
+
     public void setMaxTime(Integer time) {
         maxTime.replaceAll((i, v) -> time);
     }

@@ -1,5 +1,6 @@
 package commons.Messages;
 
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import commons.Activity;
 
 import java.util.List;
@@ -8,7 +9,9 @@ import java.util.Objects;
 /**
  * The type New question message.
  */
+@JsonTypeName("NewQuestion")
 public class NewQuestionMessage extends Message {
+    private String questionType;
     private String title;
     private List<Activity> activities;
     private int time;
@@ -29,12 +32,31 @@ public class NewQuestionMessage extends Message {
      * @param time       the time
      * @param score      the score
      */
-    public NewQuestionMessage(String type, String title, List<Activity> activities, int time, int score) {
+    public NewQuestionMessage(String type, String questionType, String title, List<Activity> activities, int time, int score) {
         super(type);
+        this.questionType = questionType;
         this.title = title;
         this.activities = activities;
         this.time = time;
         this.score = score;
+    }
+
+    /**
+     * Gets title.
+     *
+     * @return the question type
+     */
+    public String getQuestionType() {
+        return questionType;
+    }
+
+    /**
+     * Sets question type.
+     *
+     * @param questionType the title
+     */
+    public void setQuestionType(String questionType) {
+        this.questionType = questionType;
     }
 
     /**
@@ -126,7 +148,7 @@ public class NewQuestionMessage extends Message {
     @Override
     public String toString() {
         return "NewQuestionMessage{" +
-                "type='" + type + '\'' +
+                "type='" + type + "("+questionType+")"+'\'' +
                 ", title='" + title + '\'' +
                 ", activities=" + activities +
                 ", time=" + time +

@@ -1,5 +1,6 @@
 package commons.Messages;
 
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import commons.Player;
 
 import java.util.List;
@@ -8,6 +9,7 @@ import java.util.Objects;
 /**
  * The type New players message.
  */
+@JsonTypeName("NewPlayersMessage")
 public class NewPlayersMessage extends Message {
 
     private List<Player> playerList;

@@ -1,11 +1,26 @@
 package commons.Messages;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
 import java.util.Objects;
 
 /**
  * The type Message.
  */
-public class Message {
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonTypeInfo(
+        use = JsonTypeInfo.Id.NAME,
+        include = JsonTypeInfo.As.PROPERTY,
+        property = "type")
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = CorrectAnswerMessage.class, name = "ShowCorrectAnswer"),
+        @JsonSubTypes.Type(value = NewPlayersMessage.class, name = "NewPlayersMessage"),
+        @JsonSubTypes.Type(value = NewQuestionMessage.class, name = "NewQuestion"),
+        @JsonSubTypes.Type(value = NullMessage.class, name = "None"),
+        @JsonSubTypes.Type(value = ShowLeaderboardMessage.class, name = "ShowLeaderboard"),
+})public class Message {
     /**
      * The Type.
      */
