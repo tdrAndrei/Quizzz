@@ -1,12 +1,12 @@
 ## Team meeting week 4 - notes
 Date:           15-03-2022\
-Main focus:     Feedback HCI\
+Main focus:    Discussion of work to date\
 Chair:         Wiktor Grzybko\
 Note taker:     Juan Tarazona
 
 ## Meetings in the 2 past weeks
 Covered by notes provided by Juan which can be found in docs.
-## Opening
+# Opening
 Participants: all (Kayleigh and Tudor online)
 # Agenda points
 - HCI feedback 
