@@ -2,6 +2,7 @@ package client.scenes;
 
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
+import commons.Activity;
 import commons.Messages.CorrectAnswerMessage;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -22,6 +23,7 @@ import javafx.util.Duration;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class MultiQuestionController implements Initializable {
@@ -112,11 +114,13 @@ public class MultiQuestionController implements Initializable {
     public void changeJoker1() {
         if (!disable) {
             eliminateJoker.setImage(image);
+            useEliminateJoker();
         }
     }
     public void changeJoker2() {
         if (!disable) {
             doublePointsJoker.setImage(image);
+            useDoublePointsJoker();
         }
     }
     public void changeJoker3() {
@@ -224,6 +228,34 @@ public class MultiQuestionController implements Initializable {
         }
         public void enable() {
             disable = false;
+        }
+        public void setQuestions(List<Activity> activities) {
+            Activity firstActivity = activities.get(0);
+            question1Image.setImage(new Image(firstActivity.getImage_path()));
+            activity1Label.setText(firstActivity.getTitle());
+            Activity secondActivity = activities.get(1);
+            question2Image.setImage(new Image(secondActivity.getImage_path()));
+            activity2Label.setText(secondActivity.getTitle());
+            Activity thirdActivity = activities.get(2);
+            question3Image.setImage(new Image(thirdActivity.getImage_path()));
+            activity3Label.setText(thirdActivity.getTitle());
+        }
+
+        public void useDoublePointsJoker() {
+            clientGameController.doublePoint();
+        }
+        public void useEliminateJoker() {
+            long index = clientGameController.eliminateJoker();
+                if (index == 0) {
+                    question1Image.setImage(new Image("/client.photos/bomb.png"));
+                    activity1Label.setText("This answer has been eliminated");
+                } else if (index == 1) {
+                    question2Image.setImage(new Image("/client.photos/bomb.png"));
+                    activity2Label.setText("This answer has been eliminated");
+                } else {
+                    question3Image.setImage(new Image("/client.photos/bomb.png"));
+                    activity3Label.setText("This answer has been eliminated");
+                }
         }
 
 

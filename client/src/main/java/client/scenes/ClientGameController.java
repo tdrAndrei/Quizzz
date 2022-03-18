@@ -77,6 +77,7 @@ public class ClientGameController {
                         mainController.showMultiQuestion();
                         multiQuestionController.showQuestion(newQuestionMessage);
                         multiQuestionController.enable();
+                        multiQuestionController.setQuestions(newQuestionMessage.getActivities());
                     });
                 } else if (newQuestionMessage.getQuestionType().equals("Estimate")) {
                     Platform.runLater(() -> {
@@ -128,6 +129,13 @@ public class ClientGameController {
     }
     public void submitAnswer(long answer) {
         serverUtils.submitAnswer(getGameId(), mainController.getUser().getId(), answer);
+    }
+    public void doublePoint() {
+        serverUtils.useDoublePointsJoker(getGameId(),mainController.getUser().getId());
+    }
+    public long eliminateJoker() {
+        return serverUtils.eliminateJoker(getGameId());
+
     }
 }
 

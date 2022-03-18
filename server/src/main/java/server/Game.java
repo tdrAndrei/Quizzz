@@ -37,7 +37,7 @@ public class Game {
         this.questionService = questionService;
         stageQueue.add(new MutablePair<>("Waiting", Integer.MAX_VALUE));
         for (int i = 0; i < 10; i++) {
-            stageQueue.add(new MutablePair<>("Question", 5));
+            stageQueue.add(new MutablePair<>("Question", 10));
             stageQueue.add(new MutablePair<>("CorrectAns", 1));
         }
         stageQueue.add(new MutablePair<>("Leaderboard", 5));
