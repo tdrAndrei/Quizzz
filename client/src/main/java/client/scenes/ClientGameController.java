@@ -44,9 +44,11 @@ public class ClientGameController {
         if (isMulti) {
             gameId = serverUtils.joinMulti(mainController.getUser());
             mainController.showWaitingRoom();
+            multiQuestionController.reset();
         } else {
             gameId = serverUtils.joinSolo(mainController.getUser());
             mainController.showMultiQuestion();
+            multiQuestionController.reset();
         }
         Timer timer = new Timer();
         timer.scheduleAtFixedRate( new TimerTask() {
@@ -79,6 +81,8 @@ public class ClientGameController {
                     Platform.runLater(() -> {
                         mainController.showMultiQuestion();
                         multiQuestionController.showQuestion(newQuestionMessage);
+                        multiQuestionController.enable();
+                        multiQuestionController.setQuestions(newQuestionMessage.getActivities());
                     });
                 } else if (newQuestionMessage.getQuestionType().equals("Estimate")) {
                     Platform.runLater(() -> {
@@ -106,6 +110,7 @@ public class ClientGameController {
                 Platform.runLater(() -> {
                     estimateQuestionController.showAnswer(correctAnswerMessage);
                     multiQuestionController.showAnswer(correctAnswerMessage);
+                    multiQuestionController.changeScore(correctAnswerMessage.getScore());
                 });
                 break;
             default:
@@ -128,6 +133,16 @@ public class ClientGameController {
 
     public void setPlaying(boolean playing) {
         isPlaying = playing;
+    }
+    public void submitAnswer(long answer) {
+        serverUtils.submitAnswer(getGameId(), mainController.getUser().getId(), answer);
+    }
+    public void doublePoint() {
+        serverUtils.useDoublePointsJoker(getGameId(), mainController.getUser().getId());
+    }
+    public long eliminateJoker() {
+        return serverUtils.eliminateJoker(getGameId());
+
     }
 }
 
