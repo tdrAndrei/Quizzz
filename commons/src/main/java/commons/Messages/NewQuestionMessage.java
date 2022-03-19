@@ -2,20 +2,25 @@ package commons.Messages;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import commons.Activity;
+import org.apache.commons.lang3.tuple.MutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Random;
 
 /**
  * The type New question message.
  */
 @JsonTypeName("NewQuestion")
 public class NewQuestionMessage extends Message {
+
     private String questionType;
     private String title;
     private List<Activity> activities;
     private int time;
     private int score;
+    private Pair<Long, Long> bounds;
 
     /**
      * Instantiates a new New question message.
@@ -32,13 +37,22 @@ public class NewQuestionMessage extends Message {
      * @param time       the time
      * @param score      the score
      */
-    public NewQuestionMessage(String type, String questionType, String title, List<Activity> activities, int time, int score) {
+    public NewQuestionMessage(String type, String questionType, String title, List<Activity> activities, int time, int score, long answer) {
         super(type);
         this.questionType = questionType;
         this.title = title;
         this.activities = activities;
         this.time = time;
         this.score = score;
+        if (questionType.equals("Estimate")){
+
+            Random random = new Random();
+            int i = 2 + random.nextInt(5);
+            bounds = new MutablePair<>(answer - answer * i/10, answer + answer * i/10);
+
+        } else {
+            bounds = new MutablePair<>(-1L, -1L);
+        }
     }
 
     /**
@@ -93,6 +107,14 @@ public class NewQuestionMessage extends Message {
      */
     public void setActivities(List<Activity> activities) {
         this.activities = activities;
+    }
+
+    public Pair<Long, Long> getBounds() {
+        return bounds;
+    }
+
+    public void setBounds(Pair<Long, Long> bounds) {
+        this.bounds = bounds;
     }
 
     /**

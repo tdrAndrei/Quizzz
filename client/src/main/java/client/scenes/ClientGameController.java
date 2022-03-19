@@ -54,7 +54,10 @@ public class ClientGameController {
                     return;
                 }
                 Message message = serverUtils.pollUpdate(gameId, mainController.getUser().getId());
-                interpretMessage(message);
+                try {
+                    interpretMessage(message);
+                } catch (InterruptedException ignored) {
+                }
                 if (message instanceof ShowLeaderboardMessage && ((ShowLeaderboardMessage) message).getGameProgress().equals("End")) {
                     timer.cancel();
                 }
@@ -62,7 +65,7 @@ public class ClientGameController {
         } , 0, 500);
     }
 
-    public void interpretMessage(Message message) {
+    public void interpretMessage(Message message) throws InterruptedException {
         switch (message.getType()) {
             case "None":
                 NullMessage nullMessage = (NullMessage) message;
@@ -83,6 +86,7 @@ public class ClientGameController {
                         estimateQuestionController.showQuestion(newQuestionMessage);
                     });
                 }
+                Thread.sleep(10000);
                 break;
             case "ShowLeaderboard":
                 ShowLeaderboardMessage showLeaderboardMessage = (ShowLeaderboardMessage) message;
@@ -102,6 +106,7 @@ public class ClientGameController {
                     estimateQuestionController.showAnswer(correctAnswerMessage);
                     multiQuestionController.showAnswer(correctAnswerMessage);
                 });
+                Thread.sleep(3000);
                 break;
             default:
         }

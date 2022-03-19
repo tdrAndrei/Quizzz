@@ -109,7 +109,7 @@
                <children>
                   <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="400.0" prefWidth="400.0">
                      <children>
-                        <GridPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="300.0" prefWidth="300.0" styleClass="questionCardGrid" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <GridPane layoutX="4.0" layoutY="4.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="300.0" prefWidth="300.0" styleClass="questionCardGrid" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="4.0">
                            <columnConstraints>
                               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
                            </columnConstraints>
@@ -138,11 +138,23 @@
                         <Insets />
                      </HBox.margin>
                   </AnchorPane>
-                  <Slider fx:id="answerSlider" maxHeight="-Infinity" orientation="VERTICAL" prefHeight="360.0" prefWidth="50.0" showTickLabels="true" />
+                  <Slider fx:id="answerSlider" majorTickUnit="1000.0" maxHeight="-Infinity" minorTickCount="10" onMouseReleased="#submitUserAnswer" orientation="VERTICAL" prefHeight="360.0" prefWidth="50.0" showTickLabels="true">
+                     <padding>
+                        <Insets right="-14.0" />
+                     </padding></Slider>
                </children>
                <GridPane.margin>
                   <Insets top="20.0" />
                </GridPane.margin>
+            </HBox>
+            <HBox maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="50.0" prefWidth="100.0" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
+               <children>
+                  <Label fx:id="answerLabel" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="91.0" prefWidth="226.0" text="Answer" textAlignment="JUSTIFY">
+                     <font>
+                        <Font name="Comicbon" size="20.0" />
+                     </font>
+                  </Label>
+               </children>
             </HBox>
          </children>
          <padding>
