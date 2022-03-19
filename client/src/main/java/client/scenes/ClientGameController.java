@@ -65,6 +65,7 @@ public class ClientGameController {
                     return;
                 }
                 Message message = serverUtils.pollUpdate(gameId, mainController.getUser().getId());
+                System.out.println(message);
                 try {
                     interpretMessage(message);
                 } catch (InterruptedException ignored) {

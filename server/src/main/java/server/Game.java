@@ -199,16 +199,27 @@ public class Game {
     }
     public void insertMCQQuestionIntoDiff(Question question) {
         for (long id : diffMap.keySet()) {
-            NewQuestionMessage questionMessage = new NewQuestionMessage("NewQuestion", "MC", question.getTitle(), question.getActivities(), question.getTime(), playerMap.get(id).getScore(), -1);
+            NewQuestionMessage questionMessage = new NewQuestionMessage("NewQuestion", "MC", question.getTitle(), question.getActivities(), question.getTime(), playerMap.get(id).getScore(), null);
+            System.out.println(questionMessage);
             diffMap.put(id, questionMessage);
         }
     }
 
     public void insertEstimateQuestionIntoDiff(Question question) {
         for (long id : diffMap.keySet()) {
-            NewQuestionMessage questionMessage = new NewQuestionMessage("NewQuestion", "Estimate", question.getTitle(), question.getActivities(), question.getTime(), playerMap.get(id).getScore(), question.getAnswer());
+            NewQuestionMessage questionMessage = new NewQuestionMessage("NewQuestion", "Estimate", question.getTitle(), question.getActivities(), question.getTime(), playerMap.get(id).getScore(), getBoundsForEstimate(question.getAnswer()));
             diffMap.put(id, questionMessage);
         }
+    }
+
+    public List<Long> getBoundsForEstimate(long answer) {
+        Random rm = new Random();
+        int i = 2 + rm.nextInt(5);
+        int j = 2 + rm.nextInt(5);
+        List<Long> bounds = new ArrayList<Long>();
+        bounds.add(Long.valueOf(answer - answer * i / 10L));
+        bounds.add(Long.valueOf(answer + answer * j / 10L));
+        return bounds;
     }
 
     public void setMaxTime(Integer time) {

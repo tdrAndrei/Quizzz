@@ -2,12 +2,9 @@ package commons.Messages;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import commons.Activity;
-import org.apache.commons.lang3.tuple.MutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Random;
 
 /**
  * The type New question message.
@@ -20,7 +17,7 @@ public class NewQuestionMessage extends Message {
     private List<Activity> activities;
     private int time;
     private int score;
-    private Pair<Long, Long> bounds;
+    private List<Long> bounds;
 
     /**
      * Instantiates a new New question message.
@@ -36,23 +33,16 @@ public class NewQuestionMessage extends Message {
      * @param activities the activities
      * @param time       the time
      * @param score      the score
+     * @param bounds     the bounds for estimate question
      */
-    public NewQuestionMessage(String type, String questionType, String title, List<Activity> activities, int time, int score, long answer) {
+    public NewQuestionMessage(String type, String questionType, String title, List<Activity> activities, int time, int score, List<Long> bounds) {
         super(type);
         this.questionType = questionType;
         this.title = title;
         this.activities = activities;
         this.time = time;
         this.score = score;
-        if (questionType.equals("Estimate")){
-
-            Random random = new Random();
-            int i = 2 + random.nextInt(5);
-            bounds = new MutablePair<>(answer - answer * i/10, answer + answer * i/10);
-
-        } else {
-            bounds = new MutablePair<>(-1L, -1L);
-        }
+        this.bounds = bounds;
     }
 
     /**
@@ -109,11 +99,11 @@ public class NewQuestionMessage extends Message {
         this.activities = activities;
     }
 
-    public Pair<Long, Long> getBounds() {
+    public List<Long> getBounds() {
         return bounds;
     }
 
-    public void setBounds(Pair<Long, Long> bounds) {
+    public void setBounds(List<Long> bounds) {
         this.bounds = bounds;
     }
 
@@ -159,22 +149,24 @@ public class NewQuestionMessage extends Message {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         NewQuestionMessage that = (NewQuestionMessage) o;
-        return time == that.time && score == that.score && Objects.equals(title, that.title) && Objects.equals(activities, that.activities);
+        return time == that.time && score == that.score && Objects.equals(questionType, that.questionType) && Objects.equals(title, that.title) && Objects.equals(activities, that.activities) && Objects.equals(bounds, that.bounds);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), title, activities, time, score);
+        return Objects.hash(super.hashCode(), questionType, title, activities, time, score, bounds);
     }
 
     @Override
     public String toString() {
         return "NewQuestionMessage{" +
-                "type='" + type + "("+questionType+")"+'\'' +
+                "type='" + type + '\'' +
+                ", questionType='" + questionType + '\'' +
                 ", title='" + title + '\'' +
                 ", activities=" + activities +
                 ", time=" + time +
                 ", score=" + score +
+                ", bounds=" + bounds +
                 '}';
     }
 }

@@ -32,7 +32,6 @@ public class QuoteControllerTest {
     public int nextInt;
     private MyRandom random;
     private TestQuoteRepository repo;
-
     private QuoteController sut;
 
     @BeforeEach

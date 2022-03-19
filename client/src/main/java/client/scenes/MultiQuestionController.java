@@ -231,6 +231,7 @@ public class MultiQuestionController implements Initializable {
             Activity firstActivity = activities.get(0);
             question1Image.setImage(new Image(firstActivity.getImage_path()));
             activity1Label.setText(firstActivity.getTitle());
+            System.out.println(firstActivity.getTitle());
             Activity secondActivity = activities.get(1);
             question2Image.setImage(new Image(secondActivity.getImage_path()));
             activity2Label.setText(secondActivity.getTitle());

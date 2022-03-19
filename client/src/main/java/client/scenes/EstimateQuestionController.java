@@ -48,6 +48,9 @@ public class EstimateQuestionController implements Initializable {
     private Label pointsLabel;
 
     @FXML
+    private ImageView question1Image;
+
+    @FXML
     private Button submitAnswerButton;
 
     @FXML
@@ -68,13 +71,14 @@ public class EstimateQuestionController implements Initializable {
     public void showQuestion(NewQuestionMessage message) {
 
         answerSlider.valueProperty().addListener(changeListener);
-        answerSlider.setMin(message.getBounds().getLeft());
-        answerSlider.setMax(message.getBounds().getRight());
+        answerSlider.setMin(message.getBounds().get(0));
+        answerSlider.setMax(message.getBounds().get(1));
         answerSlider.setValue(answerSlider.getMin());
         answerSlider.setDisable(false);
 
         questionTxt.setText(message.getTitle());
         activity1Label.setText(message.getActivities().get(0).getTitle());
+        question1Image.setImage(new Image(message.getActivities().get(0).getImage_path()));
 
         answerLabel.setText("");
         answerLabel.setStyle("-fx-text-fill: black");
