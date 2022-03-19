@@ -2,7 +2,6 @@ package client.scenes;
 
 import client.utils.ServerUtils;
 import commons.LeaderboardEntry;
-import jakarta.ws.rs.WebApplicationException;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -10,7 +9,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
-import javafx.stage.Modality;
 
 import javax.inject.Inject;
 import java.net.URL;
@@ -22,24 +20,41 @@ import java.util.ResourceBundle;
 class LeaderboardEntryLabel {
 
     Label nameLabel;
-    int points;
+    Label scoreLabel;
+    Long entryId;
 
-    public LeaderboardEntryLabel(Label nameLabel, int points) {
+    public LeaderboardEntryLabel(Long entryId, Label nameLabel, Label scoreLabel) {
+        this.entryId = entryId;
         this.nameLabel=nameLabel;
-        this.points=points;
+        this.scoreLabel=scoreLabel;
+    }
+
+    public Long getEntryId() {
+        return entryId;
+    }
+
+    public void setEntryId(Long entryId) {
+        this.entryId = entryId;
+    }
+
+    public void setNameLabel(Label nameLabel) {
+        this.nameLabel = nameLabel;
     }
 
     public Label getNameLabel() {
         return nameLabel;
     }
-    public int getPoints() {
-        return points;
-    }
+
     public void setName(Label nameLabel) {
         this.nameLabel = nameLabel;
     }
-    public void setPoints(int points) {
-        this.points = points;
+
+    public Label getScoreLabel() {
+        return scoreLabel;
+    }
+
+    public void setScoreLabel(Label scoreLabel) {
+        this.scoreLabel = scoreLabel;
     }
 
     @Override
@@ -47,14 +62,14 @@ class LeaderboardEntryLabel {
         if (this == o) return true;
         if (!(o instanceof LeaderboardEntryLabel)) return false;
         LeaderboardEntryLabel that = (LeaderboardEntryLabel) o;
-        return points == that.points && Objects.equals(nameLabel, that.nameLabel);
+        return Objects.equals(scoreLabel, that.scoreLabel) && Objects.equals(nameLabel, that.nameLabel);
     }
 
     @Override
     public String toString() {
         return "LeaderboardEntry{" +
                 "nameLabel=" + nameLabel +
-                ", points=" + points +
+                ", scoreLabel=" + scoreLabel +
                 '}';
     }
 }
@@ -71,16 +86,13 @@ public class LeaderboardSoloController implements Initializable {
     private TableColumn<LeaderboardEntryLabel, Label> colName;
 
     @FXML
-    private TableColumn<LeaderboardEntryLabel, Integer> colScore;
-
-    @FXML
-    private TextField name;
-
-    @FXML
-    private TextField score;
+    private TableColumn<LeaderboardEntryLabel, Label> colScore;
 
     @FXML
     private GridPane grid;
+
+    @FXML
+    private Label rank;
 
     private ObservableList<LeaderboardEntryLabel> data;
 
@@ -95,39 +107,27 @@ public class LeaderboardSoloController implements Initializable {
         this.server = server;
     }
 
-    public void addEntry() {
-        try {
-            server.addLeaderboardEntry(new LeaderboardEntry(name.getText(), Integer.parseInt(score.getText())));
-        } catch (WebApplicationException e) {
-
-            var alert = new Alert(Alert.AlertType.ERROR);
-            alert.initModality(Modality.APPLICATION_MODAL);
-            alert.setContentText(e.getMessage());
-            alert.showAndWait();
-            return;
-        }
-
-        refresh();
-    }
-
-    public void addLabel(String name, int sc) {
-            Label label = new Label();
-            label.setText(name);
+    public void addLabel(String name, int sc, long entryId) {
+            Label nameLabel = new Label();
+            nameLabel.setText(name);
             int range = scoreUpperBound-scoreLowerBound;
             if (sc >= (scoreLowerBound+range*5/6)) {
-                label.getStyleClass().add("greenBar");
+                nameLabel.getStyleClass().add("greenBar");
             } else if (sc >= (scoreLowerBound+range*4/6)) {
-                label.getStyleClass().add("greenYellowBar");
+                nameLabel.getStyleClass().add("greenYellowBar");
             } else if (sc >= (scoreLowerBound+range*3/6)) {
-                label.getStyleClass().add("yellowBar");
+                nameLabel.getStyleClass().add("yellowBar");
             } else if (sc >= (scoreLowerBound+range*2/6)) {
-                label.getStyleClass().add("yellowOrangeBar");
+                nameLabel.getStyleClass().add("yellowOrangeBar");
             } else if (sc >= (scoreLowerBound+range*1/6)) {
-                label.getStyleClass().add("orangeBar");
+                nameLabel.getStyleClass().add("orangeBar");
             } else {
-                label.getStyleClass().add("redBar");
+                nameLabel.getStyleClass().add("redBar");
             }
-            entries.add(getNearestIndex(sc, 0, entries.size() - 1), new LeaderboardEntryLabel(label, sc));
+            Label scoreLabel = new Label();
+            scoreLabel.setText(String.valueOf(sc));
+
+            entries.add(getNearestIndex(sc, 0, entries.size() - 1), new LeaderboardEntryLabel(entryId, nameLabel, scoreLabel));
             resizeLabels();
             data = FXCollections.observableList(entries);
             leaderboardEntries.setItems(data);
@@ -141,15 +141,17 @@ public class LeaderboardSoloController implements Initializable {
             double minWidth = grid.getPrefWidth()/3;
             double x = minWidth/100;
 
-            if (entry.getPoints() < (scoreLowerBound+range/6)) {
+            int score = Integer.parseInt(entry.getScoreLabel().getText());
+
+            if (score < (scoreLowerBound+range/6)) {
                 minWidth+=50*x;
-            } else if (entry.getPoints() < (scoreLowerBound+range*2/6)) {
+            } else if (score < (scoreLowerBound+range*2/6)) {
                 minWidth+=40*x;
-            } else if (entry.getPoints() < (scoreLowerBound+range*3/6)) {
+            } else if (score < (scoreLowerBound+range*3/6)) {
                 minWidth+=30*x;
-            } else if (entry.getPoints() < (scoreLowerBound+range*4/6)) {
+            } else if (score < (scoreLowerBound+range*4/6)) {
                 minWidth+=20*x;
-            } else if (entry.getPoints() < (scoreLowerBound+range*5/6)) {
+            } else if (score < (scoreLowerBound+range*5/6)) {
                 minWidth+=10*x;
             }
             entries.get(i).getNameLabel().setStyle("-fx-shape: \"M 0 100 L "+(minWidth)+" 100 L "+(minWidth+25)+" 50 L "+(minWidth)+" 0 L 0 0 L 0 100 z\"");
@@ -159,10 +161,43 @@ public class LeaderboardSoloController implements Initializable {
         leaderboardEntries.setItems(data);
     }
 
+    public void showMine(Long entryId) {
+        int pos = 0;
+        while (pos < entries.size()) {
+            LeaderboardEntryLabel entry = entries.get(pos);
+            if (Objects.equals(entry.getEntryId(), entryId)) {
+                entries.get(pos).getScoreLabel().getStyleClass().add("selectedScore");
+                int width = 64;
+                entries.get(pos).getScoreLabel().setStyle("-fx-shape: \"M 0 50 L 150 100 L 700 100 L 700 0 L 150 0 L 0 50 z\"");
+                entries.get(pos).getScoreLabel().setMinWidth(width);
+                entries.get(pos).getScoreLabel().setMaxHeight(100);
+                rank.setText("You finished in " + (pos+1) + ordinal(pos+1) + " place!");
+                break;
+            }
+            pos++;
+        }
+        data = FXCollections.observableList(entries);
+        leaderboardEntries.setItems(data);
+        leaderboardEntries.scrollTo(pos);
+    }
+    public static String ordinal(int n) {
+        if (n % 100 > 3 && n % 100 < 21) {
+            return "th";
+        } else if (n % 10 == 1) {
+            return "st";
+        } else if (n % 10 == 2) {
+            return "nd";
+        } else if (n % 10 == 3) {
+            return "rd";
+        } else {
+            return "th";
+        }
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         colName.setCellValueFactory(q -> new SimpleObjectProperty<>(q.getValue().getNameLabel()));
-        colScore.setCellValueFactory(q -> new SimpleObjectProperty<>(q.getValue().getPoints()));
+        colScore.setCellValueFactory(q -> new SimpleObjectProperty<>(q.getValue().getScoreLabel()));
     }
 
     public void backToMainMenu(){
@@ -174,13 +209,19 @@ public class LeaderboardSoloController implements Initializable {
             return low;
         }
         int mid = (low+high)/2;
-        if ((mid == 0 || entries.get(mid-1).getPoints() >= target) && target > entries.get(mid).getPoints()) {
+        if ((mid == 0 || Integer.parseInt(entries.get(mid-1).getScoreLabel().getText()) >= target)
+                && target > Integer.parseInt(entries.get(mid).getScoreLabel().getText())) {
             return mid;
         }
-        if (target <= entries.get(mid).getPoints()) {
+        if (target <= Integer.parseInt(entries.get(mid).getScoreLabel().getText())) {
             return getNearestIndex(target, mid+1, high);
         }
         return getNearestIndex(target, low, mid-1);
+    }
+
+    public void reset() {
+        leaderboardEntries.scrollTo(0);
+        rank.setText("");
     }
 
     public void refresh() {
@@ -199,7 +240,7 @@ public class LeaderboardSoloController implements Initializable {
             }
         }
         for (LeaderboardEntry rawEntry : allTimeEntries) {
-            addLabel(rawEntry.getName(), rawEntry.getScore());
+            addLabel(rawEntry.getName(), rawEntry.getScore(), rawEntry.getId());
         }
     }
 

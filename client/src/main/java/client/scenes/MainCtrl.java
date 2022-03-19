@@ -99,6 +99,7 @@ public class MainCtrl {
 
     public void showLeaderboardSolo() {
         primaryStage.setTitle("Quizzzz!");
+        leaderboardSoloController.reset();
         leaderboardSoloController.refresh();
         primaryStage.setScene(leaderboardSoloScene);
         leaderboardSoloScene.widthProperty().addListener(e -> {
