@@ -133,7 +133,7 @@ public class ClientGameController {
         serverUtils.submitAnswer(getGameId(), mainController.getUser().getId(), answer);
     }
     public void doublePoint() {
-        serverUtils.useDoublePointsJoker(getGameId(),mainController.getUser().getId());
+        serverUtils.useDoublePointsJoker(getGameId(), mainController.getUser().getId());
     }
     public long eliminateJoker() {
         return serverUtils.eliminateJoker(getGameId());
