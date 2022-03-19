@@ -19,6 +19,10 @@
     -fx-font-family: 'Comicbon';
 }
 
+#submitAnswerButton {
+    -fx-font-family: 'Comicbon';
+}
+
 #answerLabel {
     -fx-font-family: 'Comicbon';
     -fx-font-weight: bold;

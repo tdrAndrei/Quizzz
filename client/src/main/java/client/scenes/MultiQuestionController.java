@@ -76,21 +76,13 @@ public class MultiQuestionController implements Initializable {
     @FXML
     private GridPane grid;
 
-
     private double baseWidth;
     private double baseHeight;
-    private boolean timeJokerUsed = false;
-    private boolean eliminateJokerUsed = false;
-    private boolean doublePointsJokerUsed = false;
     private long chosenAnswer;
-    private boolean disable = false;
 
     private MainCtrl mainCtrl;
     private final ClientGameController clientGameController;
     private final ServerUtils serverUtils;
-
-    // ImageView imageView;
-    Image image = new Image("/client.photos/usedJoker.png");
 
     @Inject
     public MultiQuestionController(MainCtrl mainCtrl, ClientGameController clientGameController, ServerUtils serverUtils){
@@ -99,35 +91,32 @@ public class MultiQuestionController implements Initializable {
         this.serverUtils =serverUtils;
     }
 
-
     public void quit() throws IOException {
         clientGameController.exitGame();
         mainCtrl.showMainMenu();
     }
+
     public void changeJoker1() {
-        if (!disable && !eliminateJokerUsed) {
-            eliminateJoker.setImage(image);
-            eliminateJokerUsed = true;
+        if (!clientGameController.isDisableJokerUsage() && !clientGameController.isEliminateJokerUsed()) {
+            eliminateJoker.setImage(clientGameController.getUsedJoker());
+            clientGameController.setEliminateJokerUsed(true);
             useEliminateJoker();
         }
     }
+
     public void changeJoker2() {
-        if (!disable && !doublePointsJokerUsed) {
-            doublePointsJoker.setImage(image);
-            doublePointsJokerUsed = true;
+        if (!clientGameController.isDisableJokerUsage() && !clientGameController.isDoublePointsJokerUsed()) {
+            doublePointsJoker.setImage(clientGameController.getUsedJoker());
+            clientGameController.setDoublePointsJokerUsed(true);
             useDoublePointsJoker();
-
         }
     }
+
     public void changeJoker3() {
-        if (!disable && !timeJokerUsed) {
-            timeJoker.setImage(image);
-            timeJokerUsed = true;
+        if (!clientGameController.isDisableJokerUsage() && !clientGameController.isTimeJokerUsed()) {
+            timeJoker.setImage(clientGameController.getUsedJoker());
+            clientGameController.setTimeJokerUsed(true);
         }
-    }
-
-    public void showEstimate() {
-        mainCtrl.showEstimate();
     }
 
     public void showQuestion(NewQuestionMessage message) {
@@ -150,7 +139,6 @@ public class MultiQuestionController implements Initializable {
             questionLabel.setText("Unfortunately wrong answer\nThe answer is: " + answer);
         }
     }
-
 
         @Override
         public void initialize (URL location, ResourceBundle resources){
@@ -214,34 +202,31 @@ public class MultiQuestionController implements Initializable {
         }
 
         public void submit1(){
-            if (!disable) {
+            if (!clientGameController.isDisableJokerUsage()) {
                 chosenAnswer = 0;
                 clientGameController.submitAnswer(0);
-                disable = true;
-
+                clientGameController.setDisableJokerUsage(true);
             }
         }
         public void submit2(){
-            if (!disable) {
+            if (!clientGameController.isDisableJokerUsage()) {
                 chosenAnswer = 1;
                 clientGameController.submitAnswer(1);
-                disable = true;
+                clientGameController.setDisableJokerUsage(true);
             }
         }
         public void submit3(){
-            if (!disable) {
+            if (!clientGameController.isDisableJokerUsage()) {
                 chosenAnswer = 2;
                 clientGameController.submitAnswer(2);
-                disable = true;
+                clientGameController.setDisableJokerUsage(true);
             }
         }
 
         public void changeScore(int score) {
             pointsLabel.setText(score + "Pts");
         }
-        public void enable() {
-            disable = false;
-        }
+
         public void setQuestions(List<Activity> activities) {
             Activity firstActivity = activities.get(0);
             question1Image.setImage(new Image(firstActivity.getImage_path()));
@@ -271,19 +256,12 @@ public class MultiQuestionController implements Initializable {
                 }
         }
 
-    public void unableAllJokers() {
-        timeJokerUsed = false;
-        eliminateJokerUsed = false;
-        doublePointsJokerUsed = false;
+    public void reset(){
         eliminateJoker.setImage(new Image("/client.photos/jokerOneAnswer.png"));
         doublePointsJoker.setImage(new Image("/client.photos/doubleJoker.png"));
         timeJoker.setImage(new Image("/client.photos/timeJoker.png"));
-    }
-    public void reset() {
         pointsLabel.setText("0");
-        unableAllJokers();
     }
-
 
 }
 

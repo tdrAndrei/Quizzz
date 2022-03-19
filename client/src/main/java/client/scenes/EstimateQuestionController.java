@@ -48,16 +48,15 @@ public class EstimateQuestionController implements Initializable {
     private Label pointsLabel;
 
     @FXML
+    private Button submitAnswerButton;
+
+    @FXML
     private GridPane grid;
 
     private final MainCtrl mainCtrl;
     private final ClientGameController clientGameController;
     private final ServerUtils serverUtils;
     private ChangeListener<Number> changeListener;
-    private boolean jokerAvailable;
-    private boolean usedDbPointsJoker;
-
-    Image image = new Image("/client.photos/usedJoker.png");
 
     @Inject
     public EstimateQuestionController(MainCtrl mainCtrl, ClientGameController clientGameController, ServerUtils serverUtils){
@@ -74,7 +73,6 @@ public class EstimateQuestionController implements Initializable {
         answerSlider.setValue(answerSlider.getMin());
         answerSlider.setDisable(false);
 
-        jokerAvailable = true;
         questionTxt.setText(message.getTitle());
         activity1Label.setText(message.getActivities().get(0).getTitle());
 
@@ -87,7 +85,8 @@ public class EstimateQuestionController implements Initializable {
 
         answerSlider.valueProperty().removeListener(changeListener);
         answerSlider.setDisable(true);
-        serverUtils.submitAnswer(clientGameController.getGameId(), mainCtrl.getUser().getId(), (long) answerSlider.getValue());
+
+        clientGameController.submitAnswer((long) answerSlider.getValue());
 
     }
 
@@ -95,10 +94,11 @@ public class EstimateQuestionController implements Initializable {
 
         answerSlider.valueProperty().removeListener(changeListener);
         answerSlider.setDisable(true);
+
         answerLabel.setText("The answer is " + message.getCorrectAnswer());
         answerLabel.setStyle("-fx-text-fill: rgb(131,210,0)");
+
         pointsLabel.setText(Integer.toString(message.getScore()) + " Pts");
-        jokerAvailable = false;
 
     }
 
@@ -110,8 +110,8 @@ public class EstimateQuestionController implements Initializable {
     //(eliminate one answer joker) -> minimizes the range for the slider
     public void changeJoker1() {
 
-        if (jokerAvailable) {
-            eliminateJoker.setImage(image);
+        if (!clientGameController.isDisableJokerUsage()) {
+            eliminateJoker.setImage(clientGameController.getUsedJoker());
             answerSlider.setMin(answerSlider.getMin() + 1/5 * answerSlider.getMin());
             answerSlider.setMax(answerSlider.getMax() - 1/5 * answerSlider.getMin());
         }
@@ -121,9 +121,9 @@ public class EstimateQuestionController implements Initializable {
     //doublePointsJoker
     public void changeJoker2() {
 
-        if (jokerAvailable) {
-            doublePointsJoker.setImage(image);
-            serverUtils.useDoublePointsJoker(clientGameController.getGameId(), mainCtrl.getUser().getId());
+        if (!clientGameController.isDisableJokerUsage()) {
+            doublePointsJoker.setImage(clientGameController.getUsedJoker());
+            clientGameController.doublePoint();
         }
 
     }
@@ -131,8 +131,8 @@ public class EstimateQuestionController implements Initializable {
     //skip question joker
     public void changeJoker3() {
 
-        if (jokerAvailable) {
-            timeJoker.setImage(image);
+        if (!clientGameController.isDisableJokerUsage()) {
+            timeJoker.setImage(clientGameController.getUsedJoker());
             serverUtils.useNewQuestionJoker(clientGameController.getGameId());
         }
         
@@ -159,6 +159,13 @@ public class EstimateQuestionController implements Initializable {
             }
         };
 
+    }
+
+    public void reset(){
+        eliminateJoker.setImage(new Image("/client.photos/jokerOneAnswer.png"));
+        doublePointsJoker.setImage(new Image("/client.photos/doubleJoker.png"));
+        timeJoker.setImage(new Image("/client.photos/timeJoker.png"));
+        pointsLabel.setText("0");
     }
 
 }

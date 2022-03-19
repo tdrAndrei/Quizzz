@@ -5,8 +5,8 @@ import client.utils.ServerUtils;
 import commons.Messages.*;
 import javafx.application.Platform;
 import javafx.scene.Parent;
+import javafx.scene.image.Image;
 import javafx.util.Pair;
-
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -22,6 +22,12 @@ public class ClientGameController {
 
     private final MainCtrl mainController;
     private final ServerUtils serverUtils;
+
+    private boolean timeJokerUsed = false;
+    private boolean eliminateJokerUsed = false;
+    private boolean doublePointsJokerUsed = false;
+    private boolean disableJokerUsage = false;
+    private Image usedJoker = new Image("/client.photos/usedJoker.png");
 
     @javax.inject.Inject
     public ClientGameController(MainCtrl mainController, ServerUtils serverUtils) {
@@ -41,14 +47,14 @@ public class ClientGameController {
 
     public void startPolling(boolean isMulti) {
         isPlaying = true;
+        multiQuestionController.reset();
+        estimateQuestionController.reset();
         if (isMulti) {
             gameId = serverUtils.joinMulti(mainController.getUser());
             mainController.showWaitingRoom();
-            multiQuestionController.reset();
         } else {
             gameId = serverUtils.joinSolo(mainController.getUser());
             mainController.showMultiQuestion();
-            multiQuestionController.reset();
         }
         Timer timer = new Timer();
         timer.scheduleAtFixedRate( new TimerTask() {
@@ -80,11 +86,11 @@ public class ClientGameController {
                 break;
             case "NewQuestion":
                 NewQuestionMessage newQuestionMessage = (NewQuestionMessage) message;
+                disableJokerUsage = false;
                 if (newQuestionMessage.getQuestionType().equals("MC")) {
                     Platform.runLater(() -> {
                         mainController.showMultiQuestion();
                         multiQuestionController.showQuestion(newQuestionMessage);
-                        multiQuestionController.enable();
                         multiQuestionController.setQuestions(newQuestionMessage.getActivities());
                     });
                 } else if (newQuestionMessage.getQuestionType().equals("Estimate")) {
@@ -93,7 +99,6 @@ public class ClientGameController {
                         estimateQuestionController.showQuestion(newQuestionMessage);
                     });
                 }
-                Thread.sleep(10000);
                 break;
             case "ShowLeaderboard":
                 ShowLeaderboardMessage showLeaderboardMessage = (ShowLeaderboardMessage) message;
@@ -111,12 +116,12 @@ public class ClientGameController {
                 break;
             case "ShowCorrectAnswer":
                 CorrectAnswerMessage correctAnswerMessage = (CorrectAnswerMessage) message;
+                disableJokerUsage = true;
                 Platform.runLater(() -> {
                     estimateQuestionController.showAnswer(correctAnswerMessage);
                     multiQuestionController.showAnswer(correctAnswerMessage);
                     multiQuestionController.changeScore(correctAnswerMessage.getScore());
                 });
-                Thread.sleep(3000);
                 break;
             default:
         }
@@ -126,7 +131,6 @@ public class ClientGameController {
         isPlaying = false;
         serverUtils.leaveGame(this.getGameId(), mainController.getUser().getId());
     }
-
 
     public Long getGameId() {
         return gameId;
@@ -139,15 +143,60 @@ public class ClientGameController {
     public void setPlaying(boolean playing) {
         isPlaying = playing;
     }
+
     public void submitAnswer(long answer) {
         serverUtils.submitAnswer(getGameId(), mainController.getUser().getId(), answer);
     }
+
     public void doublePoint() {
         serverUtils.useDoublePointsJoker(getGameId(), mainController.getUser().getId());
     }
+
     public long eliminateJoker() {
         return serverUtils.eliminateJoker(getGameId());
-
     }
+
+    public void enableAllJokers() {
+        timeJokerUsed = false;
+        eliminateJokerUsed = false;
+        doublePointsJokerUsed = false;
+    }
+
+    public boolean isTimeJokerUsed() {
+        return timeJokerUsed;
+    }
+
+    public void setTimeJokerUsed(boolean timeJokerUsed) {
+        this.timeJokerUsed = timeJokerUsed;
+    }
+
+    public boolean isEliminateJokerUsed() {
+        return eliminateJokerUsed;
+    }
+
+    public void setEliminateJokerUsed(boolean eliminateJokerUsed) {
+        this.eliminateJokerUsed = eliminateJokerUsed;
+    }
+
+    public boolean isDoublePointsJokerUsed() {
+        return doublePointsJokerUsed;
+    }
+
+    public void setDoublePointsJokerUsed(boolean doublePointsJokerUsed) {
+        this.doublePointsJokerUsed = doublePointsJokerUsed;
+    }
+
+    public boolean isDisableJokerUsage() {
+        return disableJokerUsage;
+    }
+
+    public void setDisableJokerUsage(boolean disableJokerUsage) {
+        this.disableJokerUsage = disableJokerUsage;
+    }
+
+    public Image getUsedJoker() {
+        return usedJoker;
+    }
+
 }
 
