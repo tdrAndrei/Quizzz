@@ -29,7 +29,7 @@ public class Game {
     private final Queue<Pair<String, Integer>> stageQueue = new LinkedList<>();
     private final Map<Long, Message> diffMap = new HashMap<>();
     private int amountAnswered = 0;
-    private LeaderBoardEntryService leaderBoardEntryService;
+    private final LeaderBoardEntryService leaderBoardEntryService;
 
     public Game(long id, QuestionService questionService, LeaderBoardEntryService leaderBoardEntryService) {
         this.id = id;
@@ -37,15 +37,15 @@ public class Game {
         this.questionService = questionService;
         stageQueue.add(new MutablePair<>("Waiting", Integer.MAX_VALUE));
         for (int i = 0; i < 10; i++) {
-            stageQueue.add(new MutablePair<>("Question", 1));
+            stageQueue.add(new MutablePair<>("Question", 10));
             stageQueue.add(new MutablePair<>("CorrectAns", 1));
         }
-        stageQueue.add(new MutablePair<>("Leaderboard", 1));
+        stageQueue.add(new MutablePair<>("Leaderboard", 5));
         for (int i = 0; i < 10; i++) {
-            stageQueue.add(new MutablePair<>("Estimate", 1));
-            stageQueue.add(new MutablePair<>("CorrectAns", 1));
+            stageQueue.add(new MutablePair<>("Estimate", 5));
+            stageQueue.add(new MutablePair<>("CorrectAns", 2));
         }
-        stageQueue.add(new MutablePair<>("End", 1));
+        stageQueue.add(new MutablePair<>("End", 5));
 
         initializeStage();
     }
@@ -96,12 +96,14 @@ public class Game {
                 break;
 
             case "End":
+                setMaxTime(stagePair.getValue());
+                ShowLeaderboardMessage leaderboardMessage = new ShowLeaderboardMessage("ShowLeaderboard", "End", new ArrayList<>(playerMap.values()));
                 if (isSolo) {
                     Player player = playerMap.entrySet().iterator().next().getValue();
-                    leaderBoardEntryService.insert(new LeaderboardEntry(player.getUser().getName(), player.getScore()));
+                    Long myEntryId = leaderBoardEntryService.insert(new LeaderboardEntry(player.getUser().getName(), player.getScore())).getId();
+                    leaderboardMessage.setEntryId(myEntryId);
                 }
-                setMaxTime(stagePair.getValue());
-                insertMessageIntoDiff(new ShowLeaderboardMessage("ShowLeaderboard", "End", new ArrayList<>(playerMap.values())));
+                insertMessageIntoDiff(leaderboardMessage);
                 break;
 
             case "Waiting":
