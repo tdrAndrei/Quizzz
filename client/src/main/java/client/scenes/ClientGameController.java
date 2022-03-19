@@ -41,11 +41,11 @@ public class ClientGameController {
         if (isMulti) {
             gameId = serverUtils.joinMulti(mainController.getUser());
             mainController.showWaitingRoom();
-            multiQuestionController.unableAllJokers();
+            multiQuestionController.reset();
         } else {
             gameId = serverUtils.joinSolo(mainController.getUser());
             mainController.showMultiQuestion();
-            multiQuestionController.unableAllJokers();
+            multiQuestionController.reset();
         }
         Timer timer = new Timer();
         timer.scheduleAtFixedRate( new TimerTask() {

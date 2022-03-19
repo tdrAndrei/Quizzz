@@ -279,7 +279,11 @@ public class MultiQuestionController implements Initializable {
         doublePointsJoker.setImage(new Image("/client.photos/doubleJoker.png"));
         timeJoker.setImage(new Image("/client.photos/timeJoker.png"));
     }
-
-
+    public void reset() {
+        pointsLabel.setText("0");
+        unableAllJokers();
     }
+
+
+}
 
