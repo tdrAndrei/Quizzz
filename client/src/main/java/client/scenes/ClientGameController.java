@@ -4,6 +4,8 @@ import client.utils.ServerUtils;
 import commons.Messages.*;
 import javafx.application.Platform;
 import javafx.scene.Parent;
+import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
 import javafx.util.Pair;
 import java.util.Timer;
@@ -27,6 +29,9 @@ public class ClientGameController {
     private boolean doublePointsJokerUsed = false;
     private boolean disableJokerUsage = false;
     private Image usedJoker = new Image("/client.photos/usedJoker.png");
+
+    private double maxTime;
+    private double timeLeft;
 
     @javax.inject.Inject
     public ClientGameController(MainCtrl mainController, ServerUtils serverUtils) {
@@ -89,16 +94,11 @@ public class ClientGameController {
                 disableJokerUsage = false;
                 if (newQuestionMessage.getQuestionType().equals("MC")) {
                     Platform.runLater(() -> {
-                        mainController.showMultiQuestion();
-                        multiQuestionController.setJokersPic();
-                        multiQuestionController.showQuestion(newQuestionMessage);
-                        multiQuestionController.setQuestions(newQuestionMessage.getActivities());
+                        prepareMCQ(newQuestionMessage);
                     });
                 } else if (newQuestionMessage.getQuestionType().equals("Estimate")) {
                     Platform.runLater(() -> {
-                        mainController.showEstimate();
-                        estimateQuestionController.setJokersPic();
-                        estimateQuestionController.showQuestion(newQuestionMessage);
+                        prepareEstimateQ(newQuestionMessage);
                     });
                 }
                 break;
@@ -200,6 +200,55 @@ public class ClientGameController {
 
     public Image getUsedJoker() {
         return usedJoker;
+    }
+
+    public double getTimeLeft(){
+        return this.timeLeft;
+    }
+
+    public void setTimeLeft(double time){
+        this.timeLeft = time;
+    }
+
+    public double getMaxTime(){
+        return this.maxTime;
+    }
+
+    public void setMaxTime(double time){
+        this.maxTime = time;
+    }
+
+    public void updateTimeLeft(double seconds, double timeLeft){
+        setTimeLeft(timeLeft - seconds);
+    }
+
+    public void updateProgressBar(double timeLeft, double maxTime, ProgressBar progressBar, Label timer){
+        if (timeLeft >= 0){
+            progressBar.setProgress(timeLeft/maxTime);
+            int displayText = (int) Math.round(getTimeLeft());
+            timer.setText(displayText + "S");
+        } else {
+            progressBar.setProgress(0.0);
+            int displayText = 0;
+            timer.setText(displayText + "S");
+        }
+    }
+
+    public void prepareMCQ(NewQuestionMessage newQuestionMessage){
+        mainController.showMultiQuestion();
+        setMaxTime(newQuestionMessage.getTime());
+        setTimeLeft(newQuestionMessage.getTime());
+        multiQuestionController.setJokersPic();
+        multiQuestionController.showQuestion(newQuestionMessage);
+        multiQuestionController.setQuestions(newQuestionMessage.getActivities());
+    }
+
+    public void prepareEstimateQ(NewQuestionMessage newQuestionMessage){
+        mainController.showEstimate();
+        setMaxTime(newQuestionMessage.getTime());
+        setTimeLeft(newQuestionMessage.getTime());
+        estimateQuestionController.setJokersPic();
+        estimateQuestionController.showQuestion(newQuestionMessage);
     }
 
 }

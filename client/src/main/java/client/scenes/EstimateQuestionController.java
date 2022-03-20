@@ -4,12 +4,14 @@ import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Messages.CorrectAnswerMessage;
 import commons.Messages.NewQuestionMessage;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -17,6 +19,8 @@ import javafx.scene.layout.GridPane;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class EstimateQuestionController implements Initializable {
 
@@ -52,6 +56,12 @@ public class EstimateQuestionController implements Initializable {
 
     @FXML
     private Button submitAnswerButton;
+
+    @FXML
+    private ProgressBar progressBar;
+
+    @FXML
+    private Label timeText;
 
     @FXML
     private GridPane grid;
@@ -165,6 +175,19 @@ public class EstimateQuestionController implements Initializable {
                 answerLabel.setText(Integer.toString(value));
             }
         };
+
+        progressBar.setProgress(1.0);
+
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                double maxTime = clientGameController.getMaxTime();
+                double timeLeft = clientGameController.getTimeLeft();
+                clientGameController.updateTimeLeft(0.1, timeLeft);
+                Platform.runLater(() -> clientGameController.updateProgressBar(timeLeft, maxTime, progressBar, timeText));
+            }
+        }, 0, 100);
 
     }
 
