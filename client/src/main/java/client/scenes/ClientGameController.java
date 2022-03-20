@@ -92,7 +92,7 @@ public class ClientGameController {
                         mainController.showMultiQuestion();
                         multiQuestionController.setJokersPic();
                         multiQuestionController.showQuestion(newQuestionMessage);
-                        multiQuestionController.setQuestions(newQuestionMessage.getActivities());
+                        multiQuestionController.setQuestions(newQuestionMessage.getActivities(), newQuestionMessage.getImagesBytes());
                     });
                 } else if (newQuestionMessage.getQuestionType().equals("Estimate")) {
                     Platform.runLater(() -> {

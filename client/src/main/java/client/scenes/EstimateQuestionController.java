@@ -14,6 +14,8 @@ import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
+
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -79,7 +81,7 @@ public class EstimateQuestionController implements Initializable {
 
         questionTxt.setText(message.getTitle());
         activity1Label.setText(message.getActivities().get(0).getTitle());
-        question1Image.setImage(new Image(message.getActivities().get(0).getImage_path()));
+        question1Image.setImage(new Image(new ByteArrayInputStream(message.getImagesBytes().get(0))));
 
         answerLabel.setText("");
         answerLabel.setStyle("-fx-text-fill: black");
