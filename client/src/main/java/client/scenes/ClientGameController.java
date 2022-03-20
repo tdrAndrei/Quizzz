@@ -240,7 +240,7 @@ public class ClientGameController {
         setTimeLeft(newQuestionMessage.getTime());
         multiQuestionController.setJokersPic();
         multiQuestionController.showQuestion(newQuestionMessage);
-        multiQuestionController.setQuestions(newQuestionMessage.getActivities());
+        multiQuestionController.setQuestions(newQuestionMessage.getActivities(), newQuestionMessage.getImagesBytes());
     }
 
     public void prepareEstimateQ(NewQuestionMessage newQuestionMessage){

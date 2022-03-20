@@ -1,16 +1,16 @@
 package server;
 
-import commons.LeaderboardEntry;
+import commons.*;
 import commons.Messages.*;
-import commons.Player;
-import commons.Question;
-import commons.User;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import server.service.LeaderBoardEntryService;
 import server.service.QuestionService;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.*;
+import java.util.List;
 
 /**
  * The type Game.
@@ -206,14 +206,29 @@ public class Game {
     }
     public void insertMCQQuestionIntoDiff(Question question) {
         for (long id : diffMap.keySet()) {
-            NewQuestionMessage questionMessage = new NewQuestionMessage("NewQuestion", "MC", question.getTitle(), question.getActivities(), question.getTime(), playerMap.get(id).getScore(), null);
+            List<byte[]> imagesBytes = getImageBytesList(question);
+            NewQuestionMessage questionMessage = new NewQuestionMessage("NewQuestion", "MC", question.getTitle(), question.getActivities(), question.getTime(), playerMap.get(id).getScore(), null, imagesBytes);
             diffMap.put(id, questionMessage);
         }
     }
 
+    public List<byte[]> getImageBytesList(Question question) {
+        List<byte[]> imagesBytes = new ArrayList<>();
+        for (Activity activity : question.getActivities()) {
+            try {
+                FileInputStream fis = new FileInputStream(activity.getImage_path());
+                byte[] imageArr = fis.readAllBytes();
+                imagesBytes.add(imageArr);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return imagesBytes;
+    }
     public void insertEstimateQuestionIntoDiff(Question question) {
         for (long id : diffMap.keySet()) {
-            NewQuestionMessage questionMessage = new NewQuestionMessage("NewQuestion", "Estimate", question.getTitle(), question.getActivities(), question.getTime(), playerMap.get(id).getScore(), getBoundsForEstimate(question.getAnswer()));
+            List<byte[]> imagesBytes = getImageBytesList(question);
+            NewQuestionMessage questionMessage = new NewQuestionMessage("NewQuestion", "Estimate", question.getTitle(), question.getActivities(), question.getTime(), playerMap.get(id).getScore(), getBoundsForEstimate(question.getAnswer()), imagesBytes);
             diffMap.put(id, questionMessage);
         }
     }

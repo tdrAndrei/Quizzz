@@ -2,7 +2,6 @@ package commons.Messages;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import commons.Activity;
-
 import java.util.List;
 import java.util.Objects;
 
@@ -18,6 +17,8 @@ public class NewQuestionMessage extends Message {
     private int time;
     private int score;
     private List<Long> bounds;
+    private List<byte[]> imagesBytes;
+
 
     /**
      * Instantiates a new New question message.
@@ -35,7 +36,8 @@ public class NewQuestionMessage extends Message {
      * @param score      the score
      * @param bounds     the bounds for estimate question
      */
-    public NewQuestionMessage(String type, String questionType, String title, List<Activity> activities, int time, int score, List<Long> bounds) {
+    public NewQuestionMessage(String type, String questionType, String title, List<Activity> activities, int time, int score,
+                              List<Long> bounds, List<byte[]> imagesBytes) {
         super(type);
         this.questionType = questionType;
         this.title = title;
@@ -43,6 +45,15 @@ public class NewQuestionMessage extends Message {
         this.time = time;
         this.score = score;
         this.bounds = bounds;
+        this.imagesBytes = imagesBytes;
+    }
+
+    public List<byte[]> getImagesBytes() {
+        return imagesBytes;
+    }
+
+    public void setImagesBytes(List<byte[]> imagesBytes) {
+        this.imagesBytes = imagesBytes;
     }
 
     /**
