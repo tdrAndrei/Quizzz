@@ -27,7 +27,7 @@ public class EstimateQuestionController implements Initializable {
     private ImageView eliminateJoker;
 
     @FXML
-    private ImageView timeJoker;
+    private ImageView skipQuestionJoker;
 
     @FXML
     private Label activity1Label;
@@ -73,6 +73,7 @@ public class EstimateQuestionController implements Initializable {
         answerSlider.valueProperty().addListener(changeListener);
         answerSlider.setMin(message.getBounds().get(0));
         answerSlider.setMax(message.getBounds().get(1));
+        answerSlider.setMajorTickUnit( (answerSlider.getMax() - answerSlider.getMin()) * 1/10);
         answerSlider.setValue(answerSlider.getMin());
         answerSlider.setDisable(false);
 
@@ -89,6 +90,7 @@ public class EstimateQuestionController implements Initializable {
 
         answerSlider.valueProperty().removeListener(changeListener);
         answerSlider.setDisable(true);
+        clientGameController.setDisableJokerUsage(true);
 
         clientGameController.submitAnswer((long) answerSlider.getValue());
 
@@ -114,10 +116,11 @@ public class EstimateQuestionController implements Initializable {
     //(eliminate one answer joker) -> minimizes the range for the slider
     public void changeJoker1() {
 
-        if (!clientGameController.isDisableJokerUsage()) {
+        if (!clientGameController.isDisableJokerUsage() && !clientGameController.isEliminateJokerUsed()) {
             eliminateJoker.setImage(clientGameController.getUsedJoker());
-            answerSlider.setMin(answerSlider.getMin() + 1/5 * answerSlider.getMin());
-            answerSlider.setMax(answerSlider.getMax() - 1/5 * answerSlider.getMin());
+            clientGameController.setEliminateJokerUsed(true);
+            answerSlider.setMin(Math.floor(answerSlider.getMin() + answerSlider.getMin() * 1/4));
+            answerSlider.setMax(Math.floor(answerSlider.getMax() - answerSlider.getMin() * 1/4));
         }
 
     }
@@ -125,8 +128,9 @@ public class EstimateQuestionController implements Initializable {
     //doublePointsJoker
     public void changeJoker2() {
 
-        if (!clientGameController.isDisableJokerUsage()) {
+        if (!clientGameController.isDisableJokerUsage() && !clientGameController.isDoublePointsJokerUsed()) {
             doublePointsJoker.setImage(clientGameController.getUsedJoker());
+            clientGameController.setDoublePointsJokerUsed(true);
             clientGameController.doublePoint();
         }
 
@@ -135,18 +139,17 @@ public class EstimateQuestionController implements Initializable {
     //skip question joker
     public void changeJoker3() {
 
-        if (!clientGameController.isDisableJokerUsage()) {
-            timeJoker.setImage(clientGameController.getUsedJoker());
-            serverUtils.useNewQuestionJoker(clientGameController.getGameId());
+        if (!clientGameController.isDisableJokerUsage() && !clientGameController.isSkipQuestionJokerUsed()) {
+            questionTxt.setText("You skipped this question!");
+            skipQuestionJoker.setImage(clientGameController.getUsedJoker());
+            clientGameController.setSkipQuestionJokerUsed(true);
+            clientGameController.skipQuestion();
         }
         
     }
 
-    public void resizeWidth(double width){
+    public void resize(double width, double height){
         grid.setPrefWidth(width);
-    }
-
-    public void resizeHeight(double height){
         grid.setPrefHeight(height);
     }
 
@@ -168,8 +171,19 @@ public class EstimateQuestionController implements Initializable {
     public void reset(){
         eliminateJoker.setImage(new Image("/client.photos/jokerOneAnswer.png"));
         doublePointsJoker.setImage(new Image("/client.photos/doubleJoker.png"));
-        timeJoker.setImage(new Image("/client.photos/timeJoker.png"));
-        pointsLabel.setText("0");
+        skipQuestionJoker.setImage(new Image("/client.photos/timeJoker.png"));
+        pointsLabel.setText("0 Pts");
+    }
+
+    public void setJokersPic() {
+
+        if (clientGameController.isEliminateJokerUsed())
+            eliminateJoker.setImage(clientGameController.getUsedJoker());
+        if (clientGameController.isDoublePointsJokerUsed())
+            doublePointsJoker.setImage(clientGameController.getUsedJoker());
+        if (clientGameController.isSkipQuestionJokerUsed())
+            skipQuestionJoker.setImage(clientGameController.getUsedJoker());
+
     }
 
 }

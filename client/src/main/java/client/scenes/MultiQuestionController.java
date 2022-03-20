@@ -35,7 +35,7 @@ public class MultiQuestionController implements Initializable {
     private ImageView eliminateJoker;
 
     @FXML
-    private ImageView timeJoker;
+    private ImageView skipQuestionJoker;
 
     @FXML
     private HBox jokerContainer;
@@ -113,9 +113,10 @@ public class MultiQuestionController implements Initializable {
     }
 
     public void changeJoker3() {
-        if (!clientGameController.isDisableJokerUsage() && !clientGameController.isTimeJokerUsed()) {
-            timeJoker.setImage(clientGameController.getUsedJoker());
-            clientGameController.setTimeJokerUsed(true);
+        if (!clientGameController.isDisableJokerUsage() && !clientGameController.isSkipQuestionJokerUsed()) {
+            skipQuestionJoker.setImage(clientGameController.getUsedJoker());
+            clientGameController.setSkipQuestionJokerUsed(true);
+            useSkipQuestionJoker();
         }
     }
 
@@ -224,14 +225,13 @@ public class MultiQuestionController implements Initializable {
         }
 
         public void changeScore(int score) {
-            pointsLabel.setText(score + "Pts");
+            pointsLabel.setText(score + " Pts");
         }
 
         public void setQuestions(List<Activity> activities) {
             Activity firstActivity = activities.get(0);
             question1Image.setImage(new Image(firstActivity.getImage_path()));
             activity1Label.setText(firstActivity.getTitle());
-            System.out.println(firstActivity.getTitle());
             Activity secondActivity = activities.get(1);
             question2Image.setImage(new Image(secondActivity.getImage_path()));
             activity2Label.setText(secondActivity.getTitle());
@@ -243,6 +243,12 @@ public class MultiQuestionController implements Initializable {
         public void useDoublePointsJoker() {
             clientGameController.doublePoint();
         }
+
+        public void useSkipQuestionJoker() {
+            questionLabel.setText("You skipped this question!");
+            clientGameController.skipQuestion();
+        }
+
         public void useEliminateJoker() {
             long index = clientGameController.eliminateJoker();
                 if (index == 0) {
@@ -260,8 +266,19 @@ public class MultiQuestionController implements Initializable {
     public void reset(){
         eliminateJoker.setImage(new Image("/client.photos/jokerOneAnswer.png"));
         doublePointsJoker.setImage(new Image("/client.photos/doubleJoker.png"));
-        timeJoker.setImage(new Image("/client.photos/timeJoker.png"));
-        pointsLabel.setText("0");
+        skipQuestionJoker.setImage(new Image("/client.photos/timeJoker.png"));
+        pointsLabel.setText("0 Pts");
+    }
+
+    public void setJokersPic() {
+
+        if (clientGameController.isEliminateJokerUsed())
+            eliminateJoker.setImage(clientGameController.getUsedJoker());
+        if (clientGameController.isDoublePointsJokerUsed())
+            doublePointsJoker.setImage(clientGameController.getUsedJoker());
+        if (clientGameController.isSkipQuestionJokerUsed())
+            skipQuestionJoker.setImage(clientGameController.getUsedJoker());
+
     }
 
 }

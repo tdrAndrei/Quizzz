@@ -35,15 +35,22 @@ public class Game {
         this.id = id;
         this.leaderBoardEntryService = leaderBoardEntryService;
         this.questionService = questionService;
+
+        Random random = new Random();
         stageQueue.add(new MutablePair<>("Waiting", Integer.MAX_VALUE));
-        for (int i = 0; i < 10; i++) {
-            stageQueue.add(new MutablePair<>("Question", 10));
-            stageQueue.add(new MutablePair<>("CorrectAns", 1));
-        }
-        stageQueue.add(new MutablePair<>("Leaderboard", 5));
-        for (int i = 0; i < 10; i++) {
-            stageQueue.add(new MutablePair<>("Estimate", 5));
-            stageQueue.add(new MutablePair<>("CorrectAns", 2));
+
+        for (int i = 0; i < 20; i++) {
+            int j = random.nextInt(10);
+            if (j <= 7) {
+                stageQueue.add(new MutablePair<>("Question", 20));
+                stageQueue.add(new MutablePair<>("CorrectAns", 3));
+            } else {
+                stageQueue.add(new MutablePair<>("Estimate", 20));
+                stageQueue.add(new MutablePair<>("CorrectAns", 3));
+            }
+            if (i == 9) {
+                stageQueue.add(new MutablePair<>("Leaderboard", 5));
+            }
         }
         stageQueue.add(new MutablePair<>("End", 5));
 
@@ -200,7 +207,6 @@ public class Game {
     public void insertMCQQuestionIntoDiff(Question question) {
         for (long id : diffMap.keySet()) {
             NewQuestionMessage questionMessage = new NewQuestionMessage("NewQuestion", "MC", question.getTitle(), question.getActivities(), question.getTime(), playerMap.get(id).getScore(), null);
-            System.out.println(questionMessage);
             diffMap.put(id, questionMessage);
         }
     }

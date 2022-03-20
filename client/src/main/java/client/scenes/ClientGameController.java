@@ -1,6 +1,5 @@
 package client.scenes;
 
-
 import client.utils.ServerUtils;
 import commons.Messages.*;
 import javafx.application.Platform;
@@ -23,7 +22,7 @@ public class ClientGameController {
     private final MainCtrl mainController;
     private final ServerUtils serverUtils;
 
-    private boolean timeJokerUsed = false;
+    private boolean skipQuestionJokerUsed = false;
     private boolean eliminateJokerUsed = false;
     private boolean doublePointsJokerUsed = false;
     private boolean disableJokerUsage = false;
@@ -49,6 +48,7 @@ public class ClientGameController {
         isPlaying = true;
         multiQuestionController.reset();
         estimateQuestionController.reset();
+        enableAllJokers();
         if (isMulti) {
             gameId = serverUtils.joinMulti(mainController.getUser());
             mainController.showWaitingRoom();
@@ -65,7 +65,6 @@ public class ClientGameController {
                     return;
                 }
                 Message message = serverUtils.pollUpdate(gameId, mainController.getUser().getId());
-                System.out.println(message);
                 try {
                     interpretMessage(message);
                 } catch (InterruptedException ignored) {
@@ -91,12 +90,14 @@ public class ClientGameController {
                 if (newQuestionMessage.getQuestionType().equals("MC")) {
                     Platform.runLater(() -> {
                         mainController.showMultiQuestion();
+                        multiQuestionController.setJokersPic();
                         multiQuestionController.showQuestion(newQuestionMessage);
                         multiQuestionController.setQuestions(newQuestionMessage.getActivities());
                     });
                 } else if (newQuestionMessage.getQuestionType().equals("Estimate")) {
                     Platform.runLater(() -> {
                         mainController.showEstimate();
+                        estimateQuestionController.setJokersPic();
                         estimateQuestionController.showQuestion(newQuestionMessage);
                     });
                 }
@@ -110,9 +111,7 @@ public class ClientGameController {
                         leaderboardSoloController.showMine(myEntryId);
                     });
                 } else if (showLeaderboardMessage.getGameProgress().equals("Mid")) {
-                    Platform.runLater(() -> {
-                    //
-                    });
+                    Platform.runLater(() -> {});
                 }
                 break;
             case "ShowCorrectAnswer":
@@ -157,18 +156,22 @@ public class ClientGameController {
         return serverUtils.eliminateJoker(getGameId());
     }
 
+    public void skipQuestion() {
+        serverUtils.useNewQuestionJoker(gameId);
+    }
+
     public void enableAllJokers() {
-        timeJokerUsed = false;
+        skipQuestionJokerUsed = false;
         eliminateJokerUsed = false;
         doublePointsJokerUsed = false;
     }
 
-    public boolean isTimeJokerUsed() {
-        return timeJokerUsed;
+    public boolean isSkipQuestionJokerUsed() {
+        return skipQuestionJokerUsed;
     }
 
-    public void setTimeJokerUsed(boolean timeJokerUsed) {
-        this.timeJokerUsed = timeJokerUsed;
+    public void setSkipQuestionJokerUsed(boolean skipQuestionJokerUsed) {
+        this.skipQuestionJokerUsed = skipQuestionJokerUsed;
     }
 
     public boolean isEliminateJokerUsed() {

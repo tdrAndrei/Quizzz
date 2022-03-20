@@ -72,7 +72,7 @@
                         <Cursor fx:constant="HAND" />
                      </cursor>
                   </ImageView>
-                  <ImageView fx:id="timeJoker" fitHeight="150.0" fitWidth="94.0" onMouseClicked="#changeJoker3" pickOnBounds="true" preserveRatio="true" styleClass="highlightable" HBox.hgrow="ALWAYS">
+                  <ImageView fx:id="skipQuestionJoker" fitHeight="150.0" fitWidth="94.0" onMouseClicked="#changeJoker3" pickOnBounds="true" preserveRatio="true" styleClass="highlightable" HBox.hgrow="ALWAYS">
                      <image>
                         <Image url="@/client.photos/timeJoker.png" />
                      </image>
@@ -138,7 +138,7 @@
                         <Insets />
                      </HBox.margin>
                   </AnchorPane>
-                  <Slider fx:id="answerSlider" majorTickUnit="1000.0" maxHeight="-Infinity" minorTickCount="10" orientation="VERTICAL" prefHeight="360.0" prefWidth="50.0" showTickLabels="true">
+                  <Slider fx:id="answerSlider" majorTickUnit="10000.0" maxHeight="-Infinity" minorTickCount="0" orientation="VERTICAL" prefHeight="360.0" prefWidth="50.0" showTickLabels="true">
                      <padding>
                         <Insets right="-14.0" />
                      </padding></Slider>

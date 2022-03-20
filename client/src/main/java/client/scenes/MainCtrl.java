@@ -114,10 +114,10 @@ public class MainCtrl {
         primaryStage.setTitle("Quizzzz!");
         primaryStage.setScene(estimateQuestionScene);
         estimateQuestionScene.widthProperty().addListener(e -> {
-            estimateQuestionController.resizeWidth(estimateQuestionScene.getWidth());
+            estimateQuestionController.resize(estimateQuestionScene.getWidth(), estimateQuestionScene.getHeight());
         });
         estimateQuestionScene.heightProperty().addListener(e -> {
-            estimateQuestionController.resizeHeight(estimateQuestionScene.getHeight());
+            estimateQuestionController.resize(estimateQuestionScene.getWidth(), estimateQuestionScene.getHeight());
         });
     }
 
@@ -171,4 +171,5 @@ public class MainCtrl {
     public User getUser() {
         return user;
     }
+
 }
