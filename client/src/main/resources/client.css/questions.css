@@ -10,16 +10,38 @@
     -fx-accent: #f37500;
     -fx-font-family: 'Comicbon';
 }
+
+#timer {
+    -fx-font-family: 'Comicbon';
+}
+
+#activity1Label {
+    -fx-font-family: 'Comicbon';
+}
+
+#submitAnswerButton {
+    -fx-font-family: 'Comicbon';
+}
+
+#answerLabel {
+    -fx-font-family: 'Comicbon';
+    -fx-font-weight: bold;
+}
+
+#pointsLabel {
+    -fx-font-family: 'Comicbon';
+}
+
 .button {
     -fx-background-color: #fdecd8;
     -fx-font-family: 'Comicbon';
     -fx-background-radius: 5px;
 }
 .button:hover {
-    -fx-background-color: #f3a9b8;
+    -fx-background-color: #fef8a0;
 }
 .button:pressed {
-    -fx-background-color: #ff0000;
+    -fx-background-color: #ffc5ac;
     -fx-scale-x: 95%;
     -fx-scale-y: 95%;
 }

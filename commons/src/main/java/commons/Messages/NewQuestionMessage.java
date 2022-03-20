@@ -11,11 +11,13 @@ import java.util.Objects;
  */
 @JsonTypeName("NewQuestion")
 public class NewQuestionMessage extends Message {
+
     private String questionType;
     private String title;
     private List<Activity> activities;
     private int time;
     private int score;
+    private List<Long> bounds;
 
     /**
      * Instantiates a new New question message.
@@ -31,14 +33,16 @@ public class NewQuestionMessage extends Message {
      * @param activities the activities
      * @param time       the time
      * @param score      the score
+     * @param bounds     the bounds for estimate question
      */
-    public NewQuestionMessage(String type, String questionType, String title, List<Activity> activities, int time, int score) {
+    public NewQuestionMessage(String type, String questionType, String title, List<Activity> activities, int time, int score, List<Long> bounds) {
         super(type);
         this.questionType = questionType;
         this.title = title;
         this.activities = activities;
         this.time = time;
         this.score = score;
+        this.bounds = bounds;
     }
 
     /**
@@ -95,6 +99,14 @@ public class NewQuestionMessage extends Message {
         this.activities = activities;
     }
 
+    public List<Long> getBounds() {
+        return bounds;
+    }
+
+    public void setBounds(List<Long> bounds) {
+        this.bounds = bounds;
+    }
+
     /**
      * Gets time.
      *
@@ -137,22 +149,24 @@ public class NewQuestionMessage extends Message {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         NewQuestionMessage that = (NewQuestionMessage) o;
-        return time == that.time && score == that.score && Objects.equals(title, that.title) && Objects.equals(activities, that.activities);
+        return time == that.time && score == that.score && Objects.equals(questionType, that.questionType) && Objects.equals(title, that.title) && Objects.equals(activities, that.activities) && Objects.equals(bounds, that.bounds);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), title, activities, time, score);
+        return Objects.hash(super.hashCode(), questionType, title, activities, time, score, bounds);
     }
 
     @Override
     public String toString() {
         return "NewQuestionMessage{" +
-                "type='" + type + "("+questionType+")"+'\'' +
+                "type='" + type + '\'' +
+                ", questionType='" + questionType + '\'' +
                 ", title='" + title + '\'' +
                 ", activities=" + activities +
                 ", time=" + time +
                 ", score=" + score +
+                ", bounds=" + bounds +
                 '}';
     }
 }

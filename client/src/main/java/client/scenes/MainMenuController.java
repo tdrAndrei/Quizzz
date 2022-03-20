@@ -112,11 +112,11 @@ public class MainMenuController implements Initializable {
         baseHeight = grid.getPrefHeight();
 
         mainMenuPane.widthProperty().addListener(e -> {
-            resizeScene(mainMenuPane.getWidth(), mainMenuPane.getHeight());
+            resize(mainMenuPane.getWidth(), mainMenuPane.getHeight());
         });
 
         mainMenuPane.heightProperty().addListener(e -> {
-            resizeScene(mainMenuPane.getWidth(), mainMenuPane.getHeight());
+            resize(mainMenuPane.getWidth(), mainMenuPane.getHeight());
         });
 
         svgs = new ArrayList<>();
@@ -171,7 +171,7 @@ public class MainMenuController implements Initializable {
         mainCtrl.showLeaderboardSolo();
     }
 
-    public void resizeScene(double width, double height) {
+    public void resize(double width, double height) {
 
         if (width < grid.getMinWidth() || height < grid.getMinHeight())
             return;
@@ -341,6 +341,8 @@ public class MainMenuController implements Initializable {
         text = "Approximately 30% of energy used in buildings is used inefficiently or unnecessarily?";
         factsList.add(text);
         text = "Food contains energy, which is measured in calories or joules?";
+        factsList.add(text);
+        text = "If you press the title's light bulb or socket, they will become yellow?";
         factsList.add(text);
         return factsList;
 
