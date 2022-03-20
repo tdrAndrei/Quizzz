@@ -41,4 +41,4 @@ out/
 .vscode/
 
 ### IGNORE ACTIVITIES ###
-client/src/resources/activities/
+client/src/main/resources/activities/
