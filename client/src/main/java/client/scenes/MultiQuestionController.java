@@ -21,8 +21,10 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.util.Duration;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -228,15 +230,15 @@ public class MultiQuestionController implements Initializable {
             pointsLabel.setText(score + " Pts");
         }
 
-        public void setQuestions(List<Activity> activities) {
+        public void setQuestions(List<Activity> activities, List<byte[]> imageByteList) {
             Activity firstActivity = activities.get(0);
-            question1Image.setImage(new Image(firstActivity.getImage_path()));
+            question1Image.setImage(new Image(new ByteArrayInputStream(imageByteList.get(0))));
             activity1Label.setText(firstActivity.getTitle());
             Activity secondActivity = activities.get(1);
-            question2Image.setImage(new Image(secondActivity.getImage_path()));
+            question2Image.setImage(new Image(new ByteArrayInputStream(imageByteList.get(1))));
             activity2Label.setText(secondActivity.getTitle());
             Activity thirdActivity = activities.get(2);
-            question3Image.setImage(new Image(thirdActivity.getImage_path()));
+            question3Image.setImage(new Image(new ByteArrayInputStream(imageByteList.get(2))));
             activity3Label.setText(thirdActivity.getTitle());
         }
 
