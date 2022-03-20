@@ -177,7 +177,7 @@ public class MultiQuestionController implements Initializable {
                 public void run() {
                     double maxTime = clientGameController.getMaxTime();
                     double timeLeft = clientGameController.getTimeLeft();
-                    clientGameController.updateTimeLeft(0.1, timeLeft);
+                    clientGameController.updateTimeLeft(0.05, timeLeft);
                     Platform.runLater(() -> clientGameController.updateProgressBar(timeLeft, maxTime, progressBar, timeText));
                 }
             }, 0, 100);
