@@ -8,6 +8,7 @@ import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import commons.Messages.NewQuestionMessage;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
@@ -26,6 +27,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MultiQuestionController implements Initializable {
 
@@ -69,7 +72,7 @@ public class MultiQuestionController implements Initializable {
     private Label questionLabel;
 
     @FXML
-    private Label timer;
+    private Label timeText;
 
     @FXML
     private Label pointsLabel;
@@ -166,6 +169,19 @@ public class MultiQuestionController implements Initializable {
                     node.setScaleY(1);
                 });
             }
+
+            progressBar.setProgress(1.0);
+
+            Timer timer = new Timer();
+            timer.scheduleAtFixedRate(new TimerTask() {
+                @Override
+                public void run() {
+                    double maxTime = clientGameController.getMaxTime();
+                    double timeLeft = clientGameController.getTimeLeft();
+                    clientGameController.updateTimeLeft(0.05, timeLeft);
+                    Platform.runLater(() -> clientGameController.updateProgressBar(timeLeft, maxTime, progressBar, timeText));
+                }
+            }, 0, 100);
         }
 
         public void resize ( double width, double height){
