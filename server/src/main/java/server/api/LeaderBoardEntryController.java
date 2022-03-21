@@ -25,7 +25,7 @@ public class LeaderBoardEntryController {
     }
 
     @PostMapping
-    public ResponseEntity<LeaderboardEntry> registerNewUser(@RequestBody LeaderboardEntry leaderboardEntry) {
+    public ResponseEntity<LeaderboardEntry> addLeaderboardEntry(@RequestBody LeaderboardEntry leaderboardEntry) {
         LeaderboardEntry insertedEntry = leaderBoardEntryService.insert(leaderboardEntry);
         if (insertedEntry == null){
             return ResponseEntity.badRequest().build();

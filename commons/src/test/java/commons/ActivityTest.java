@@ -21,7 +21,7 @@ class ActivityTest {
         ObjectMapper objectMapper = new ObjectMapper();
 
         String json = "{\n" +
-                "        \"id\": \"00-shower\",\n" +
+                "        \"id\": \"0\",\n" +
                 "        \"image_path\": \"00/shower.png\",\n" +
                 "        \"title\": \"Taking a hot shower for 6 minutes\",\n" +
                 "        \"consumption_in_wh\": 4000,\n" +
@@ -32,21 +32,21 @@ class ActivityTest {
 
         String json2 = "[\n" +
                 "    {\n" +
-                "        \"id\": \"00-shower\",\n" +
+                "        \"id\": \"0\",\n" +
                 "        \"image_path\": \"00/shower.png\",\n" +
                 "        \"title\": \"Taking a hot shower for 6 minutes\",\n" +
                 "        \"consumption_in_wh\": 4000,\n" +
                 "        \"source\": \"https://www.quora.com/How-can-I-estimate-the-kWh-of-electricity-when-I-take-a-shower\"\n" +
                 "    },\n" +
                 "    {\n" +
-                "        \"id\": \"00-smartphone\",\n" +
+                "        \"id\": \"0\",\n" +
                 "        \"image_path\": \"00/smartphone.png\",\n" +
                 "        \"title\": \"Charging your smartphone at night\",\n" +
                 "        \"consumption_in_wh\": 10,\n" +
                 "        \"source\": \"https://9to5mac.com/2021/09/16/iphone-13-battery-life/\"\n" +
                 "    },\n" +
                 "    {\n" +
-                "        \"id\": \"...\",\n" +
+                "        \"id\": \"0\",\n" +
                 "        \"image_path\": \"xx/image.jpg\",\n" +
                 "        \"title\": \"other questions follow in a similar way\",\n" +
                 "        \"consumption_in_wh\": 42,\n" +
@@ -68,7 +68,7 @@ class ActivityTest {
     @Test
     void testEquals2(){
 
-        Activity activity2 = new Activity("00-smartphone", "00/smartphone.png", "Charging your smartphone at night", 10L, "https://9to5mac.com/2021/09/16/iphone-13-battery-life/");
+        Activity activity2 = new Activity(0L, "00/smartphone.png", "Charging your smartphone at night", 10L, "https://9to5mac.com/2021/09/16/iphone-13-battery-life/");
         assertEquals(activity2, activityList.get(1));
 
     }
@@ -76,7 +76,7 @@ class ActivityTest {
     @Test
     void getId() {
 
-        assertEquals("00-shower", activity.getId());
+        assertEquals(0l, activity.getId());
 
     }
 

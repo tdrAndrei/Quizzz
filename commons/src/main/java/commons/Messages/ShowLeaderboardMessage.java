@@ -1,5 +1,6 @@
 package commons.Messages;
 
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import commons.LeaderboardEntry;
 import commons.Player;
 
@@ -10,9 +11,12 @@ import java.util.Objects;
 /**
  * The type Show leaderboard message.
  */
+@JsonTypeName("ShowLeaderboard")
 public class ShowLeaderboardMessage extends Message {
+    private String gameProgress;
     private List<Player> players;
     private List<LeaderboardEntry> entries;
+    public Long entryId;
 
     /**
      * Instantiates a new Show leaderboard message.
@@ -26,14 +30,42 @@ public class ShowLeaderboardMessage extends Message {
      * @param type    the type
      * @param players the players
      */
-    public ShowLeaderboardMessage(String type, List<Player> players) {
+
+    public ShowLeaderboardMessage(String type, String gameProgress, List<Player> players) {
         super(type);
+        this.gameProgress = gameProgress;
         this.players = players;
         setLeaderboardEntries();
     }
 
+    public ShowLeaderboardMessage(String type, String gameProgress, List<Player> players, Long entryId) {
+        super(type);
+        this.gameProgress = gameProgress;
+        this.players = players;
+        this.entryId = entryId;
+        setLeaderboardEntries();
+    }
     /**
-     * Gets playes.
+     * Gets the game progress. This indicates which of the leaderboards is sent:
+     * Mid (when sending mid-game scores), or End (when sending end-game scores).
+     *
+     * @return the game progress
+     */
+    public String getGameProgress() {
+        return gameProgress;
+    }
+
+    /**
+     * Sets game progress
+     *
+     * @param gameProgress the game progress
+     */
+    public void setGameProgress(String gameProgress) {
+        this.gameProgress = gameProgress;
+    }
+
+    /**
+     * Gets players.
      *
      * @return the players
      */
@@ -55,7 +87,7 @@ public class ShowLeaderboardMessage extends Message {
         for (Player player : players) {
             leaderboardEntries.add(new LeaderboardEntry(player.getUser().getName(), player.getScore()));
         }
-        this.entries = leaderboardEntries;
+        setEntries(leaderboardEntries);
     }
 
     @Override
@@ -75,11 +107,25 @@ public class ShowLeaderboardMessage extends Message {
     @Override
     public String toString() {
         return "ShowLeaderboardMessage{" +
-                "players=" + players +
+                "gameProgress='" + gameProgress + '\'' +
+                ", players=" + players +
+                ", entries=" + entries +
                 '}';
     }
 
     public List<LeaderboardEntry> getEntries() {
         return entries;
+    }
+
+    public void setEntries(List<LeaderboardEntry> entries) {
+        this.entries = entries;
+    }
+
+    public void setEntryId(Long entryId) {
+        this.entryId = entryId;
+    }
+
+    public Long getEntryId() {
+        return entryId;
     }
 }

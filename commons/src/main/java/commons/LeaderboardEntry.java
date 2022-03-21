@@ -55,6 +55,12 @@ public class LeaderboardEntry {
         this.score = score;
     }
 
+    public LeaderboardEntry(long id, String name, int score) {
+        this.id = id;
+        this.name = name;
+        this.score = score;
+    }
+
     /**
      * empty, package level constructor for object mappers
      */
@@ -69,6 +75,10 @@ public class LeaderboardEntry {
      */
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     /**

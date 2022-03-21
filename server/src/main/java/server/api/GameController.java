@@ -32,22 +32,38 @@ public class GameController {
         return gameManager.getUpdate(gameId, userId);
     }
 
-    @PostMapping(path = "/start/{gameId}")
+
+    @GetMapping(path = "/start/{gameId}")
     public void startGame(@PathVariable("gameId") long gameId){
         gameManager.startGame(gameId);
     }
 
-    @PostMapping(path = "/submit/{gameId}")
-    public void checkAnswer(@PathVariable("gameId") long gameId, @RequestParam(required = true) long userId, @RequestParam(required = true) long userAnswer) {
+    @GetMapping(path = "/submit/{gameId}")
+    public void submitAnswer(@PathVariable("gameId") long gameId, @RequestParam(required = true) long userId, @RequestParam(required = true) long userAnswer) {
         gameManager.processAnswer(userId, userAnswer, gameId);
     }
     
-    @PostMapping(path = "/leave/{gameId}")
+    @GetMapping(path = "/leave/{gameId}")
     public void leaveGame(@PathVariable("gameId") long gameId, @RequestParam(required = true) long userId) {
         gameManager.disconnectPlayer(userId, gameId);
     }
-    
-    @PostMapping(path = "/joker/time/{gameId}")
+
+    @GetMapping(path = "/joker/eliminate/{gameId}")
+    public long useEliminateJoker(@PathVariable("gameId") long gameId) {
+        return gameManager.useEliminateAnswer(gameId);
+    }
+
+    @GetMapping(path = "/joker/new/{gameId}")
+    public void useNewQuestionJoker(@PathVariable("gameId") long gameId) {
+        gameManager.useNewQuestionJoker(gameId);
+    }
+
+    @GetMapping(path = "/joker/double/{gameId}")
+    public void useDoublePointsJoker(@PathVariable("gameId") long gameId, @RequestParam(required = true) long userId) {
+        gameManager.useDoublePointsJoker(gameId, userId);
+    }
+
+    @GetMapping(path = "/joker/time/{gameId}")
     public void useTimeJoker(@PathVariable("gameId") long gameId, @RequestParam(required = true) long userId) {
         gameManager.useTimeJoker(gameId, userId);
     }

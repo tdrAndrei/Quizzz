@@ -1,15 +1,24 @@
 package commons.Messages;
 
-import commons.Question;
-
+import com.fasterxml.jackson.annotation.JsonTypeName;
+import commons.Activity;
+import java.util.List;
 import java.util.Objects;
 
 /**
  * The type New question message.
  */
+@JsonTypeName("NewQuestion")
 public class NewQuestionMessage extends Message {
-    private Question question;
+
+    private String questionType;
+    private String title;
+    private List<Activity> activities;
+    private int time;
     private int score;
+    private List<Long> bounds;
+    private List<byte[]> imagesBytes;
+
 
     /**
      * Instantiates a new New question message.
@@ -20,32 +29,111 @@ public class NewQuestionMessage extends Message {
     /**
      * Instantiates a new New question message.
      *
-     * @param type     the type
-     * @param question the question
-     * @param score    the score
+     * @param type       the type
+     * @param title      the title
+     * @param activities the activities
+     * @param time       the time
+     * @param score      the score
+     * @param bounds     the bounds for estimate question
      */
-    public NewQuestionMessage(String type, Question question, int score) {
+    public NewQuestionMessage(String type, String questionType, String title, List<Activity> activities, int time, int score,
+                              List<Long> bounds, List<byte[]> imagesBytes) {
         super(type);
-        this.question = question;
+        this.questionType = questionType;
+        this.title = title;
+        this.activities = activities;
+        this.time = time;
         this.score = score;
+        this.bounds = bounds;
+        this.imagesBytes = imagesBytes;
+    }
+
+    public List<byte[]> getImagesBytes() {
+        return imagesBytes;
+    }
+
+    public void setImagesBytes(List<byte[]> imagesBytes) {
+        this.imagesBytes = imagesBytes;
     }
 
     /**
-     * Gets question.
+     * Gets title.
      *
-     * @return the question
+     * @return the question type
      */
-    public Question getQuestion() {
-        return question;
+    public String getQuestionType() {
+        return questionType;
     }
 
     /**
-     * Sets question.
+     * Sets question type.
      *
-     * @param question the question
+     * @param questionType the title
      */
-    public void setQuestion(Question question) {
-        this.question = question;
+    public void setQuestionType(String questionType) {
+        this.questionType = questionType;
+    }
+
+    /**
+     * Gets title.
+     *
+     * @return the title
+     */
+    public String getTitle() {
+        return title;
+    }
+
+    /**
+     * Sets title.
+     *
+     * @param title the title
+     */
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    /**
+     * Gets activities.
+     *
+     * @return the activities
+     */
+    public List<Activity> getActivities() {
+        return activities;
+    }
+
+    /**
+     * Sets activities.
+     *
+     * @param activities the activities
+     */
+    public void setActivities(List<Activity> activities) {
+        this.activities = activities;
+    }
+
+    public List<Long> getBounds() {
+        return bounds;
+    }
+
+    public void setBounds(List<Long> bounds) {
+        this.bounds = bounds;
+    }
+
+    /**
+     * Gets time.
+     *
+     * @return the time
+     */
+    public int getTime() {
+        return time;
+    }
+
+    /**
+     * Sets time.
+     *
+     * @param time the time
+     */
+    public void setTime(int time) {
+        this.time = time;
     }
 
     /**
@@ -72,20 +160,24 @@ public class NewQuestionMessage extends Message {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         NewQuestionMessage that = (NewQuestionMessage) o;
-        return score == that.score && Objects.equals(question, that.question);
+        return time == that.time && score == that.score && Objects.equals(questionType, that.questionType) && Objects.equals(title, that.title) && Objects.equals(activities, that.activities) && Objects.equals(bounds, that.bounds);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), question, score);
+        return Objects.hash(super.hashCode(), questionType, title, activities, time, score, bounds);
     }
 
     @Override
     public String toString() {
         return "NewQuestionMessage{" +
                 "type='" + type + '\'' +
-                ", question=" + question +
+                ", questionType='" + questionType + '\'' +
+                ", title='" + title + '\'' +
+                ", activities=" + activities +
+                ", time=" + time +
                 ", score=" + score +
+                ", bounds=" + bounds +
                 '}';
     }
 }
