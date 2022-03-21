@@ -57,6 +57,7 @@ public class ClientGameController {
         if (isMulti) {
             gameId = serverUtils.joinMulti(mainController.getUser());
             mainController.showWaitingRoom();
+            waitingRoomController.setGameId(gameId);
         } else {
             gameId = serverUtils.joinSolo(mainController.getUser());
             mainController.showMultiQuestion();
@@ -104,15 +105,7 @@ public class ClientGameController {
                 break;
             case "ShowLeaderboard":
                 ShowLeaderboardMessage showLeaderboardMessage = (ShowLeaderboardMessage) message;
-                if (showLeaderboardMessage.getGameProgress().equals("End")) {
-                    Platform.runLater(() -> {
-                        mainController.showLeaderboardSolo();
-                        Long myEntryId = showLeaderboardMessage.getEntryId();
-                        leaderboardSoloController.showMine(myEntryId);
-                    });
-                } else if (showLeaderboardMessage.getGameProgress().equals("Mid")) {
-                    Platform.runLater(() -> {});
-                }
+                prepareLeaderboard(showLeaderboardMessage);
                 break;
             case "ShowCorrectAnswer":
                 CorrectAnswerMessage correctAnswerMessage = (CorrectAnswerMessage) message;
@@ -231,6 +224,35 @@ public class ClientGameController {
             progressBar.setProgress(0.0);
             int displayText = 0;
             timer.setText(displayText + "S");
+        }
+    }
+
+    public void prepareLeaderboard(ShowLeaderboardMessage showLeaderboardMessage) {
+        boolean isSolo = showLeaderboardMessage.getEntryId() != null;
+        if (showLeaderboardMessage.getGameProgress().equals("End")) {
+            if (isSolo) {
+                Platform.runLater(() -> {
+                    mainController.showLeaderboardSolo();
+                    Long myEntryId = showLeaderboardMessage.getEntryId();
+                    leaderboardSoloController.showMine(myEntryId);
+                });
+            } else {
+                Platform.runLater(() -> {
+                    mainController.showLeaderboardMulti();
+                    String userName = mainController.getUser().getName();
+                    leaderboardSoloController.initMulti(showLeaderboardMessage.getEntries(), userName);
+                    leaderboardSoloController.showEntries();
+                    leaderboardSoloController.setEndScreen();
+                });
+            }
+        } else if (showLeaderboardMessage.getGameProgress().equals("Mid")) {
+            Platform.runLater(() -> {
+                mainController.showLeaderboardMulti();
+                String userName = mainController.getUser().getName();
+                leaderboardSoloController.initMulti(showLeaderboardMessage.getEntries(), userName);
+                leaderboardSoloController.showEntries();
+                leaderboardSoloController.setMidScreen();
+            });
         }
     }
 

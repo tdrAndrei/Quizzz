@@ -11,9 +11,9 @@
 
 <AnchorPane prefHeight="580.0" prefWidth="880.0" stylesheets="@/client.css/waiting.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.WaitingRoomController">
    <children>
-      <Button fx:id="exitButton" layoutX="40.0" layoutY="14.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="141.0" stylesheets="@../../client.css/waiting.css" text="Exit lobby" />
-      <Label fx:id="currentLabel" alignment="CENTER" layoutX="228.0" layoutY="127.0" prefHeight="38.0" prefWidth="428.0" stylesheets="@../../client.css/waiting.css" text="Current Players" />
-      <HBox fx:id="hBox" layoutX="234.0" layoutY="179.0" prefHeight="222.0" prefWidth="417.0" styleClass="HBox" stylesheets="@../../client.css/waiting.css">
+      <Button fx:id="exitButton" onAction="#exit" layoutX="40.0" layoutY="14.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="141.0" stylesheets="@/client.css/waiting.css" text="Exit lobby" />
+      <Label fx:id="currentLabel" alignment="CENTER" layoutX="228.0" layoutY="127.0" prefHeight="38.0" prefWidth="428.0" stylesheets="@/client.css/waiting.css" text="Current Players" />
+      <HBox fx:id="hBox" layoutX="234.0" layoutY="179.0" prefHeight="222.0" prefWidth="417.0" styleClass="HBox" stylesheets="@/client.css/waiting.css">
          <children>
             <ScrollPane fx:id="scrollPane" hbarPolicy="NEVER" nodeOrientation="LEFT_TO_RIGHT" prefHeight="196.0" prefWidth="350.0" style="-fx-background-color: transparent;" stylesheets="@../../client.css/waiting.css" HBox.hgrow="ALWAYS">
                <content>
@@ -29,6 +29,6 @@
             </ScrollPane>
          </children>
       </HBox>
-      <Button fx:id="startGameButton" layoutX="312.0" layoutY="440.0" mnemonicParsing="false" prefHeight="44.0" prefWidth="267.0" text="Start Game" />
+      <Button fx:id="startGameButton" onAction="#startGame" layoutX="312.0" layoutY="440.0" mnemonicParsing="false" prefHeight="44.0" prefWidth="267.0" text="Start Game" />
    </children>
 </AnchorPane>

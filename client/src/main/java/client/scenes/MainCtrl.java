@@ -99,8 +99,21 @@ public class MainCtrl {
 
     public void showLeaderboardSolo() {
         primaryStage.setTitle("Quizzzz!");
-        leaderboardSoloController.reset();
+        leaderboardSoloController.resetState();
         leaderboardSoloController.refresh();
+        leaderboardSoloController.showEntries();
+        primaryStage.setScene(leaderboardSoloScene);
+        leaderboardSoloScene.widthProperty().addListener(e -> {
+            leaderboardSoloController.resizeWidth(leaderboardSoloScene.getWidth());
+        });
+        leaderboardSoloScene.heightProperty().addListener(e -> {
+            leaderboardSoloController.resizeHeight(leaderboardSoloScene.getHeight());
+        });
+    }
+
+    public void showLeaderboardMulti() {
+        primaryStage.setTitle("Quizzzz!");
+        leaderboardSoloController.resetState();
         primaryStage.setScene(leaderboardSoloScene);
         leaderboardSoloScene.widthProperty().addListener(e -> {
             leaderboardSoloController.resizeWidth(leaderboardSoloScene.getWidth());
