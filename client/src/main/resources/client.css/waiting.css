@@ -3,13 +3,26 @@
 }
 
 .button {
-    -fx-background-color: #eab79f;
+    -fx-background-color: #fec5ac;
     -fx-background-radius: 10;
+    -fx-font-size: 17;
+    -fx-text-fill: black;
+    -fx-font-weight: Bold;
+    -fx-cursor: hand;
+}
+.button:hover {
+    -fx-background-color: #eeae95;
 }
 
 .label {
-    -fx-background-color: #fec5ac;
+    -fx-background-color: #f3b89e;
     -fx-background-radius: 10;
+    -fx-font-size: 17;
+}
+.button:pressed {
+    -fx-background-color: #eea889;
+    -fx-scale-x: 95%;
+    -fx-scale-y: 95%;
 }
 
 .scroll-pane > .viewport {
@@ -24,10 +37,77 @@
 
 }
 
-#progressBar {
-    -fx-accent: green;
+.barColor {
+    -fx-background-color: #eeae95;
+    -fx-text-fill: black;
+    -fx-background-radius: 10;
 }
-/*.HBox {*/
-/*    -fx-background-color: #fec5ac;*/
-/*    -fx-background-radius: 10;*/
-/*}*/
+
+.table-view {
+    -fx-background-color: #fff6ed;
+    -fx-border-radius: 20 20 20 20;
+    -fx-background-radius: 20 20 20 20;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: transparent;
+}
+
+.table-view .column-header-background .filler {
+    -fx-background-color: transparent;
+}
+
+.table-view .column-header-background .label{
+    -fx-background-color: transparent;
+    -fx-font-size: 120%;
+    -fx-text-fill: black;
+}
+
+.table-view .column-header {
+    -fx-background-color: transparent;
+    -fx-padding: 2 0 2 15;
+}
+
+.table-row-cell{
+    -fx-background-color: transparent;
+}
+
+.table-view .table-cell{
+    -fx-border-color: transparent;
+    -fx-padding: 2 0 2 12;
+    -fx-font-size: 150%;
+    -fx-alignment: baseline-left;
+    -fx-text-fill: black;
+}
+
+.table-view .virtual-flow .scroll-bar:vertical,
+.table-view .virtual-flow .scroll-bar:vertical .track,
+.table-view .virtual-flow .scroll-bar:vertical .track-background {
+    -fx-background-color: transparent;
+}
+.table-view .virtual-flow .scroll-bar:horizontal,
+.table-view .virtual-flow .scroll-bar:horizontal .track,
+.table-view .virtual-flow .scroll-bar:horizontal .track-background {
+    -fx-min-width: 0;
+    -fx-pref-width: 0;
+    -fx-max-width: 0;
+
+    -fx-min-height: 0;
+    -fx-pref-height: 0;
+    -fx-max-height: 0;
+}
+
+.table-view .scroll-bar:vertical .thumb {
+    -fx-background-radius: 10em;
+    -fx-background-color: rgba(0, 0, 0, 0.15);
+}
+
+.table-view .scroll-bar:vertical .thumb:hover {
+    -fx-background-color: rgba(0, 0, 0, 0.1);
+}
+
+.table-view .scroll-bar:vertical .thumb:pressed {
+    -fx-background-color: rgba(0, 0, 0, 0.2);
+}
+
+

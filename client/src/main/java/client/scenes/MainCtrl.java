@@ -123,6 +123,13 @@ public class MainCtrl {
         });
     }
 
+    public void showWaitingRoom() {
+        primaryStage.setTitle("Quizzzz!");
+        waitingRoomController.resetState();
+        primaryStage.setScene(waitingRoomScene);
+
+    }
+
     public void showEstimate(){
         primaryStage.setTitle("Quizzzz!");
         primaryStage.setScene(estimateQuestionScene);
@@ -152,10 +159,6 @@ public class MainCtrl {
 
     public void showMultiQuestion() {
         primaryStage.setScene(multiScene);
-    }
-
-    public void showWaitingRoom() {
-        primaryStage.setScene(waitingRoomScene);
     }
 
 

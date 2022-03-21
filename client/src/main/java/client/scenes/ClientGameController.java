@@ -2,12 +2,15 @@ package client.scenes;
 
 import client.utils.ServerUtils;
 import commons.Messages.*;
+import commons.Player;
 import javafx.application.Platform;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
 import javafx.util.Pair;
+
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -89,6 +92,7 @@ public class ClientGameController {
                 break;
             case "NewPlayers":
                 NewPlayersMessage newPlayersMessage = (NewPlayersMessage) message;
+                updateWaitingRoom(newPlayersMessage);
                 break;
             case "NewQuestion":
                 NewQuestionMessage newQuestionMessage = (NewQuestionMessage) message;
@@ -271,6 +275,12 @@ public class ClientGameController {
         setTimeLeft(newQuestionMessage.getTime());
         estimateQuestionController.setJokersPic();
         estimateQuestionController.showQuestion(newQuestionMessage);
+    }
+    public void updateWaitingRoom(NewPlayersMessage newPlayersMessage) {
+        List<Player> playerList = newPlayersMessage.getPlayerList();
+        String userName = mainController.getUser().getName();
+        waitingRoomController.showPlayers(playerList);
+        waitingRoomController.showEntries();
     }
 
 }
