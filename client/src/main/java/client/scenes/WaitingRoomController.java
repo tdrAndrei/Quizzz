@@ -9,7 +9,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
 
 import javax.inject.Inject;
 import java.net.URL;
@@ -74,7 +73,6 @@ public class WaitingRoomController implements Initializable {
     @FXML
     private Button exitButton;
 
-
     @FXML
     private Button temporaryButton;
 
@@ -84,13 +82,11 @@ public class WaitingRoomController implements Initializable {
     @FXML
     private GridPane grid;
 
-    @FXML
-    private ScrollPane scrollPane;
-
     private double progress = 0;
 
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
+    private final ClientGameController clientGameController;
 
     private long gameId;
     private List<WaitingRoomEntryLabel> entries = new ArrayList<>();
@@ -103,17 +99,18 @@ public class WaitingRoomController implements Initializable {
     private TableView mainTable;
 
     @Inject
-    public WaitingRoomController(ServerUtils server, MainCtrl mainCtrl) {
+    public WaitingRoomController(ServerUtils server, ClientGameController clientGameController, MainCtrl mainCtrl) {
         this.mainCtrl = mainCtrl;
         this.server = server;
+        this.clientGameController = clientGameController;
     }
     public WaitingRoomEntryLabel addPlayer(String name, long entryId) {
         Label nameLabel = new Label();
         nameLabel.setText("  " + name);
         nameLabel.getStyleClass().add("barColor");
         double minWidth = grid.getPrefWidth()/1.4;
-      //  nameLabel.setStyle("-fx-shape: \"M 0 100 L "+(minWidth)+" 100 L "+(minWidth+25)+" 50 L "+(minWidth));
         nameLabel.setMinWidth(minWidth);
+        nameLabel.setMinHeight(35);
         return new WaitingRoomEntryLabel(nameLabel, entryId);
     }
 
@@ -133,17 +130,11 @@ public class WaitingRoomController implements Initializable {
 
     public void showPlayers(List<Player> playersEntries) {
         entries.clear();
-//        List<WaitingRoomEntry> list = new ArrayList<>();
-//        for (Player player : playersEntries) {
-//            list.add(new WaitingRoomEntry(player.getUser().getName()));
-//        }
         for (Player player : playersEntries) {
             WaitingRoomEntryLabel processedEntry = addPlayer(player.getUser().getName(), 0);
             entries.add(processedEntry);
         }
     }
-
-
 
     public void setGameId(long gameId) {
         this.gameId = gameId;
@@ -159,6 +150,7 @@ public class WaitingRoomController implements Initializable {
     }
 
     public void exit() {
+        clientGameController.exitGame();
         mainCtrl.showMainMenu();
     }
 

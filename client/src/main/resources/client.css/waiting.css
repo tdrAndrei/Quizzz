@@ -1,7 +1,10 @@
 .root {
     -fx-background-color: #fdecd8;
 }
-
+.root {
+    -fx-background-color: #fcebd9;
+    -fx-font-family: 'Comicbon';
+}
 .button {
     -fx-background-color: #fec5ac;
     -fx-background-radius: 10;
@@ -17,7 +20,7 @@
 .label {
     -fx-background-color: #f3b89e;
     -fx-background-radius: 10;
-    -fx-font-size: 17;
+    -fx-font-size: 19;
 }
 .button:pressed {
     -fx-background-color: #eea889;
