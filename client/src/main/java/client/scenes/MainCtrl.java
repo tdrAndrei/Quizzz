@@ -173,7 +173,9 @@ public class MainCtrl {
         if (alert.showAndWait().get() == ButtonType.OK) {
             System.out.println("Goodbye!");
             mainMenuController.stopAnimatorThread();
-            clientGameController.exitGame();
+            if (clientGameController.isPlaying()) {
+                clientGameController.exitGame();
+            }
             if (user != null) {
                 server.deleteSelf(user);
             }
