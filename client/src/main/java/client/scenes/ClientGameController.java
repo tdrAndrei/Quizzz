@@ -54,14 +54,20 @@ public class ClientGameController {
 
     public void startPolling(boolean isMulti) {
         isPlaying = true;
-        multiQuestionController.reset();
-        estimateQuestionController.reset();
         enableAllJokers();
         if (isMulti) {
+            multiQuestionController.resetMulti();
+            estimateQuestionController.resetMulti();
+            multiQuestionController.setMulti(true);
+            estimateQuestionController.setMulti(true);
             gameId = serverUtils.joinMulti(mainController.getUser());
             mainController.showWaitingRoom();
             waitingRoomController.setGameId(gameId);
         } else {
+            multiQuestionController.resetSolo();
+            estimateQuestionController.resetSolo();
+            multiQuestionController.setMulti(false);
+            estimateQuestionController.setMulti(false);
             gameId = serverUtils.joinSolo(mainController.getUser());
             mainController.showMultiQuestion();
         }
@@ -120,6 +126,14 @@ public class ClientGameController {
                     multiQuestionController.changeScore(correctAnswerMessage.getScore());
                 });
                 break;
+            case "ReduceTime":
+                ReduceTimeMessage reduceTimeMessage = (ReduceTimeMessage) message;
+                Platform.runLater(() -> {
+                    setTimeLeft(reduceTimeMessage.getNewTime());
+                    multiQuestionController.showTimeReduced(reduceTimeMessage.getUserName());
+                    estimateQuestionController.showTimeReduced(reduceTimeMessage.getUserName());
+                });
+                break;
             default:
         }
     }
@@ -155,6 +169,10 @@ public class ClientGameController {
 
     public void skipQuestion() {
         serverUtils.useNewQuestionJoker(gameId);
+    }
+
+    public void timeJoker(long userId) {
+        serverUtils.useTimeJoker(gameId, userId);
     }
 
     public void enableAllJokers() {

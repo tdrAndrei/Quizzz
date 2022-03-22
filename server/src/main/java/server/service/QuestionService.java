@@ -25,7 +25,7 @@ public class QuestionService {
         this.activityList = this.repo.findAll();
     }
 
-    public Question makeMultipleChoice(int seconds) {
+    public Question makeMultipleChoice(double seconds) {
         List<Activity> answers = new ArrayList<>();
 
         int index1 = rm.nextInt(activityList.size());
@@ -72,7 +72,7 @@ public class QuestionService {
         return index;
     }
 
-    public Question makeEstimate(int seconds) {
+    public Question makeEstimate(double seconds) {
         Activity a = activityList.get(rm.nextInt(activityList.size()));
         String title = "How much energy does this activity take?";
         return new EstimateQuestion(title, a.getConsumption_in_wh(), List.of(a), seconds);
