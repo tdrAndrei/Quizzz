@@ -17,11 +17,11 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.util.Duration;
 
+import javax.swing.*;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URL;
@@ -43,6 +43,15 @@ public class MultiQuestionController implements Initializable {
 
     @FXML
     private HBox jokerContainer;
+
+    @FXML
+    private GridPane Answer1;
+
+    @FXML
+    private GridPane Answer2;
+
+    @FXML
+    private GridPane Answer3;
 
     @FXML
     private Button exitButton;
@@ -83,6 +92,7 @@ public class MultiQuestionController implements Initializable {
     private double baseWidth;
     private double baseHeight;
     private long chosenAnswer;
+    private Border correctAnswerBorder = new Border(new BorderStroke(Color.GREEN, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(5)));
 
     private MainCtrl mainCtrl;
     private final ClientGameController clientGameController;
@@ -126,22 +136,29 @@ public class MultiQuestionController implements Initializable {
 
     public void showQuestion(NewQuestionMessage message) {
         questionLabel.setText(message.getTitle());
+        questionLabel.setTextFill(Color.rgb(0,0,0));
     }
 
     public void showAnswer(CorrectAnswerMessage message) {
         long index = message.getCorrectAnswer();
         String answer = "";
         if (index == 0) {
-            answer = activity1Label.getText();
+            Answer1.setBorder(correctAnswerBorder);
+            activity1Label.setTextFill(Color.rgb(0, 225, 0));
         } else if (index == 1) {
-            answer = activity2Label.getText();
+            Answer2.setBorder(correctAnswerBorder);
+            activity2Label.setTextFill(Color.rgb(0, 225, 0));
         } else {
-            answer = activity3Label.getText();
+            Answer3.setBorder(correctAnswerBorder);
+            activity3Label.setTextFill(Color.rgb(0, 225, 0));
         }
         if (chosenAnswer == index) {
             questionLabel.setText("That's Right!");
+            questionLabel.setTextFill(Color.rgb(0, 225, 0));
         } else {
-            questionLabel.setText("Unfortunately wrong answer\nThe answer is: " + answer);
+            questionLabel.setText("Wrong!");
+            questionLabel.setPrefSize(2 * questionLabel.getWidth(), 2 * questionLabel.getHeight());
+            questionLabel.setTextFill(Color.rgb(219,43,43));
         }
     }
 
@@ -255,6 +272,12 @@ public class MultiQuestionController implements Initializable {
             Activity thirdActivity = activities.get(2);
             question3Image.setImage(new Image(new ByteArrayInputStream(imageByteList.get(2))));
             activity3Label.setText(thirdActivity.getTitle());
+            activity1Label.setTextFill(Color.rgb(0 , 0 , 0));
+            activity2Label.setTextFill(Color.rgb(0 , 0 , 0));
+            activity3Label.setTextFill(Color.rgb(0 , 0 , 0));
+            Answer1.setBorder(Border.EMPTY);
+            Answer2.setBorder(Border.EMPTY);
+            Answer3.setBorder(Border.EMPTY);
         }
 
         public void useDoublePointsJoker() {

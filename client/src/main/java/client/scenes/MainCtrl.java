@@ -161,6 +161,7 @@ public class MainCtrl {
                 server.deleteSelf(user);
             }
             primaryStage.close();
+            System.exit(0);
         }
     }
 
