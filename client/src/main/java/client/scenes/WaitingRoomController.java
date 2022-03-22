@@ -146,7 +146,9 @@ public class WaitingRoomController implements Initializable {
     }
 
     public void startGame() {
-        server.startGame(gameId);
+        if (entries.size() > 1) {
+            server.startGame(gameId);
+        }
     }
 
     public void exit() {
