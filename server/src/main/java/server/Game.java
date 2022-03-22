@@ -1,16 +1,16 @@
 package server;
 
-import commons.LeaderboardEntry;
+import commons.*;
 import commons.Messages.*;
-import commons.Player;
-import commons.Question;
-import commons.User;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import server.service.LeaderBoardEntryService;
 import server.service.QuestionService;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.*;
+import java.util.List;
 
 /**
  * The type Game.
@@ -22,28 +22,37 @@ public class Game {
     private final QuestionService questionService;
     private final Map<Long, Player> playerMap = new HashMap<>();
     //private int playerLimit;
+    private boolean isSolo = false;
     private Date startTime;
+    private final Map<Long, Boolean> doublePointsMap = new HashMap<>();
     private final Map<Long, Integer> maxTime = new HashMap<>();
     private final Queue<Pair<String, Integer>> stageQueue = new LinkedList<>();
     private final Map<Long, Message> diffMap = new HashMap<>();
     private int amountAnswered = 0;
-    private LeaderBoardEntryService leaderBoardEntryService;
+    private final LeaderBoardEntryService leaderBoardEntryService;
 
     public Game(long id, QuestionService questionService, LeaderBoardEntryService leaderBoardEntryService) {
         this.id = id;
         this.leaderBoardEntryService = leaderBoardEntryService;
         this.questionService = questionService;
+
+        Random random = new Random();
         stageQueue.add(new MutablePair<>("Waiting", Integer.MAX_VALUE));
-        for (int i = 0; i < 10; i++) {
-            stageQueue.add(new MutablePair<>("Question", 7));
-            stageQueue.add(new MutablePair<>("CorrectAns", 3));
+
+        for (int i = 0; i < 20; i++) {
+            int j = random.nextInt(10);
+            if (j <= 7) {
+                stageQueue.add(new MutablePair<>("Question", 20));
+                stageQueue.add(new MutablePair<>("CorrectAns", 3));
+            } else {
+                stageQueue.add(new MutablePair<>("Estimate", 20));
+                stageQueue.add(new MutablePair<>("CorrectAns", 3));
+            }
+            if (i == 9) {
+                stageQueue.add(new MutablePair<>("Leaderboard", 5));
+            }
         }
-        stageQueue.add(new MutablePair<>("Leaderboard", 7));
-        for (int i = 0; i < 10; i++) {
-            stageQueue.add(new MutablePair<>("Estimate", 7));
-            stageQueue.add(new MutablePair<>("CorrectAns", 3));
-        }
-        stageQueue.add(new MutablePair<>("End", 15));
+        stageQueue.add(new MutablePair<>("End", 5));
 
         initializeStage();
     }
@@ -54,6 +63,7 @@ public class Game {
         playerMap.put(user.getId(), newPlayer);
         diffMap.put(user.getId(), new NullMessage("None"));
         maxTime.put(user.getId(), Integer.MAX_VALUE);
+        doublePointsMap.put(user.getId(), false);
         insertMessageIntoDiff(new NewPlayersMessage("NewPlayers", new ArrayList<>(playerMap.values())));
     }
 
@@ -69,7 +79,7 @@ public class Game {
             case "Question":
                 setMaxTime(stagePair.getValue());
                 currentQuestion = questionService.makeMultipleChoice(stagePair.getValue());
-                insertQuestionIntoDiff(currentQuestion);
+                insertMCQQuestionIntoDiff(currentQuestion);
                 break;
 
             case "CorrectAns":
@@ -80,25 +90,27 @@ public class Game {
             case "Estimate":
                 setMaxTime(stagePair.getValue());
                 currentQuestion = questionService.makeEstimate(stagePair.getValue());
-                insertQuestionIntoDiff(currentQuestion);
+                insertEstimateQuestionIntoDiff(currentQuestion);
                 break;
 
             case "Leaderboard":
-                if (playerMap.size() == 1) {
+                if (isSolo) {
                     setMaxTime(0);
                     break;
                 }
                 setMaxTime(stagePair.getValue());
-                insertMessageIntoDiff(new ShowLeaderboardMessage("ShowLeaderboard", new ArrayList<>(playerMap.values())));
+                insertMessageIntoDiff(new ShowLeaderboardMessage("ShowLeaderboard", "Mid", new ArrayList<>(playerMap.values())));
                 break;
 
             case "End":
-                if (playerMap.size() == 1) {
-                    Player player = playerMap.entrySet().iterator().next().getValue();
-                    leaderBoardEntryService.insert(new LeaderboardEntry(player.getUser().getName(), player.getScore()));
-                }
                 setMaxTime(stagePair.getValue());
-                insertMessageIntoDiff(new ShowLeaderboardMessage("EndGame", new ArrayList<>(playerMap.values())));
+                ShowLeaderboardMessage leaderboardMessage = new ShowLeaderboardMessage("ShowLeaderboard", "End", new ArrayList<>(playerMap.values()));
+                if (isSolo) {
+                    Player player = playerMap.entrySet().iterator().next().getValue();
+                    Long myEntryId = leaderBoardEntryService.insert(new LeaderboardEntry(player.getUser().getName(), player.getScore())).getId();
+                    leaderboardMessage.setEntryId(myEntryId);
+                }
+                insertMessageIntoDiff(leaderboardMessage);
                 break;
 
             case "Waiting":
@@ -110,7 +122,12 @@ public class Game {
     public void processAnswer(long userAnswer, long userId) {
         int elapsed = ((int) (new Date().getTime() - startTime.getTime()) / 1000);
         Player currPlayer = playerMap.get(userId);
-        currPlayer.setScore(currPlayer.getScore() + currentQuestion.calculateScore(userAnswer, elapsed));
+        if (doublePointsMap.get(userId)) {
+            currPlayer.setScore(currPlayer.getScore() + (2 * (currentQuestion.calculateScore(userAnswer, elapsed))));
+            doublePointsMap.put(userId, false);
+        } else {
+            currPlayer.setScore(currPlayer.getScore() + currentQuestion.calculateScore(userAnswer, elapsed));
+        }
         amountAnswered++;
     }
 
@@ -124,7 +141,7 @@ public class Game {
         playerMap.remove(userId);
         diffMap.remove(userId);
         maxTime.remove(userId);
-
+        doublePointsMap.remove(userId);
         //If we are still in waiting screen, inform clients of updated player list
         Pair<String, Integer> pair = stageQueue.peek();
         if (pair != null && pair.getKey().equals("Waiting")) {
@@ -139,6 +156,24 @@ public class Game {
             }
             maxTime.put(otherPlayerId, maxTime.get(otherPlayerId) / 2);
         }
+    }
+
+    public long eliminateJoker() {
+        long correctAns = currentQuestion.getAnswer();
+        Random rand = new Random();
+        long randomVal = rand.nextInt(4);
+        if (correctAns == randomVal) {
+            return (randomVal + 1) % 3;
+        }
+        return randomVal;
+    }
+
+    public void doublePointsJoker(long userId) {
+        doublePointsMap.put(userId, true);
+    }
+
+    public void newQuestionJoker() {
+        initializeStage();
     }
 
     public void ifStageEnded() {
@@ -169,12 +204,45 @@ public class Game {
     public void insertMessageIntoDiff(Message message) {
         diffMap.replaceAll((i, v) -> message);
     }
-    public void insertQuestionIntoDiff(Question question) {
+    public void insertMCQQuestionIntoDiff(Question question) {
         for (long id : diffMap.keySet()) {
-            NewQuestionMessage questionMessage = new NewQuestionMessage("NewQuestion", question, playerMap.get(id).getScore());
+            List<byte[]> imagesBytes = getImageBytesList(question);
+            NewQuestionMessage questionMessage = new NewQuestionMessage("NewQuestion", "MC", question.getTitle(), question.getActivities(), question.getTime(), playerMap.get(id).getScore(), null, imagesBytes);
             diffMap.put(id, questionMessage);
         }
     }
+
+    public List<byte[]> getImageBytesList(Question question) {
+        List<byte[]> imagesBytes = new ArrayList<>();
+        for (Activity activity : question.getActivities()) {
+            try {
+                FileInputStream fis = new FileInputStream(activity.getImage_path());
+                byte[] imageArr = fis.readAllBytes();
+                imagesBytes.add(imageArr);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return imagesBytes;
+    }
+    public void insertEstimateQuestionIntoDiff(Question question) {
+        for (long id : diffMap.keySet()) {
+            List<byte[]> imagesBytes = getImageBytesList(question);
+            NewQuestionMessage questionMessage = new NewQuestionMessage("NewQuestion", "Estimate", question.getTitle(), question.getActivities(), question.getTime(), playerMap.get(id).getScore(), getBoundsForEstimate(question.getAnswer()), imagesBytes);
+            diffMap.put(id, questionMessage);
+        }
+    }
+
+    public List<Long> getBoundsForEstimate(long answer) {
+        Random rm = new Random();
+        int i = 2 + rm.nextInt(5);
+        int j = 2 + rm.nextInt(5);
+        List<Long> bounds = new ArrayList<Long>();
+        bounds.add(Long.valueOf(answer - answer * i / 10L));
+        bounds.add(Long.valueOf(answer + answer * j / 10L));
+        return bounds;
+    }
+
     public void setMaxTime(Integer time) {
         maxTime.replaceAll((i, v) -> time);
     }
@@ -250,5 +318,9 @@ public class Game {
                 ", stageQueue=" + stageQueue +
                 ", diffMap=" + diffMap +
                 '}';
+    }
+
+    public void setSolo(boolean solo) {
+        isSolo = solo;
     }
 }

@@ -182,10 +182,10 @@ class GameTest {
     @Test
     void insertQuestionIntoDiffTest() {
         Question testMCQ = new MultiChoiceQuestion("Test", 2, new ArrayList<>(), 10);
-        game.insertQuestionIntoDiff(testMCQ);
+        game.insertMCQQuestionIntoDiff(testMCQ);
         boolean allEqual = true;
         for (Message msg : game.getDiffMap().values()) {
-            if (!(msg instanceof NewQuestionMessage) || !((NewQuestionMessage) msg).getQuestion().equals(testMCQ)) {
+            if (!(msg instanceof NewQuestionMessage) || !((NewQuestionMessage) msg).getActivities().equals(testMCQ.getActivities())) {
                 allEqual = false;
                 break;
             }

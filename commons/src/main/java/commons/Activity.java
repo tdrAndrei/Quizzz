@@ -1,7 +1,6 @@
 package commons;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Objects;
 
 /**
@@ -12,10 +11,29 @@ import java.util.Objects;
 public class Activity {
 
     @Id
-    private String id;
+    @SequenceGenerator(
+            name = "act_seq",
+            sequenceName = "act_seq",
+            allocationSize = 1
+    )
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "act_seq"
+    )
+    @Column(
+            name = "id",
+            updatable = false
+    )
+    public Long id;
     private String image_path;
     private String title;
+    @Column(
+            length = 150000
+    )
     private Long consumption_in_wh;
+    @Column(
+            length = 1000
+    )
     private String source;
 
     /**
@@ -27,7 +45,7 @@ public class Activity {
      * @param consumption_in_wh the consumption in wh (average energy consumption for the activity)
      * @param source            the source (URL from where the consumption value was taken)
      */
-    public Activity(String id, String image_path, String title, Long consumption_in_wh, String source) {
+    public Activity(Long id, String image_path, String title, Long consumption_in_wh, String source) {
         this.id = id;
         this.image_path = image_path;
         this.title = title;
@@ -48,7 +66,7 @@ public class Activity {
      *
      * @return the id
      */
-    public String getId() {
+    public Long getId() {
         return id;
     }
 

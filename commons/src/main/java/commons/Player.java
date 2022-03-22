@@ -10,6 +10,11 @@ public class Player {
     private User user;
     private int score;
 
+
+    public Player() {
+
+    }
+
     /**
      * Instantiates a new Player
      *

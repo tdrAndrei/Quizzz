@@ -1,22 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.Group?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.Pane?>
-<?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.shape.SVGPath?>
-<?import javafx.scene.text.Font?>
-<?import javafx.scene.text.Text?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
 
-<AnchorPane fx:id="mainMenuPane" prefHeight="800.0" prefWidth="1200.0" styleClass="root" stylesheets="@/client.css/application.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.MainMenuController">
+<AnchorPane fx:id="mainMenuPane" minHeight="600.0" minWidth="900.0" prefHeight="800.0" prefWidth="1200.0" styleClass="root" stylesheets="@/client.css/application.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.MainMenuController">
    <children>
-      <GridPane fx:id="grid" layoutX="-1.0" minHeight="700.0" minWidth="1000.0" prefHeight="800.0" prefWidth="1200.0">
+      <GridPane fx:id="grid" minHeight="600.0" minWidth="900.0" prefHeight="800.0" prefWidth="1200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" maxWidth="380.66663106282556" minWidth="10.0" percentWidth="17.0" prefWidth="342.66663106282556" />
           <ColumnConstraints hgrow="SOMETIMES" maxWidth="674.0" minWidth="10.0" percentWidth="33.0" prefWidth="586.3333740234375" />
@@ -47,11 +40,14 @@
                   <SVGPath fx:id="bulbLine" content="M47.586 105L49.6024 99.3228H23.372L25.3874 105H47.586Z" fill="black" />
                   <SVGPath fx:id="bulbLine2" content="M54.3434 94.9564C55.0298 94.9564 55.5836 94.4105 55.5836 93.734V85.5247C55.5836 84.8482 55.0298 84.3023 54.3434 84.3023L18.6532 84.3013C17.9668 84.3013 17.413 84.8472 17.413 85.5237V93.733C17.413 94.4095 17.9668 94.9554 18.6532 94.9554L54.3434 94.9564Z" fill="black" />
                </Group>
-               <Text fx:id="title" layoutX="140.0" layoutY="98.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Quizzzz!" textOrigin="CENTER" wrappingWidth="269.28314208984375">
+               <Label fx:id="title" alignment="BOTTOM_CENTER" contentDisplay="BOTTOM" layoutX="128.0" layoutY="40.0" maxHeight="-Infinity" maxWidth="-Infinity" text="Quizzzz!" textAlignment="CENTER">
                   <font>
-                     <Font name="Comicbon" size="64.0" />
+                     <Font name="Comicbon" size="70.0" />
                   </font>
-               </Text>
+                  <padding>
+                     <Insets top="10.0" />
+                  </padding>
+               </Label>
                <Group fx:id="socket" layoutY="6.0">
                   <SVGPath fx:id="mainSocket" content="M458 34.9989V50.0943C458 61.1064 467.401 70 479 70C490.6 70 500 61.1064 500 50.0943V34.9989H458ZM484.515 58.626H473.521C472.214 58.626 471.131 57.5968 471.131 56.3573C471.131 55.1164 472.215 54.0886 473.521 54.0886H484.515C485.822 54.0886 486.905 55.1178 486.905 56.3573C486.905 57.5968 485.821 58.626 484.515 58.626ZM487.256 47.5234H470.78C469.473 47.5234 468.39 46.4942 468.39 45.2547C468.39 44.0138 469.474 42.986 470.78 42.986H487.256C488.563 42.986 489.645 44.0152 489.645 45.2547C489.645 46.4942 488.561 47.5234 487.256 47.5234Z" fill="black" onMouseClicked="#makeFillTransition" />
                   <SVGPath fx:id="socketLine" content="M488.848 17.2687C488.848 15.9986 487.796 15 486.458 15C485.151 15 484.068 15.9986 484.068 17.2687V30.0649H488.848L488.848 17.2687Z" fill="black" />
@@ -83,7 +79,7 @@
                   <Insets left="20.0" />
                </GridPane.margin>
                <children>
-                  <Button fx:id="multiplayerButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefHeight="50.0" prefWidth="175.0" text="MULTIPLAYER" textFill="WHITE" VBox.vgrow="ALWAYS">
+                  <Button fx:id="multiplayerButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#startMulti" prefHeight="50.0" prefWidth="175.0" text="MULTIPLAYER" textFill="WHITE" VBox.vgrow="ALWAYS">
                      <font>
                         <Font name="Comicbon" size="18.0" />
                      </font>

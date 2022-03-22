@@ -25,7 +25,7 @@ class ShowLeaderboardMessageTest {
         playerList.add(p1);
         playerList.add(p2);
         entries = new ArrayList<>();
-        message = new ShowLeaderboardMessage("ShowLeaderboard", playerList);
+        message = new ShowLeaderboardMessage("ShowLeaderboard", "Mid", playerList);
 
     }
 
@@ -58,7 +58,7 @@ class ShowLeaderboardMessageTest {
 
     @Test
     void getLeaderboardEntries() {
-         List<LeaderboardEntry> entries2 = new ArrayList<>();
+        List<LeaderboardEntry> entries2 = new ArrayList<>();
         User user4= new User("Robert");
         User user3 = new User("Matt");
         Player p3 = new Player(user4);
@@ -89,15 +89,23 @@ class ShowLeaderboardMessageTest {
 
     @Test
     void testEquals() {
-        ShowLeaderboardMessage message2 = new ShowLeaderboardMessage("ShowLeaderboard", playerList);
+        ShowLeaderboardMessage message2 = new ShowLeaderboardMessage("ShowLeaderboard", "Mid", playerList);
         assertEquals(message2, message);
     }
 
-
     @Test
     void testToString() {
+        List<LeaderboardEntry> entries2 = new ArrayList<>();
+        User user = new User("Robert");
+        User user2 = new User("Matt");
+        Player p1 = new Player(user);
+        Player p2 = new Player(user2);
+        entries2.add(new LeaderboardEntry(p1.getUser().getName(), 0));
+        entries2.add(new LeaderboardEntry(p2.getUser().getName(), 0));
         String s ="ShowLeaderboardMessage{" +
-                "players=" + playerList +
+                "gameProgress='" + "Mid" + '\'' +
+                ", players=" + playerList +
+                ", entries=" + entries2 +
                 '}';
         assertEquals(s, message.toString());
     }

@@ -4,7 +4,7 @@
 
 ---
 
-##Assignment
+## Assignment
 We have to create a fun and educational quiz game using a client/server
 communication structure. The aim is to raise awareness about energy
 consumption and show people how to be more energy efficient. To this aim, we need
@@ -13,7 +13,7 @@ version control with git or collaboration on GitLab.
 
 The grade we are aiming for is an 8/10 and higher if possible.
 
-##Products
+## Products
 At the end we will deliver a fully functional quiz game in the form of a GitHub
 repository with source code, as well as video showcase of the game.
 
@@ -28,7 +28,7 @@ it should compile and adhere to checkstyle rules. Also, the material should be
 peer reviewed before submission (code reviews for code, intermediate sharing
 and opinions collection for assignments). Juan will upload the final deliverable.
 
-##Planning, Behaviour and Communication
+## Planning, Behaviour and Communication
 We set internal deadlines for every deliverable and contribution, and intermediate
 meetings to make sure progress is being done. These will happen on Thursday
 afternoon and if needed also on Saturdays afternoon (depending on workload).
@@ -51,7 +51,7 @@ regarding a specific issue, these are of course also posted on GitLab. In case
 there is a pressing/urgent matter that needs immediate solution, we meet in a
 study room on campus.
 
-##Meetings
+## Meetings
 We meet once every 2 to 3 days (Tuesdays, Thursdays and Saturdays). The
 preparation of course depends on the purpose/agenda of the meeting and on what
 issue every team member is working on. We could need to have a look at other
@@ -60,7 +60,7 @@ people's contributions, prepare an assignment, or other project-related matters.
 Decisions are made by vote (the majority wins). If there is a tie, we flip a coin
 for the decision to be taken.
 
-##Expectations and Consequences
+## Expectations and Consequences
 As for what we expect from the TA, we value their experience, so we mostly want
 to get advice on the content of the application. However, we should probably
 also be able to ask one or the other question about design choice. If the TA sees
@@ -75,7 +75,7 @@ change how they are working and if this does not yield results we contact the TA
 In the case of being repetitively or excessively late to a meeting we introduce
 the additional sanction of making brownies for the team.
 
-##What makes us a great team
+## What makes us a great team
 We have a great distribution in terms of the Belbin team roles, so we can support
 each other and learn from each other to improve as an entity:
 - The team worker is covered by Maarten
