@@ -91,8 +91,9 @@ public class MultiQuestionController implements Initializable {
     private double baseWidth;
     private double baseHeight;
     private long chosenAnswer;
-    private final Border correctAnswerBorder = new Border(new BorderStroke(new Color(0, 1, 0, 0.3), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(5)));
+    private final Border correctAnswerBorder = new Border(new BorderStroke(new Color(0, 1, 0, 0.5), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(5)));
     private final Border selectedAnswerBorder = new Border(new BorderStroke(new Color(1, 0.9, 0, 0.5), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(5)));
+    private final Border selectedWrongAnswerBorder = new Border(new BorderStroke(new Color(1, 0, 0, 0.5), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(5)));
 
     private MainCtrl mainCtrl;
     private final ClientGameController clientGameController;
@@ -138,28 +139,37 @@ public class MultiQuestionController implements Initializable {
         questionLabel.setText(message.getTitle());
         questionLabel.setTextFill(Color.rgb(0, 0, 0));
     }
+    public void colorIncorrectRed() {
+        if (ans1pane.getBorder().equals(selectedAnswerBorder)) {
+            ans1pane.setBorder(selectedWrongAnswerBorder);
+        } else if (ans2pane.getBorder().equals(selectedAnswerBorder)) {
+            ans2pane.setBorder(selectedWrongAnswerBorder);
 
+        } else if (ans3pane.getBorder().equals(selectedAnswerBorder)) {
+            ans3pane.setBorder(selectedWrongAnswerBorder);
+        }
+    }
     public void showAnswer(CorrectAnswerMessage message) {
         long index = message.getCorrectAnswer();
-        String answer = "";
         if (index == 0) {
             ans1pane.setBorder(correctAnswerBorder);
-            activity1Label.setTextFill(Color.rgb(0, 225, 0));
+            activity1Label.setTextFill(Color.rgb(94, 206, 119));
         } else if (index == 1) {
             ans2pane.setBorder(correctAnswerBorder);
-            activity2Label.setTextFill(Color.rgb(0, 225, 0));
+            activity2Label.setTextFill(Color.rgb(94, 206, 119));
         } else {
             ans3pane.setBorder(correctAnswerBorder);
-            activity3Label.setTextFill(Color.rgb(0, 225, 0));
+            activity3Label.setTextFill(Color.rgb(94, 206, 119));
         }
         if (chosenAnswer == index) {
             questionLabel.setText("That's Right!");
-            questionLabel.setTextFill(Color.rgb(0, 225, 0));
+            questionLabel.setTextFill(Color.rgb(94, 206, 119));
         } else {
             questionLabel.setText("Wrong!");
             questionLabel.setPrefSize(2 * questionLabel.getWidth(), 2 * questionLabel.getHeight());
-            questionLabel.setTextFill(Color.rgb(219, 43, 43));
+            questionLabel.setTextFill(Color.rgb(201, 89, 89));
         }
+        colorIncorrectRed();
     }
 
         @Override
