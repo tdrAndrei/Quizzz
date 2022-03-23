@@ -68,6 +68,9 @@ public class EstimateQuestionController implements Initializable {
     @FXML
     private GridPane grid;
 
+    @FXML
+    private Label newPoints;
+
     private final MainCtrl mainCtrl;
     private final ClientGameController clientGameController;
     private final ServerUtils serverUtils;
@@ -115,8 +118,7 @@ public class EstimateQuestionController implements Initializable {
 
         answerLabel.setText("The answer is " + message.getCorrectAnswer());
         answerLabel.setStyle("-fx-text-fill: rgb(131,210,0)");
-
-        pointsLabel.setText(Integer.toString(message.getScore()) + " Pts");
+        clientGameController.changeScore(message.getScore(), pointsLabel, newPoints);
 
     }
 
@@ -169,6 +171,7 @@ public class EstimateQuestionController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
 
         answerLabel.setText("");
+        newPoints.setText("");
 
         changeListener = new ChangeListener<Number>() {
             @Override
@@ -197,7 +200,8 @@ public class EstimateQuestionController implements Initializable {
         eliminateJoker.setImage(new Image("/client.photos/jokerOneAnswer.png"));
         doublePointsJoker.setImage(new Image("/client.photos/doubleJoker.png"));
         skipQuestionJoker.setImage(new Image("/client.photos/timeJoker.png"));
-        pointsLabel.setText("0 Pts");
+        pointsLabel.setText("0 pts");
+        newPoints.setText("");
     }
 
     public void setJokersPic() {

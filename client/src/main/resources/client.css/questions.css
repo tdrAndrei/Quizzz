@@ -7,12 +7,24 @@
     -fx-font-family: 'Comicbon';
 }
 #progressBar {
-    -fx-accent: #f37500;
+    -fx-font-family: 'Comicbon';
+}
+
+#timeText {
+    -fx-font-family: 'Comicbon';
+}
+
+#questionTxt {
     -fx-font-family: 'Comicbon';
 }
 
 #timer {
     -fx-font-family: 'Comicbon';
+}
+
+#newPoints {
+    -fx-font-family: 'Comicbon';
+    -fx-text-fill: rgb(0, 210, 28);
 }
 
 #activity1Label {

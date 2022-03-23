@@ -41,7 +41,7 @@ public class Game {
 
         for (int i = 0; i < 20; i++) {
             int j = random.nextInt(10);
-            if (j <= 7) {
+            if (j <= 5) {
                 stageQueue.add(new MutablePair<>("Question", 20));
                 stageQueue.add(new MutablePair<>("CorrectAns", 3));
             } else {
@@ -216,7 +216,9 @@ public class Game {
         List<byte[]> imagesBytes = new ArrayList<>();
         for (Activity activity : question.getActivities()) {
             try {
-                FileInputStream fis = new FileInputStream(activity.getImage_path());
+                ClassLoader classLoader = Game.class.getClassLoader();
+                String path = classLoader.getResource(activity.getImage_path()).getPath();
+                FileInputStream fis = new FileInputStream(path);
                 byte[] imageArr = fis.readAllBytes();
                 imagesBytes.add(imageArr);
             } catch (IOException e) {

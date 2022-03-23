@@ -21,7 +21,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.util.Duration;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URL;
@@ -79,6 +78,18 @@ public class MultiQuestionController implements Initializable {
 
     @FXML
     private GridPane grid;
+
+    @FXML
+    private GridPane Answer1;
+
+    @FXML
+    private GridPane Answer2;
+
+    @FXML
+    private GridPane Answer3;
+
+    @FXML
+    private Label newPoints;
 
     private double baseWidth;
     private double baseHeight;
@@ -143,11 +154,13 @@ public class MultiQuestionController implements Initializable {
         } else {
             questionLabel.setText("Unfortunately wrong answer\nThe answer is: " + answer);
         }
+        clientGameController.changeScore(message.getScore(), pointsLabel, newPoints);
     }
 
         @Override
         public void initialize (URL location, ResourceBundle resources){
 
+            newPoints.setText("");
             baseWidth = grid.getPrefWidth();
             baseHeight = grid.getPrefHeight();
 
@@ -157,7 +170,6 @@ public class MultiQuestionController implements Initializable {
             grid.heightProperty().addListener(e -> {
                 resize(grid.getWidth(), grid.getHeight());
             });
-
 
             for (Node node : grid.lookupAll(".highlightable")) {
                 node.setOnMouseEntered(e -> {
@@ -241,10 +253,6 @@ public class MultiQuestionController implements Initializable {
             }
         }
 
-        public void changeScore(int score) {
-            pointsLabel.setText(score + " Pts");
-        }
-
         public void setQuestions(List<Activity> activities, List<byte[]> imageByteList) {
             Activity firstActivity = activities.get(0);
             question1Image.setImage(new Image(new ByteArrayInputStream(imageByteList.get(0))));
@@ -271,12 +279,15 @@ public class MultiQuestionController implements Initializable {
                 if (index == 0) {
                     question1Image.setImage(new Image("/client.photos/bomb.png"));
                     activity1Label.setText("This answer has been eliminated");
+                    Answer1.setDisable(true);
                 } else if (index == 1) {
                     question2Image.setImage(new Image("/client.photos/bomb.png"));
                     activity2Label.setText("This answer has been eliminated");
+                    Answer2.setDisable(true);
                 } else {
                     question3Image.setImage(new Image("/client.photos/bomb.png"));
                     activity3Label.setText("This answer has been eliminated");
+                    Answer3.setDisable(true);
                 }
         }
 
@@ -284,7 +295,8 @@ public class MultiQuestionController implements Initializable {
         eliminateJoker.setImage(new Image("/client.photos/jokerOneAnswer.png"));
         doublePointsJoker.setImage(new Image("/client.photos/doubleJoker.png"));
         skipQuestionJoker.setImage(new Image("/client.photos/timeJoker.png"));
-        pointsLabel.setText("0 Pts");
+        pointsLabel.setText("0 pts");
+        newPoints.setText("");
     }
 
     public void setJokersPic() {
@@ -296,6 +308,18 @@ public class MultiQuestionController implements Initializable {
         if (clientGameController.isSkipQuestionJokerUsed())
             skipQuestionJoker.setImage(clientGameController.getUsedJoker());
 
+    }
+
+    public void enableSubmittingAnswers() {
+
+        Answer1.setDisable(false);
+        Answer2.setDisable(false);
+        Answer3.setDisable(false);
+
+    }
+
+    public void setChosenAnswer(long chosenAnswer) {
+        this.chosenAnswer = chosenAnswer;
     }
 
 }
