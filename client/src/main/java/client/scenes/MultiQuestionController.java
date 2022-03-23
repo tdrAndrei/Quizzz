@@ -136,7 +136,7 @@ public class MultiQuestionController implements Initializable {
 
     public void showQuestion(NewQuestionMessage message) {
         questionLabel.setText(message.getTitle());
-        questionLabel.setTextFill(Color.rgb(0,0,0));
+        questionLabel.setTextFill(Color.rgb(0, 0, 0));
     }
 
     public void showAnswer(CorrectAnswerMessage message) {
@@ -158,7 +158,7 @@ public class MultiQuestionController implements Initializable {
         } else {
             questionLabel.setText("Wrong!");
             questionLabel.setPrefSize(2 * questionLabel.getWidth(), 2 * questionLabel.getHeight());
-            questionLabel.setTextFill(Color.rgb(219,43,43));
+            questionLabel.setTextFill(Color.rgb(219, 43, 43));
         }
     }
 
