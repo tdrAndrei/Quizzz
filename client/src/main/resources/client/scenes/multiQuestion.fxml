@@ -91,7 +91,7 @@
                   <Insets bottom="20.0" />
                </GridPane.margin>
             </GridPane>
-            <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="270.0" prefWidth="300.0" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.rowSpan="2" GridPane.valignment="CENTER">
+            <AnchorPane fx:id="ans1pane" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="270.0" prefWidth="300.0" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.rowSpan="2" GridPane.valignment="CENTER">
                <children>
                   <GridPane fx:id="Answer1" maxHeight="-Infinity" maxWidth="-Infinity" onMouseClicked="#submit1" prefHeight="200.0" prefWidth="200.0" styleClass="questionCardGrid" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <columnConstraints>
@@ -121,7 +121,7 @@
                   <String fx:value="highlightable" />
                </styleClass>
             </AnchorPane>
-            <AnchorPane layoutX="123.0" layoutY="345.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="270.0" prefWidth="300.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="BOTTOM">
+            <AnchorPane fx:id="ans2pane" layoutX="123.0" layoutY="345.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="270.0" prefWidth="300.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="BOTTOM">
                <children>
                   <GridPane fx:id="Answer2" maxHeight="-Infinity" maxWidth="-Infinity" onDragDetected="#submit2" onMouseClicked="#submit2" prefHeight="200.0" prefWidth="200.0" styleClass="questionCardGrid" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <columnConstraints>
@@ -154,7 +154,7 @@
                   <String fx:value="highlightable" />
                </styleClass>
             </AnchorPane>
-            <AnchorPane layoutX="30.0" layoutY="45.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="270.0" prefWidth="300.0" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.rowSpan="2" GridPane.valignment="CENTER">
+            <AnchorPane fx:id="ans3pane" layoutX="30.0" layoutY="45.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="270.0" prefWidth="300.0" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.rowSpan="2" GridPane.valignment="CENTER">
                <children>
                   <GridPane fx:id="Answer3" maxHeight="-Infinity" maxWidth="-Infinity" onMouseClicked="#submit3" prefHeight="200.0" prefWidth="200.0" styleClass="questionCardGrid" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <columnConstraints>
