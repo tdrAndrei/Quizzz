@@ -262,7 +262,7 @@ public class ClientGameController {
                 Platform.runLater(() -> {
                     mainController.showLeaderboardMulti();
                     String userName = mainController.getUser().getName();
-                    leaderboardSoloController.initMulti(showLeaderboardMessage.getEntries(), userName);
+                    leaderboardSoloController.initMulti(showLeaderboardMessage.getEntries(), userName, "End");
                     leaderboardSoloController.showEntries();
                     leaderboardSoloController.setEndScreen();
                 });
@@ -271,7 +271,7 @@ public class ClientGameController {
             Platform.runLater(() -> {
                 mainController.showLeaderboardMulti();
                 String userName = mainController.getUser().getName();
-                leaderboardSoloController.initMulti(showLeaderboardMessage.getEntries(), userName);
+                leaderboardSoloController.initMulti(showLeaderboardMessage.getEntries(), userName, "Mid");
                 leaderboardSoloController.showEntries();
                 leaderboardSoloController.setMidScreen();
             });

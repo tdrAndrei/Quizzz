@@ -228,7 +228,7 @@ public class LeaderboardSoloController implements Initializable {
         rank.setText("");
     }
 
-    public void initMulti(List<LeaderboardEntry> multiEntries, String userName) {
+    public void initMulti(List<LeaderboardEntry> multiEntries, String userName, String gameProgress) {
         entries.clear();
 
         scoreUpperBound = 0;
@@ -242,6 +242,7 @@ public class LeaderboardSoloController implements Initializable {
                 scoreUpperBound = rawEntry.getScore();
             }
         }
+        LeaderboardEntryLabel myEntry = null;
         for (LeaderboardEntry rawEntry : multiEntries) {
             LeaderboardEntryLabel processedEntry = addLabel(rawEntry.getName(), rawEntry.getScore(), 0);
             if (rawEntry.getName().equals(userName)) {
@@ -250,9 +251,26 @@ public class LeaderboardSoloController implements Initializable {
                 processedEntry.getScoreLabel().setStyle("-fx-shape: \"M 0 50 L 150 100 L 700 100 L 700 0 L 150 0 L 0 50 z\"");
                 processedEntry.getScoreLabel().setMinWidth(width);
                 processedEntry.getScoreLabel().setMaxHeight(100);
-                //rank.setText("You finished in " + (pos+1) + ordinal(pos+1) + " place!");
+                myEntry = processedEntry;
             }
             entries.add(getNearestIndex(rawEntry.getScore(), 0, entries.size() - 1), processedEntry);
+        }
+        int pos = entries.indexOf(myEntry) + 1;
+        while (pos > 1 && entries.get(pos-1).getScoreLabel().getText().equals(entries.get(pos-2).getScoreLabel().getText())) {
+            pos--;
+        }
+        if (gameProgress.equals("End")) {
+            rank.setText("You finished in " + (pos) + ordinal(pos) + " place!");
+        } else {
+            String motivation = "";
+            if (pos == 1) {
+                motivation = "Keep it up!";
+            } else if (pos < entries.size() * 0.5) {
+                motivation = "Almost there!";
+            } else {
+                motivation = "Keep trying!";
+            }
+            rank.setText("You are in " + (pos) + ordinal(pos) + " place! " + motivation);
         }
         resizeLabels();
     }
