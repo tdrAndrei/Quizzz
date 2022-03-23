@@ -223,6 +223,7 @@ public class LeaderboardSoloController implements Initializable {
     public void resetState() {
         replayButton.setStyle("visibility: hidden");
         mainMenuButton.setText("BACK");
+        mainMenuButton.setStyle("visibility: visible");
         entries.clear();
         leaderboardEntries.scrollTo(0);
         rank.setText("");
