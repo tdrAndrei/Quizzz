@@ -22,7 +22,7 @@ public class ClientGameController {
     private WaitingRoomController waitingRoomController;
     private Long gameId;
 
-    private boolean isPlaying = true;
+    private boolean isPlaying = false;
 
     private final MainCtrl mainController;
     private final ServerUtils serverUtils;

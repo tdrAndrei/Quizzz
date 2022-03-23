@@ -197,6 +197,7 @@ public class LeaderboardSoloController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        leaderboardEntries.setSelectionModel(null);
         colName.setCellValueFactory(q -> new SimpleObjectProperty<>(q.getValue().getNameLabel()));
         colScore.setCellValueFactory(q -> new SimpleObjectProperty<>(q.getValue().getScoreLabel()));
     }
