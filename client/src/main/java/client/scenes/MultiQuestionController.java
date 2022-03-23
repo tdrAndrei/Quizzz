@@ -91,9 +91,9 @@ public class MultiQuestionController implements Initializable {
     private double baseWidth;
     private double baseHeight;
     private long chosenAnswer;
-    private final Border correctAnswerBorder = new Border(new BorderStroke(new Color(0, 1, 0, 0.5), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(5)));
+    private final Border correctAnswerBorder = new Border(new BorderStroke(new Color(0, 164.0/255.0, 78.0/255.0, 0.5), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(5)));
     private final Border selectedAnswerBorder = new Border(new BorderStroke(new Color(1, 0.9, 0, 0.5), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(5)));
-    private final Border selectedWrongAnswerBorder = new Border(new BorderStroke(new Color(1, 0, 0, 0.5), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(5)));
+    private final Border selectedWrongAnswerBorder = new Border(new BorderStroke(new Color(148.0/255.0, 0, 17.0/255.0, 0.5), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(5)));
 
     private MainCtrl mainCtrl;
     private final ClientGameController clientGameController;
