@@ -19,6 +19,9 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.StrokeLineCap;
+import javafx.scene.shape.StrokeLineJoin;
+import javafx.scene.shape.StrokeType;
 import javafx.util.Duration;
 
 import javax.swing.*;
@@ -92,8 +95,8 @@ public class MultiQuestionController implements Initializable {
     private double baseWidth;
     private double baseHeight;
     private long chosenAnswer;
-    private final Border correctAnswerBorder = new Border(new BorderStroke(Color.GREEN, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(5)));
-    private final Border selectedAnswerBorder = new Border(new BorderStroke(Color.ORANGE, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(5)));
+    private final Border correctAnswerBorder = new Border(new BorderStroke(new Color(0, 1, 0, 0.3), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(5)));
+    private final Border selectedAnswerBorder = new Border(new BorderStroke(new Color(1, 0.9, 0, 0.5), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(5)));
 
     private MainCtrl mainCtrl;
     private final ClientGameController clientGameController;
