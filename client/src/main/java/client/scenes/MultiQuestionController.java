@@ -17,9 +17,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.util.Duration;
 
 import java.io.ByteArrayInputStream;
@@ -43,6 +42,15 @@ public class MultiQuestionController implements Initializable {
 
     @FXML
     private HBox jokerContainer;
+
+    @FXML
+    private AnchorPane ans1pane;
+
+    @FXML
+    private AnchorPane ans2pane;
+
+    @FXML
+    private AnchorPane ans3pane;
 
     @FXML
     private Button exitButton;
@@ -83,6 +91,9 @@ public class MultiQuestionController implements Initializable {
     private double baseWidth;
     private double baseHeight;
     private long chosenAnswer;
+    private final Border correctAnswerBorder = new Border(new BorderStroke(new Color(0, 164.0/255.0, 78.0/255.0, 0.5), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(5)));
+    private final Border selectedAnswerBorder = new Border(new BorderStroke(new Color(1, 0.9, 0, 0.5), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(5)));
+    private final Border selectedWrongAnswerBorder = new Border(new BorderStroke(new Color(148.0/255.0, 0, 17.0/255.0, 0.5), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(5)));
 
     private MainCtrl mainCtrl;
     private final ClientGameController clientGameController;
@@ -126,23 +137,39 @@ public class MultiQuestionController implements Initializable {
 
     public void showQuestion(NewQuestionMessage message) {
         questionLabel.setText(message.getTitle());
+        questionLabel.setTextFill(Color.rgb(0, 0, 0));
     }
+    public void colorIncorrectRed() {
+        if (ans1pane.getBorder().equals(selectedAnswerBorder)) {
+            ans1pane.setBorder(selectedWrongAnswerBorder);
+        } else if (ans2pane.getBorder().equals(selectedAnswerBorder)) {
+            ans2pane.setBorder(selectedWrongAnswerBorder);
 
+        } else if (ans3pane.getBorder().equals(selectedAnswerBorder)) {
+            ans3pane.setBorder(selectedWrongAnswerBorder);
+        }
+    }
     public void showAnswer(CorrectAnswerMessage message) {
         long index = message.getCorrectAnswer();
-        String answer = "";
         if (index == 0) {
-            answer = activity1Label.getText();
+            ans1pane.setBorder(correctAnswerBorder);
+            activity1Label.setTextFill(Color.rgb(94, 206, 119));
         } else if (index == 1) {
-            answer = activity2Label.getText();
+            ans2pane.setBorder(correctAnswerBorder);
+            activity2Label.setTextFill(Color.rgb(94, 206, 119));
         } else {
-            answer = activity3Label.getText();
+            ans3pane.setBorder(correctAnswerBorder);
+            activity3Label.setTextFill(Color.rgb(94, 206, 119));
         }
         if (chosenAnswer == index) {
             questionLabel.setText("That's Right!");
+            questionLabel.setTextFill(Color.rgb(94, 206, 119));
         } else {
-            questionLabel.setText("Unfortunately wrong answer\nThe answer is: " + answer);
+            questionLabel.setText("Wrong!");
+            questionLabel.setPrefSize(2 * questionLabel.getWidth(), 2 * questionLabel.getHeight());
+            questionLabel.setTextFill(Color.rgb(201, 89, 89));
         }
+        colorIncorrectRed();
     }
 
         @Override
@@ -169,7 +196,9 @@ public class MultiQuestionController implements Initializable {
                     node.setScaleY(1);
                 });
             }
-
+            ans1pane.setStyle("-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 10, 0.5, 0.0, 0.0);");
+            ans2pane.setStyle("-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 10, 0.5, 0.0, 0.0);");
+            ans3pane.setStyle("-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 10, 0.5, 0.0, 0.0);");
             progressBar.setProgress(1.0);
 
             Timer timer = new Timer();
@@ -219,11 +248,13 @@ public class MultiQuestionController implements Initializable {
             }
         }
 
+
         public void submit1(){
             if (!clientGameController.isDisableJokerUsage()) {
                 chosenAnswer = 0;
                 clientGameController.submitAnswer(0);
                 clientGameController.setDisableJokerUsage(true);
+                ans1pane.setBorder(selectedAnswerBorder);
             }
         }
         public void submit2(){
@@ -231,6 +262,7 @@ public class MultiQuestionController implements Initializable {
                 chosenAnswer = 1;
                 clientGameController.submitAnswer(1);
                 clientGameController.setDisableJokerUsage(true);
+                ans2pane.setBorder(selectedAnswerBorder);
             }
         }
         public void submit3(){
@@ -238,6 +270,7 @@ public class MultiQuestionController implements Initializable {
                 chosenAnswer = 2;
                 clientGameController.submitAnswer(2);
                 clientGameController.setDisableJokerUsage(true);
+                ans3pane.setBorder(selectedAnswerBorder);
             }
         }
 
@@ -255,6 +288,12 @@ public class MultiQuestionController implements Initializable {
             Activity thirdActivity = activities.get(2);
             question3Image.setImage(new Image(new ByteArrayInputStream(imageByteList.get(2))));
             activity3Label.setText(thirdActivity.getTitle());
+            activity1Label.setTextFill(Color.rgb(0 , 0 , 0));
+            activity2Label.setTextFill(Color.rgb(0 , 0 , 0));
+            activity3Label.setTextFill(Color.rgb(0 , 0 , 0));
+            ans1pane.setBorder(Border.EMPTY);
+            ans2pane.setBorder(Border.EMPTY);
+            ans3pane.setBorder(Border.EMPTY);
         }
 
         public void useDoublePointsJoker() {
