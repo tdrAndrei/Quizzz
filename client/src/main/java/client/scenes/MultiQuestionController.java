@@ -78,6 +78,9 @@ public class MultiQuestionController implements Initializable {
     private Label pointsLabel;
 
     @FXML
+    private Label timeReduced;
+
+    @FXML
     private GridPane grid;
 
     private double baseWidth;
@@ -87,6 +90,8 @@ public class MultiQuestionController implements Initializable {
     private MainCtrl mainCtrl;
     private final ClientGameController clientGameController;
     private final ServerUtils serverUtils;
+
+    private boolean isMulti;
 
     @Inject
     public MultiQuestionController(MainCtrl mainCtrl, ClientGameController clientGameController, ServerUtils serverUtils){
@@ -125,6 +130,10 @@ public class MultiQuestionController implements Initializable {
     }
 
     public void showQuestion(NewQuestionMessage message) {
+        timeReduced.setText("");
+        activity1Label.setStyle("-fx-text-fill: #000000");
+        activity2Label.setStyle("-fx-text-fill: #000000");
+        activity3Label.setStyle("-fx-text-fill: #000000");
         questionLabel.setText(message.getTitle());
     }
 
@@ -179,7 +188,7 @@ public class MultiQuestionController implements Initializable {
                     double maxTime = clientGameController.getMaxTime();
                     double timeLeft = clientGameController.getTimeLeft();
                     clientGameController.updateTimeLeft(0.05, timeLeft);
-                    Platform.runLater(() -> clientGameController.updateProgressBar(timeLeft, maxTime, progressBar, timeText));
+                    Platform.runLater(() -> clientGameController.updateProgressBar(clientGameController.getTimeLeft(), maxTime, progressBar, timeText));
                 }
             }, 0, 100);
         }
@@ -262,25 +271,43 @@ public class MultiQuestionController implements Initializable {
         }
 
         public void useSkipQuestionJoker() {
-            questionLabel.setText("You skipped this question!");
-            clientGameController.skipQuestion();
+            if (isMulti) {
+                clientGameController.timeJoker(mainCtrl.getUser().getId());
+            } else {
+                questionLabel.setText("You skipped this question!");
+                clientGameController.skipQuestion();
+            }
         }
 
         public void useEliminateJoker() {
             long index = clientGameController.eliminateJoker();
                 if (index == 0) {
                     question1Image.setImage(new Image("/client.photos/bomb.png"));
-                    activity1Label.setText("This answer has been eliminated");
+                    activity1Label.setStyle("-fx-text-fill: #c95959");
+                    activity1Label.setText("THIS ANSWER HAS BEEN ELIMINATED");
                 } else if (index == 1) {
                     question2Image.setImage(new Image("/client.photos/bomb.png"));
-                    activity2Label.setText("This answer has been eliminated");
+                    activity2Label.setStyle("-fx-text-fill: #c95959");
+                    activity2Label.setText("THIS ANSWER HAS BEEN ELIMINATED");
                 } else {
                     question3Image.setImage(new Image("/client.photos/bomb.png"));
-                    activity3Label.setText("This answer has been eliminated");
+                    activity3Label.setStyle("-fx-text-fill: #c95959");
+                    activity3Label.setText("THIS ANSWER HAS BEEN ELIMINATED");
                 }
         }
 
-    public void reset(){
+        public void showTimeReduced(String name) {
+            timeReduced.setText(name + " has reduced your time!");
+        }
+
+    public void resetSolo() {
+        eliminateJoker.setImage(new Image("/client.photos/jokerOneAnswer.png"));
+        doublePointsJoker.setImage(new Image("/client.photos/doubleJoker.png"));
+        skipQuestionJoker.setImage(new Image("/client.photos/skipJoker.png"));
+        pointsLabel.setText("0 Pts");
+    }
+
+    public void resetMulti() {
         eliminateJoker.setImage(new Image("/client.photos/jokerOneAnswer.png"));
         doublePointsJoker.setImage(new Image("/client.photos/doubleJoker.png"));
         skipQuestionJoker.setImage(new Image("/client.photos/timeJoker.png"));
@@ -298,5 +325,12 @@ public class MultiQuestionController implements Initializable {
 
     }
 
+    public void setMulti(boolean multi) {
+        isMulti = multi;
+    }
+
+    public boolean isMulti() {
+        return isMulti;
+    }
 }
 

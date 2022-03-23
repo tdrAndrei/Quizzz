@@ -123,6 +123,13 @@ public class MainCtrl {
         });
     }
 
+    public void showWaitingRoom() {
+        primaryStage.setTitle("Quizzzz!");
+        waitingRoomController.resetState();
+        primaryStage.setScene(waitingRoomScene);
+
+    }
+
     public void showEstimate(){
         primaryStage.setTitle("Quizzzz!");
         primaryStage.setScene(estimateQuestionScene);
@@ -154,10 +161,6 @@ public class MainCtrl {
         primaryStage.setScene(multiScene);
     }
 
-    public void showWaitingRoom() {
-        primaryStage.setScene(waitingRoomScene);
-    }
-
 
     public void joinGame(boolean isMulti) {
         clientGameController.startPolling(isMulti);
@@ -170,6 +173,9 @@ public class MainCtrl {
         if (alert.showAndWait().get() == ButtonType.OK) {
             System.out.println("Goodbye!");
             mainMenuController.stopAnimatorThread();
+            if (clientGameController.isPlaying()) {
+                clientGameController.exitGame();
+            }
             if (user != null) {
                 server.deleteSelf(user);
             }

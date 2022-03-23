@@ -4,7 +4,7 @@ import java.util.List;
 
 public class MultiChoiceQuestion extends Question {
 
-    public MultiChoiceQuestion(String title, int answer, List<Activity> activities, int time) {
+    public MultiChoiceQuestion(String title, int answer, List<Activity> activities, double time) {
         super(title, answer, activities, time);
 
         setMax_score(100);
@@ -19,7 +19,7 @@ public class MultiChoiceQuestion extends Question {
 
     //score = MAX_SCORE - (seconds / questionTime * difficulty) ^ 2
     @Override
-    public int calculateScore(long userAnswer, int seconds) {
+    public int calculateScore(long userAnswer, double seconds) {
         if (userAnswer != this.answer)
             return 0;
 

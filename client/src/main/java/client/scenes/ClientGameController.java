@@ -2,12 +2,15 @@ package client.scenes;
 
 import client.utils.ServerUtils;
 import commons.Messages.*;
+import commons.Player;
 import javafx.application.Platform;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
 import javafx.util.Pair;
+
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -51,14 +54,20 @@ public class ClientGameController {
 
     public void startPolling(boolean isMulti) {
         isPlaying = true;
-        multiQuestionController.reset();
-        estimateQuestionController.reset();
         enableAllJokers();
         if (isMulti) {
+            multiQuestionController.resetMulti();
+            estimateQuestionController.resetMulti();
+            multiQuestionController.setMulti(true);
+            estimateQuestionController.setMulti(true);
             gameId = serverUtils.joinMulti(mainController.getUser());
             mainController.showWaitingRoom();
             waitingRoomController.setGameId(gameId);
         } else {
+            multiQuestionController.resetSolo();
+            estimateQuestionController.resetSolo();
+            multiQuestionController.setMulti(false);
+            estimateQuestionController.setMulti(false);
             gameId = serverUtils.joinSolo(mainController.getUser());
             mainController.showMultiQuestion();
         }
@@ -89,6 +98,7 @@ public class ClientGameController {
                 break;
             case "NewPlayers":
                 NewPlayersMessage newPlayersMessage = (NewPlayersMessage) message;
+                updateWaitingRoom(newPlayersMessage);
                 break;
             case "NewQuestion":
                 NewQuestionMessage newQuestionMessage = (NewQuestionMessage) message;
@@ -114,6 +124,14 @@ public class ClientGameController {
                     estimateQuestionController.showAnswer(correctAnswerMessage);
                     multiQuestionController.showAnswer(correctAnswerMessage);
                     multiQuestionController.changeScore(correctAnswerMessage.getScore());
+                });
+                break;
+            case "ReduceTime":
+                ReduceTimeMessage reduceTimeMessage = (ReduceTimeMessage) message;
+                Platform.runLater(() -> {
+                    setTimeLeft(reduceTimeMessage.getNewTime());
+                    multiQuestionController.showTimeReduced(reduceTimeMessage.getUserName());
+                    estimateQuestionController.showTimeReduced(reduceTimeMessage.getUserName());
                 });
                 break;
             default:
@@ -151,6 +169,10 @@ public class ClientGameController {
 
     public void skipQuestion() {
         serverUtils.useNewQuestionJoker(gameId);
+    }
+
+    public void timeJoker(long userId) {
+        serverUtils.useTimeJoker(gameId, userId);
     }
 
     public void enableAllJokers() {
@@ -271,6 +293,12 @@ public class ClientGameController {
         setTimeLeft(newQuestionMessage.getTime());
         estimateQuestionController.setJokersPic();
         estimateQuestionController.showQuestion(newQuestionMessage);
+    }
+    public void updateWaitingRoom(NewPlayersMessage newPlayersMessage) {
+        List<Player> playerList = newPlayersMessage.getPlayerList();
+        String userName = mainController.getUser().getName();
+        waitingRoomController.showPlayers(playerList);
+        waitingRoomController.showEntries();
     }
 
 }
