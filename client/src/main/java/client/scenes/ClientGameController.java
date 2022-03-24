@@ -3,6 +3,7 @@ package client.scenes;
 import client.utils.ServerUtils;
 import commons.Messages.*;
 import javafx.animation.PathTransition;
+import commons.Player;
 import javafx.application.Platform;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
@@ -13,8 +14,8 @@ import javafx.scene.shape.Path;
 import javafx.scene.shape.VLineTo;
 import javafx.util.Duration;
 import javafx.util.Pair;
-
 import java.awt.*;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -29,7 +30,7 @@ public class ClientGameController {
     private boolean usedTimeJokerForCurrentQ;
     private Timer timer;
 
-    private boolean isPlaying = true;
+    private boolean isPlaying = false;
 
     private final MainCtrl mainController;
     private final ServerUtils serverUtils;
@@ -62,13 +63,20 @@ public class ClientGameController {
 
     public void startPolling(boolean isMulti) {
         isPlaying = true;
-        multiQuestionController.reset();
-        estimateQuestionController.reset();
         enableAllJokers();
         if (isMulti) {
+            multiQuestionController.resetMulti();
+            estimateQuestionController.resetMulti();
+            multiQuestionController.setMulti(true);
+            estimateQuestionController.setMulti(true);
             gameId = serverUtils.joinMulti(mainController.getUser());
             mainController.showWaitingRoom();
+            waitingRoomController.setGameId(gameId);
         } else {
+            multiQuestionController.resetSolo();
+            estimateQuestionController.resetSolo();
+            multiQuestionController.setMulti(false);
+            estimateQuestionController.setMulti(false);
             gameId = serverUtils.joinSolo(mainController.getUser());
         }
         Timer timer = new Timer();
@@ -98,6 +106,7 @@ public class ClientGameController {
                 break;
             case "NewPlayers":
                 NewPlayersMessage newPlayersMessage = (NewPlayersMessage) message;
+                updateWaitingRoom(newPlayersMessage);
                 break;
             case "NewQuestion":
                 NewQuestionMessage newQuestionMessage = (NewQuestionMessage) message;
@@ -115,15 +124,7 @@ public class ClientGameController {
                 break;
             case "ShowLeaderboard":
                 ShowLeaderboardMessage showLeaderboardMessage = (ShowLeaderboardMessage) message;
-                if (showLeaderboardMessage.getGameProgress().equals("End")) {
-                    Platform.runLater(() -> {
-                        mainController.showLeaderboardSolo();
-                        Long myEntryId = showLeaderboardMessage.getEntryId();
-                        leaderboardSoloController.showMine(myEntryId);
-                    });
-                } else if (showLeaderboardMessage.getGameProgress().equals("Mid")) {
-                    Platform.runLater(() -> {});
-                }
+                prepareLeaderboard(showLeaderboardMessage);
                 break;
             case "ShowCorrectAnswer":
                 CorrectAnswerMessage correctAnswerMessage = (CorrectAnswerMessage) message;
@@ -131,6 +132,14 @@ public class ClientGameController {
                 Platform.runLater(() -> {
                     estimateQuestionController.showAnswer(correctAnswerMessage);
                     multiQuestionController.showAnswer(correctAnswerMessage);
+                });
+                break;
+            case "ReduceTime":
+                ReduceTimeMessage reduceTimeMessage = (ReduceTimeMessage) message;
+                Platform.runLater(() -> {
+                    setTimeLeft(reduceTimeMessage.getNewTime());
+                    multiQuestionController.showTimeReduced(reduceTimeMessage.getUserName());
+                    estimateQuestionController.showTimeReduced(reduceTimeMessage.getUserName());
                 });
                 break;
             default:
@@ -169,6 +178,11 @@ public class ClientGameController {
 
     public void skipQuestion() {
         serverUtils.useNewQuestionJoker(gameId);
+        timer.cancel();
+    }
+
+    public void timeJoker(long userId) {
+        serverUtils.useTimeJoker(gameId, userId);
     }
 
     public void enableAllJokers() {
@@ -268,7 +282,7 @@ public class ClientGameController {
             public void run() {
                 double maxTime = getMaxTime();
                 double timeLeft = getTimeLeft();
-                updateTimeLeft(0.05, timeLeft);
+                updateTimeLeft(0.1, timeLeft);
                 Platform.runLater(() -> updateProgressBar(timeLeft, maxTime, progressBar, timeText));
             }
         }, 0, 100);
@@ -285,6 +299,35 @@ public class ClientGameController {
             progressBar.setProgress(0.0);
             int displayText = 0;
             timer.setText(displayText + "S");
+        }
+    }
+
+    public void prepareLeaderboard(ShowLeaderboardMessage showLeaderboardMessage) {
+        boolean isSolo = showLeaderboardMessage.getEntryId() != null;
+        if (showLeaderboardMessage.getGameProgress().equals("End")) {
+            if (isSolo) {
+                Platform.runLater(() -> {
+                    mainController.showLeaderboardSolo();
+                    Long myEntryId = showLeaderboardMessage.getEntryId();
+                    leaderboardSoloController.showMine(myEntryId);
+                });
+            } else {
+                Platform.runLater(() -> {
+                    mainController.showLeaderboardMulti();
+                    String userName = mainController.getUser().getName();
+                    leaderboardSoloController.initMulti(showLeaderboardMessage.getEntries(), userName, "End");
+                    leaderboardSoloController.showEntries();
+                    leaderboardSoloController.setEndScreen();
+                });
+            }
+        } else if (showLeaderboardMessage.getGameProgress().equals("Mid")) {
+            Platform.runLater(() -> {
+                mainController.showLeaderboardMulti();
+                String userName = mainController.getUser().getName();
+                leaderboardSoloController.initMulti(showLeaderboardMessage.getEntries(), userName, "Mid");
+                leaderboardSoloController.showEntries();
+                leaderboardSoloController.setMidScreen();
+            });
         }
     }
 
@@ -305,6 +348,12 @@ public class ClientGameController {
         setTimeLeft(newQuestionMessage.getTime());
         estimateQuestionController.setJokersPic();
         estimateQuestionController.showQuestion(newQuestionMessage);
+    }
+    public void updateWaitingRoom(NewPlayersMessage newPlayersMessage) {
+        List<Player> playerList = newPlayersMessage.getPlayerList();
+        String userName = mainController.getUser().getName();
+        waitingRoomController.showPlayers(playerList);
+        waitingRoomController.showEntries();
     }
 
     public void changeScore(int score, Label pointsLabel, Label newPoints) {

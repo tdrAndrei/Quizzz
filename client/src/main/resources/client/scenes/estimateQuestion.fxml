@@ -169,6 +169,7 @@
                   <Insets bottom="100.0" left="30.0" right="-10.0" />
                </GridPane.margin>
             </Button>
+            <Label fx:id="timeReduced" GridPane.columnIndex="2" />
          </children>
          <padding>
             <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />

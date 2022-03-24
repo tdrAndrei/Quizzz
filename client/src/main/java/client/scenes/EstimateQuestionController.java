@@ -63,6 +63,9 @@ public class EstimateQuestionController implements Initializable {
     private Label timeText;
 
     @FXML
+    private Label timeReduced;
+
+    @FXML
     private GridPane grid;
 
     @FXML
@@ -72,6 +75,8 @@ public class EstimateQuestionController implements Initializable {
     private final ClientGameController clientGameController;
     private final ServerUtils serverUtils;
     private ChangeListener<Number> changeListener;
+
+    private boolean isMulti;
 
     @Inject
     public EstimateQuestionController(MainCtrl mainCtrl, ClientGameController clientGameController, ServerUtils serverUtils){
@@ -96,7 +101,8 @@ public class EstimateQuestionController implements Initializable {
         question1Image.setImage(new Image(new ByteArrayInputStream(message.getImagesBytes().get(0))));
 
         answerLabel.setText("");
-        answerLabel.setStyle("-fx-text-fill: black;");
+        timeReduced.setText("");
+        answerLabel.setStyle("-fx-text-fill: black");
 
     }
 
@@ -153,12 +159,15 @@ public class EstimateQuestionController implements Initializable {
 
     //skip question joker
     public void changeJoker3() {
-
         if (!clientGameController.isDisableJokerUsage() && !clientGameController.isSkipQuestionJokerUsed()) {
-            questionTxt.setText("You skipped this question!");
+            if (isMulti) {
+                clientGameController.timeJoker(mainCtrl.getUser().getId());
+            } else {
+                questionTxt.setText("You skipped this question!");
+                clientGameController.skipQuestion();
+            }
             skipQuestionJoker.setImage(clientGameController.getUsedJoker());
             clientGameController.setSkipQuestionJokerUsed(true);
-            clientGameController.skipQuestion();
         }
         
     }
@@ -186,7 +195,18 @@ public class EstimateQuestionController implements Initializable {
 
     }
 
-    public void reset(){
+    public void showTimeReduced(String name) {
+        timeReduced.setText(name + " has reduced your time!");
+    }
+
+    public void resetSolo() {
+        eliminateJoker.setImage(new Image("/client.photos/jokerOneAnswer.png"));
+        doublePointsJoker.setImage(new Image("/client.photos/doubleJoker.png"));
+        skipQuestionJoker.setImage(new Image("/client.photos/skipJoker.png"));
+        pointsLabel.setText("0 Pts");
+    }
+
+    public void resetMulti() {
         eliminateJoker.setImage(new Image("/client.photos/jokerOneAnswer.png"));
         doublePointsJoker.setImage(new Image("/client.photos/doubleJoker.png"));
         skipQuestionJoker.setImage(new Image("/client.photos/timeJoker.png"));
@@ -203,6 +223,14 @@ public class EstimateQuestionController implements Initializable {
         if (clientGameController.isSkipQuestionJokerUsed())
             skipQuestionJoker.setImage(clientGameController.getUsedJoker());
 
+    }
+
+    public void setMulti(boolean multi) {
+        isMulti = multi;
+    }
+
+    public boolean isMulti() {
+        return isMulti;
     }
 
 }

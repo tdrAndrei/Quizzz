@@ -14,7 +14,7 @@ public class NewQuestionMessage extends Message {
     private String questionType;
     private String title;
     private List<Activity> activities;
-    private int time;
+    private double time;
     private int score;
     private List<Long> bounds;
     private List<byte[]> imagesBytes;
@@ -36,7 +36,7 @@ public class NewQuestionMessage extends Message {
      * @param score      the score
      * @param bounds     the bounds for estimate question
      */
-    public NewQuestionMessage(String type, String questionType, String title, List<Activity> activities, int time, int score,
+    public NewQuestionMessage(String type, String questionType, String title, List<Activity> activities, double time, int score,
                               List<Long> bounds, List<byte[]> imagesBytes) {
         super(type);
         this.questionType = questionType;
@@ -123,7 +123,7 @@ public class NewQuestionMessage extends Message {
      *
      * @return the time
      */
-    public int getTime() {
+    public double getTime() {
         return time;
     }
 
@@ -132,7 +132,7 @@ public class NewQuestionMessage extends Message {
      *
      * @param time the time
      */
-    public void setTime(int time) {
+    public void setTime(double time) {
         this.time = time;
     }
 
