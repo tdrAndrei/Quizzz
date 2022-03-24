@@ -61,8 +61,17 @@ public class ClientGameController {
             multiQuestionController.setMulti(true);
             estimateQuestionController.setMulti(true);
             gameId = serverUtils.joinMulti(mainController.getUser());
+
+            serverUtils.getAndSetSession();
+            serverUtils.registerForMessages(gameId);
+
             mainController.showWaitingRoom();
             waitingRoomController.setGameId(gameId);
+
+            serverUtils.sendEmojiTest(gameId);
+            serverUtils.sendEmojiTest(gameId);
+            serverUtils.sendEmojiTest(gameId);
+            serverUtils.sendEmojiTest(gameId);
         } else {
             multiQuestionController.resetSolo();
             estimateQuestionController.resetSolo();

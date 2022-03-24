@@ -18,8 +18,10 @@ package client.utils;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.Type;
 import java.net.URL;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import commons.LeaderboardEntry;
 import commons.Messages.Message;
@@ -30,6 +32,10 @@ import commons.Quote;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.GenericType;
+import org.springframework.messaging.converter.MappingJackson2MessageConverter;
+import org.springframework.messaging.simp.stomp.*;
+import org.springframework.web.socket.client.standard.StandardWebSocketClient;
+import org.springframework.web.socket.messaging.WebSocketStompClient;
 
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import static jakarta.ws.rs.core.MediaType.TEXT_PLAIN;
@@ -37,7 +43,7 @@ import static jakarta.ws.rs.core.MediaType.TEXT_PLAIN;
 public class ServerUtils {
 
     private static String SERVER = "";
-
+    private StompSession session;
 
     public void setUrl(String url) {
         SERVER = url;
@@ -51,6 +57,51 @@ public class ServerUtils {
         while ((line = br.readLine()) != null) {
             System.out.println(line);
         }
+    }
+
+    public String generateWebsocketURL() {
+        String intermediate;
+        if (SERVER.contains("https")) {
+            intermediate = SERVER.replace("https", "");
+        } else {
+            intermediate = SERVER.replace("http", "");
+        }
+        return "ws" + intermediate + "websocket";
+    }
+
+    public void getAndSetSession() {
+        String websocketURL = generateWebsocketURL();
+        var client = new StandardWebSocketClient();
+        var stomp = new WebSocketStompClient(client);
+        stomp.setMessageConverter(new MappingJackson2MessageConverter());
+        try {
+            this.session = stomp.connect(websocketURL, new StompSessionHandlerAdapter() {}).get();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void registerForMessages(long userId) {
+        session.subscribe("/topic/emoji/" + userId, new StompFrameHandler() {
+            @Override
+            public Type getPayloadType(StompHeaders headers) {
+                return Integer.class;
+            }
+
+            @Override
+            public void handleFrame(StompHeaders headers, Object payload) {
+                System.out.println(headers);
+                System.out.println("REACHED FRAME HANDLER !!!!!");
+                Integer message = (Integer) payload;
+                System.out.println(message);
+            }
+        });
+    }
+
+    public void sendEmojiTest(long gameId) {
+        session.send("/app/emoji/" + gameId, 4);
     }
 
     public List<Quote> getQuotes() {
