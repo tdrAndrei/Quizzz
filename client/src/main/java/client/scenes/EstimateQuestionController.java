@@ -4,7 +4,6 @@ import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Messages.CorrectAnswerMessage;
 import commons.Messages.NewQuestionMessage;
-import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
@@ -21,8 +20,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class EstimateQuestionController implements Initializable {
 
@@ -85,6 +82,8 @@ public class EstimateQuestionController implements Initializable {
 
     public void showQuestion(NewQuestionMessage message) {
 
+        clientGameController.startTimer(progressBar, timeText);
+
         answerSlider.valueProperty().addListener(changeListener);
         answerSlider.setMin(message.getBounds().get(0));
         answerSlider.setMax(message.getBounds().get(1));
@@ -97,7 +96,7 @@ public class EstimateQuestionController implements Initializable {
         question1Image.setImage(new Image(new ByteArrayInputStream(message.getImagesBytes().get(0))));
 
         answerLabel.setText("");
-        answerLabel.setStyle("-fx-text-fill: black");
+        answerLabel.setStyle("-fx-text-fill: black;");
 
     }
 
@@ -117,7 +116,8 @@ public class EstimateQuestionController implements Initializable {
         answerSlider.setDisable(true);
 
         answerLabel.setText("The answer is " + message.getCorrectAnswer());
-        answerLabel.setStyle("-fx-text-fill: rgb(131,210,0)");
+        answerLabel.setStyle("-fx-text-fill: rgb(131,210,0);");
+        clientGameController.getTimer().cancel();
         clientGameController.changeScore(message.getScore(), pointsLabel, newPoints);
 
     }
@@ -145,6 +145,7 @@ public class EstimateQuestionController implements Initializable {
         if (!clientGameController.isDisableJokerUsage() && !clientGameController.isDoublePointsJokerUsed()) {
             doublePointsJoker.setImage(clientGameController.getUsedJoker());
             clientGameController.setDoublePointsJokerUsed(true);
+            clientGameController.setUsedTimeJokerForCurrentQ(true);
             clientGameController.doublePoint();
         }
 
@@ -182,17 +183,6 @@ public class EstimateQuestionController implements Initializable {
         };
 
         progressBar.setProgress(1.0);
-
-        Timer timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                double maxTime = clientGameController.getMaxTime();
-                double timeLeft = clientGameController.getTimeLeft();
-                clientGameController.updateTimeLeft(0.05, timeLeft);
-                Platform.runLater(() -> clientGameController.updateProgressBar(timeLeft, maxTime, progressBar, timeText));
-            }
-        }, 0, 100);
 
     }
 

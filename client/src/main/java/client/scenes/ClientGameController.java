@@ -8,7 +8,6 @@ import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
-import javafx.scene.shape.HLineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import javafx.scene.shape.VLineTo;
@@ -27,6 +26,8 @@ public class ClientGameController {
     private WaitingRoomController waitingRoomController;
     private Long gameId;
     private Color[] timebarColors;
+    private boolean usedTimeJokerForCurrentQ;
+    private Timer timer;
 
     private boolean isPlaying = true;
 
@@ -101,6 +102,7 @@ public class ClientGameController {
             case "NewQuestion":
                 NewQuestionMessage newQuestionMessage = (NewQuestionMessage) message;
                 disableJokerUsage = false;
+                setUsedTimeJokerForCurrentQ(false);
                 if (newQuestionMessage.getQuestionType().equals("MC")) {
                     Platform.runLater(() -> {
                         prepareMCQ(newQuestionMessage);
@@ -137,6 +139,7 @@ public class ClientGameController {
 
     public void exitGame() {
         isPlaying = false;
+        timer.cancel();
         serverUtils.leaveGame(this.getGameId(), mainController.getUser().getId());
     }
 
@@ -257,6 +260,21 @@ public class ClientGameController {
                                                             newColor.getBlue() + ");");
     }
 
+    public void startTimer(ProgressBar progressBar, Label timeText){
+
+        timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                double maxTime = getMaxTime();
+                double timeLeft = getTimeLeft();
+                updateTimeLeft(0.05, timeLeft);
+                Platform.runLater(() -> updateProgressBar(timeLeft, maxTime, progressBar, timeText));
+            }
+        }, 0, 100);
+
+    }
+
     public void updateProgressBar(double timeLeft, double maxTime, ProgressBar progressBar, Label timer){
         if (timeLeft >= 0){
             progressBar.setProgress(timeLeft/maxTime);
@@ -296,18 +314,39 @@ public class ClientGameController {
         int currScore = Integer.parseInt(string[0]);
         int pointsAdded = score - currScore;
 
-        newPoints.setStyle("-fx-font-weight: bold");
-        newPoints.setText(" + " + pointsAdded);
+        if (isUsedTimeJokerForCurrentQ())
+            newPoints.setText(" + 2x " + pointsAdded / 2);
+        else
+            newPoints.setText(" + " + pointsAdded);
+
+        if (pointsAdded == 0)
+            newPoints.setStyle("-fx-text-fill: rgb(255,0,0);");
+        else
+            newPoints.setStyle("-fx-text-fill: rgb(0, 210, 28);");
+
         pointsLabel.setText(currScore + " pts");
-        Path path = new Path();
-        path.getElements().add(new MoveTo(0, 0));
-        path.getElements().add(new VLineTo(-100));
-        path.getElements().add(new HLineTo(100));
-        PathTransition pathTransition = new PathTransition(Duration.seconds(2), path, newPoints);
-        pathTransition.play();
+
+        Path moveVertically = new Path();
+        moveVertically.getElements().add(new MoveTo(0, 0));
+        moveVertically.getElements().add(new VLineTo(-100));
+
+        PathTransition fadeOut = new PathTransition(Duration.seconds(3), moveVertically, newPoints);
+        fadeOut.play();
 
         pointsLabel.setText(score + " pts");
 
+    }
+
+    public void setUsedTimeJokerForCurrentQ(boolean usedTimeJokerForCurrentQ) {
+        this.usedTimeJokerForCurrentQ = usedTimeJokerForCurrentQ;
+    }
+
+    public boolean isUsedTimeJokerForCurrentQ() {
+        return usedTimeJokerForCurrentQ;
+    }
+
+    public Timer getTimer() {
+        return timer;
     }
 
 }

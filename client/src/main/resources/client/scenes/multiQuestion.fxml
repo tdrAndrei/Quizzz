@@ -30,7 +30,7 @@
           <RowConstraints maxHeight="167.3333740234375" minHeight="10.0" percentHeight="13.0" prefHeight="107.3333740234375" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <Button fx:id="exitButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="40.0" minWidth="130.0" mnemonicParsing="false" onAction="#quit" prefHeight="40.0" prefWidth="130.0" text="Exit Game" GridPane.rowIndex="3">
+            <Button fx:id="exitButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="40.0" minWidth="130.0" mnemonicParsing="false" onAction="#quit" prefHeight="40.0" prefWidth="130.0" styleClass="setFont" text="Exit Game" GridPane.rowIndex="3">
                <font>
                   <Font size="19.0" />
                </font>
@@ -43,9 +43,9 @@
                   <Insets top="30.0" />
                </GridPane.margin>
                <children>
-                  <Label maxHeight="1.7976931348623157E308" text="Your Score:" />
-                  <Label fx:id="pointsLabel" alignment="BASELINE_LEFT" maxHeight="1.7976931348623157E308" text="0 Pts" />
-                  <Label fx:id="newPoints" alignment="BASELINE_RIGHT" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" prefHeight="35.0" prefWidth="83.0" text="+ new pts">
+                  <Label maxHeight="1.7976931348623157E308" styleClass="setFont" text="Your Score:" />
+                  <Label fx:id="pointsLabel" alignment="BASELINE_LEFT" maxHeight="1.7976931348623157E308" styleClass="setFont" text="0 Pts" />
+                  <Label fx:id="newPoints" alignment="BASELINE_RIGHT" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" prefHeight="42.0" prefWidth="131.0" styleClass="setFont" text="+ new pts">
                      <font>
                         <Font name="Comicbon" size="18.0" />
                      </font>
@@ -93,7 +93,7 @@
                </rowConstraints>
                <children>
                   <ProgressBar fx:id="progressBar" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="32.0" prefWidth="330.0" progress="0.53" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
-                  <Label fx:id="timeText" alignment="CENTER" contentDisplay="CENTER" prefHeight="27.0" prefWidth="51.0" text="10S" textAlignment="CENTER" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                  <Label fx:id="timeText" alignment="CENTER" contentDisplay="CENTER" prefHeight="27.0" prefWidth="51.0" styleClass="setFont" text="10S" textAlignment="CENTER" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
                      <font>
                         <Font size="21.0" />
                      </font>
@@ -114,7 +114,7 @@
                         <RowConstraints maxHeight="95.99999237060547" minHeight="10.0" percentHeight="25.0" prefHeight="72.00003051757812" vgrow="SOMETIMES" />
                      </rowConstraints>
                      <children>
-                        <Label fx:id="activity1Label" maxHeight="-Infinity" maxWidth="-Infinity" text="Fully charging the laptop project laptop (HP ZBook Power G7)" textAlignment="CENTER" wrapText="true" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+                        <Label fx:id="activity1Label" maxHeight="-Infinity" maxWidth="-Infinity" styleClass="setFont" text="Fully charging the laptop project laptop (HP ZBook Power G7)" textAlignment="CENTER" wrapText="true" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
                         <ImageView fx:id="question1Image" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
                            <image>
                               <Image url="@/client.photos/clothing-iron.jpg" />
@@ -144,7 +144,7 @@
                         <RowConstraints maxHeight="95.99999237060547" minHeight="10.0" percentHeight="25.0" prefHeight="42.66667429606119" vgrow="SOMETIMES" />
                      </rowConstraints>
                      <children>
-                        <Label fx:id="activity2Label" maxHeight="-Infinity" maxWidth="-Infinity" text="Boiling 1.7 Litres of water in an electric kettle" textAlignment="CENTER" wrapText="true" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+                        <Label fx:id="activity2Label" maxHeight="-Infinity" maxWidth="-Infinity" styleClass="setFont" text="Boiling 1.7 Litres of water in an electric kettle" textAlignment="CENTER" wrapText="true" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
                         <ImageView fx:id="question2Image" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
                            <image>
                               <Image url="@/client.photos/oven.jpg" />
@@ -177,7 +177,7 @@
                         <RowConstraints maxHeight="95.99999237060547" minHeight="10.0" percentHeight="25.0" prefHeight="42.66667429606119" vgrow="SOMETIMES" />
                      </rowConstraints>
                      <children>
-                        <Label fx:id="activity3Label" maxHeight="-Infinity" maxWidth="-Infinity" text="Heating up the water in a home using the electric water heater for a month" textAlignment="CENTER" wrapText="true" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+                        <Label fx:id="activity3Label" maxHeight="-Infinity" maxWidth="-Infinity" styleClass="setFont" text="Heating up the water in a home using the electric water heater for a month" textAlignment="CENTER" wrapText="true" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
                         <ImageView fx:id="question3Image" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
                            <image>
                               <Image url="@/client.photos/vacuuming.jpeg" />
@@ -196,7 +196,7 @@
                   <String fx:value="highlightable" />
                </styleClass>
             </AnchorPane>
-            <Label fx:id="questionLabel" alignment="TOP_CENTER" contentDisplay="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="66.0" prefWidth="802.0" text="Which activity takes the most amount of energy?" textAlignment="CENTER" wrapText="true" GridPane.columnSpan="3" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+            <Label fx:id="questionLabel" alignment="TOP_CENTER" contentDisplay="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="66.0" prefWidth="802.0" styleClass="setFont" text="Which activity takes the most amount of energy?" textAlignment="CENTER" wrapText="true" GridPane.columnSpan="3" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
                <font>
                   <Font name="Arial Bold" size="24.0" />
                </font>
