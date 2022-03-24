@@ -98,15 +98,18 @@ public class WaitingRoomController implements Initializable {
     @FXML
     private TableView mainTable;
 
+    @FXML
+    private Label warnLabel;
+
     @Inject
     public WaitingRoomController(ServerUtils server, ClientGameController clientGameController, MainCtrl mainCtrl) {
         this.mainCtrl = mainCtrl;
         this.server = server;
         this.clientGameController = clientGameController;
     }
-    public WaitingRoomEntryLabel addPlayer(String name, long entryId) {
+    public WaitingRoomEntryLabel addPlayer(String name, long entryId, int position) {
         Label nameLabel = new Label();
-        nameLabel.setText("  " + name);
+        nameLabel.setText("  " + position + ". " + name);
         nameLabel.getStyleClass().add("barColor");
         double minWidth = grid.getPrefWidth()/1.4;
         nameLabel.setMinWidth(minWidth);
@@ -130,9 +133,11 @@ public class WaitingRoomController implements Initializable {
 
     public void showPlayers(List<Player> playersEntries) {
         entries.clear();
+        int count = 1;
         for (Player player : playersEntries) {
-            WaitingRoomEntryLabel processedEntry = addPlayer(player.getUser().getName(), 0);
+            WaitingRoomEntryLabel processedEntry = addPlayer(player.getUser().getName(), 0, count);
             entries.add(processedEntry);
+            count++;
         }
     }
 
@@ -148,10 +153,13 @@ public class WaitingRoomController implements Initializable {
     public void startGame() {
         if (entries.size() > 1) {
             server.startGame(gameId);
+        } else {
+            warnLabel.setText("You can not start the game with only one player");
         }
     }
 
     public void exit() {
+        warnLabel.setText("");
         clientGameController.exitGame();
         mainCtrl.showMainMenu();
     }
