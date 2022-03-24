@@ -1,16 +1,10 @@
 package server.service;
 
-import commons.Activity;
-import commons.EstimateQuestion;
-import commons.MultiChoiceQuestion;
-import commons.Question;
+import commons.*;
 import org.springframework.stereotype.Service;
 import server.database.ActivityRepository;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 @Service
 public class QuestionService {
@@ -23,6 +17,32 @@ public class QuestionService {
         this.repo = repo;
         this.rm = rm;
         this.activityList = this.repo.findAll();
+    }
+
+    public Question makeCompare(double seconds) {
+        List<Activity> answers = new ArrayList<>();
+        List<Activity> equalCons = new ArrayList<>();
+
+        while (equalCons.size() < 2) {
+            int indexRand = rm.nextInt(activityList.size());
+            Activity rand = activityList.get(indexRand);
+            equalCons = this.repo.findByConsumption(rand.getConsumption_in_wh());
+        }
+        Collections.shuffle(equalCons);
+        Activity main = equalCons.get(0);
+        answers.add(equalCons.get(1));
+
+        while (answers.size() < 3) {
+            Activity wrongAnswer = activityList.get(rm.nextInt(activityList.size()));
+            double x = Math.abs(wrongAnswer.getConsumption_in_wh() / main.getConsumption_in_wh() - 1);
+            if (x < 0.5 && x >= 0.1) {
+                answers.add(wrongAnswer);
+            }
+        }
+        Collections.shuffle(answers);
+        answers.add(main);
+        int answer = answers.indexOf(equalCons.get(1));
+        return new CompareQuestion("What can you do instead of ... ?", answer, answers, seconds);
     }
 
     public Question makeMultipleChoice(double seconds) {
