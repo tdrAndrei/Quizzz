@@ -62,16 +62,16 @@ public class ClientGameController {
             estimateQuestionController.setMulti(true);
             gameId = serverUtils.joinMulti(mainController.getUser());
 
-            serverUtils.getAndSetSession();
-            serverUtils.registerForMessages(gameId);
+            serverUtils.getAndSetSession();  // Getting a websocket connection
+            serverUtils.registerForMessages(gameId); //Using our connection to subscribe to "/topic/emoji/{gameId}
 
             mainController.showWaitingRoom();
             waitingRoomController.setGameId(gameId);
 
-            serverUtils.sendEmojiTest(gameId);
-            serverUtils.sendEmojiTest(gameId);
-            serverUtils.sendEmojiTest(gameId);
-            serverUtils.sendEmojiTest(gameId);
+            serverUtils.sendEmojiTest(gameId, 69); //this is for testing and should be removed and abstracted
+            serverUtils.sendEmojiTest(gameId, 69);
+            serverUtils.sendEmojiTest(gameId, 69);
+            serverUtils.sendEmojiTest(gameId, 69);
         } else {
             multiQuestionController.resetSolo();
             estimateQuestionController.resetSolo();

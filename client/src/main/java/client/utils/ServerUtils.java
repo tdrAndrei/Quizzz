@@ -83,8 +83,8 @@ public class ServerUtils {
         }
     }
 
-    public void registerForMessages(long userId) {
-        session.subscribe("/topic/emoji/" + userId, new StompFrameHandler() {
+    public void registerForMessages(long gameId) {
+        session.subscribe("/topic/emoji/" + gameId, new StompFrameHandler() {
             @Override
             public Type getPayloadType(StompHeaders headers) {
                 return Integer.class;
@@ -92,16 +92,14 @@ public class ServerUtils {
 
             @Override
             public void handleFrame(StompHeaders headers, Object payload) {
-                System.out.println(headers);
-                System.out.println("REACHED FRAME HANDLER !!!!!");
                 Integer message = (Integer) payload;
                 System.out.println(message);
             }
         });
     }
 
-    public void sendEmojiTest(long gameId) {
-        session.send("/app/emoji/" + gameId, 4);
+    public void sendEmojiTest(long gameId, int payload) {
+        session.send("/app/emoji/" + gameId, payload);
     }
 
     public List<Quote> getQuotes() {
