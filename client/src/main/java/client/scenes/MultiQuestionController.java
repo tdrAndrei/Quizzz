@@ -149,12 +149,12 @@ public class MultiQuestionController implements Initializable {
         questionLabel.setTextFill(Color.rgb(0, 0, 0));
     }
     public void colorIncorrectRed() {
-        if (ans1pane.getBorder().equals(selectedAnswerBorder)) {
+        if (!(ans1pane.getBorder() == null) && ans1pane.getBorder().equals(selectedAnswerBorder)) {
             ans1pane.setBorder(selectedWrongAnswerBorder);
-        } else if (ans2pane.getBorder().equals(selectedAnswerBorder)) {
+        } else if (!(ans2pane.getBorder() == null) && ans2pane.getBorder().equals(selectedAnswerBorder)) {
             ans2pane.setBorder(selectedWrongAnswerBorder);
 
-        } else if (ans3pane.getBorder().equals(selectedAnswerBorder)) {
+        } else if (!(ans3pane.getBorder() == null) && ans3pane.getBorder().equals(selectedAnswerBorder)) {
             ans3pane.setBorder(selectedWrongAnswerBorder);
         }
     }
