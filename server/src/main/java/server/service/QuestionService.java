@@ -6,45 +6,54 @@ import commons.MultiChoiceQuestion;
 import commons.Question;
 import org.springframework.stereotype.Service;
 import server.database.ActivityRepository;
-
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
+import java.util.ArrayList;
+import java.util.Optional;
+import java.util.Comparator;
 
 @Service
 public class QuestionService {
 
     private final ActivityRepository repo;
-    private final List<Activity> activityList;
+    private final int numActivities;
     private final Random rm;
 
     public QuestionService(ActivityRepository repo, Random rm) {
         this.repo = repo;
         this.rm = rm;
-        this.activityList = this.repo.findAll();
+        this.numActivities = (int) this.repo.count();
     }
 
     public Question makeMultipleChoice(double seconds) {
         List<Activity> answers = new ArrayList<>();
 
-        int index1 = rm.nextInt(activityList.size());
-        answers.add(activityList.get(index1));
-
-        int index2 = rm.nextInt(activityList.size());
-        while (Math.abs(index1 - index2) <= 1) {
-            index2 = rm.nextInt(activityList.size());
+        int index1 = rm.nextInt(this.numActivities);
+        while (this.repo.findById((long) index1).isEmpty()){
+            index1 = rm.nextInt(this.numActivities);
         }
-        answers.add(activityList.get(index2));
+        answers.add(this.repo.findById((long) index1).get());
+
+        int index2 = rm.nextInt(this.numActivities);
+        while (Math.abs(index1 - index2) <= 1 || this.repo.findById((long) index2).isEmpty()) {
+            index2 = rm.nextInt(this.numActivities);
+        }
+        answers.add(this.repo.findById((long) index2).get());
 
         int index3 = (index1 + index2) / 2;
-        answers.add(activityList.get(index3));
+        while (this.repo.findById((long) index3).isEmpty()){
+            index3++;
+            if (index3 == index2){
+                index3++;
+            }
+        }
+        answers.add(this.repo.findById((long) index3).get());
 
         //decide if the answer is the biggest consumption or the lowest consumption
         int dice = rm.nextInt(2);
-        int index = 0;
+        int index;
 
-        String title = "";
+        String title;
         if (dice == 0) {
             title = "What consumes the most energy?";
             index = getIndex(answers, Comparator.naturalOrder());
@@ -73,8 +82,13 @@ public class QuestionService {
     }
 
     public Question makeEstimate(double seconds) {
-        Activity a = activityList.get(rm.nextInt(activityList.size()));
+        long randomIndex = rm.nextInt(this.numActivities);
+        Optional<Activity> a = this.repo.findById(randomIndex);
+        while (a.isEmpty() || a.get().getConsumption_in_wh() <= 5){
+            randomIndex = rm.nextInt(this.numActivities);
+        }
+        a = this.repo.findById(randomIndex);
         String title = "How much energy does this activity take?";
-        return new EstimateQuestion(title, a.getConsumption_in_wh(), List.of(a), seconds);
+        return new EstimateQuestion(title, a.get().getConsumption_in_wh(), List.of(a.get()), seconds);
     }
 }
