@@ -44,7 +44,7 @@ public class Game {
             if (j <= 2) {
                 stageQueue.add(new MutablePair<>("Question", 20.0));
                 stageQueue.add(new MutablePair<>("CorrectAns", 3.0));
-            } else if (i <= 7) {
+            } else if (j <= 7) {
                 stageQueue.add(new MutablePair<>("Compare", 20.0));
                 stageQueue.add(new MutablePair<>("CorrectAns", 3.0));
             } else {
@@ -80,7 +80,7 @@ public class Game {
         startTime = new Date();
 
         setMaxTime(stagePair.getValue());
-        
+
         switch (stage) {
             case "Question":
                 currentQuestion = questionService.makeMultipleChoice(stagePair.getValue());
