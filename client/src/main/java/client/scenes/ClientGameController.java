@@ -49,6 +49,7 @@ public class ClientGameController {
         this.mainController = mainController;
         this.serverUtils = serverUtils;
         timebarColors = new Color[]{Color.green, Color.yellow, Color.red};
+        timer = new Timer();
     }
 
     public void initialize(Pair<MultiQuestionController, Parent> multiQuestion,
