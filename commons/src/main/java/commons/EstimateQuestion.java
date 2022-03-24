@@ -4,7 +4,7 @@ import java.util.List;
 
 public class EstimateQuestion extends Question {
 
-    public EstimateQuestion(String title, long answer, List<Activity> activities, int time) {
+    public EstimateQuestion(String title, long answer, List<Activity> activities, double time) {
         super(title, answer, activities, time);
 
         setMax_score(100);
@@ -17,7 +17,7 @@ public class EstimateQuestion extends Question {
     }
 
     @Override
-    public int calculateScore(long userAnswer, int seconds) {
+    public int calculateScore(long userAnswer, double seconds) {
         long margin = getMagnitude(userAnswer);
         long error = Math.abs(userAnswer - this.answer);
         if (error > margin)

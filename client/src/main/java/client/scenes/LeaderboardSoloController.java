@@ -83,6 +83,12 @@ public class LeaderboardSoloController implements Initializable {
     private TableView leaderboardEntries;
 
     @FXML
+    private Button mainMenuButton;
+
+    @FXML
+    private Button replayButton;
+
+    @FXML
     private TableColumn<LeaderboardEntryLabel, Label> colName;
 
     @FXML
@@ -107,7 +113,7 @@ public class LeaderboardSoloController implements Initializable {
         this.server = server;
     }
 
-    public void addLabel(String name, int sc, long entryId) {
+    public LeaderboardEntryLabel addLabel(String name, int sc, long entryId) {
             Label nameLabel = new Label();
             nameLabel.setText(name);
             int range = scoreUpperBound-scoreLowerBound;
@@ -127,10 +133,7 @@ public class LeaderboardSoloController implements Initializable {
             Label scoreLabel = new Label();
             scoreLabel.setText(String.valueOf(sc));
 
-            entries.add(getNearestIndex(sc, 0, entries.size() - 1), new LeaderboardEntryLabel(entryId, nameLabel, scoreLabel));
-            resizeLabels();
-            data = FXCollections.observableList(entries);
-            leaderboardEntries.setItems(data);
+            return new LeaderboardEntryLabel(entryId, nameLabel, scoreLabel);
     }
 
     public void resizeLabels() {
@@ -157,8 +160,7 @@ public class LeaderboardSoloController implements Initializable {
             entries.get(i).getNameLabel().setStyle("-fx-shape: \"M 0 100 L "+(minWidth)+" 100 L "+(minWidth+25)+" 50 L "+(minWidth)+" 0 L 0 0 L 0 100 z\"");
             entries.get(i).getNameLabel().setMinWidth(minWidth);
         }
-        data = FXCollections.observableList(entries);
-        leaderboardEntries.setItems(data);
+        showEntries();
     }
 
     public void showMine(Long entryId) {
@@ -176,8 +178,7 @@ public class LeaderboardSoloController implements Initializable {
             }
             pos++;
         }
-        data = FXCollections.observableList(entries);
-        leaderboardEntries.setItems(data);
+        showEntries();
         leaderboardEntries.scrollTo(pos);
     }
     public static String ordinal(int n) {
@@ -196,6 +197,7 @@ public class LeaderboardSoloController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        leaderboardEntries.setSelectionModel(null);
         colName.setCellValueFactory(q -> new SimpleObjectProperty<>(q.getValue().getNameLabel()));
         colScore.setCellValueFactory(q -> new SimpleObjectProperty<>(q.getValue().getScoreLabel()));
     }
@@ -219,9 +221,60 @@ public class LeaderboardSoloController implements Initializable {
         return getNearestIndex(target, low, mid-1);
     }
 
-    public void reset() {
+    public void resetState() {
+        replayButton.setStyle("visibility: hidden");
+        mainMenuButton.setText("BACK");
+        mainMenuButton.setStyle("visibility: visible");
+        entries.clear();
         leaderboardEntries.scrollTo(0);
         rank.setText("");
+    }
+
+    public void initMulti(List<LeaderboardEntry> multiEntries, String userName, String gameProgress) {
+        entries.clear();
+
+        scoreUpperBound = 0;
+        scoreLowerBound = Integer.MAX_VALUE;
+
+        for (LeaderboardEntry rawEntry : multiEntries) {
+            if (rawEntry.getScore() < scoreLowerBound) {
+                scoreLowerBound = rawEntry.getScore();
+            }
+            if (rawEntry.getScore() > scoreUpperBound) {
+                scoreUpperBound = rawEntry.getScore();
+            }
+        }
+        LeaderboardEntryLabel myEntry = null;
+        for (LeaderboardEntry rawEntry : multiEntries) {
+            LeaderboardEntryLabel processedEntry = addLabel(rawEntry.getName(), rawEntry.getScore(), 0);
+            if (rawEntry.getName().equals(userName)) {
+                processedEntry.getScoreLabel().getStyleClass().add("selectedScore");
+                int width = 64;
+                processedEntry.getScoreLabel().setStyle("-fx-shape: \"M 0 50 L 150 100 L 700 100 L 700 0 L 150 0 L 0 50 z\"");
+                processedEntry.getScoreLabel().setMinWidth(width);
+                processedEntry.getScoreLabel().setMaxHeight(100);
+                myEntry = processedEntry;
+            }
+            entries.add(getNearestIndex(rawEntry.getScore(), 0, entries.size() - 1), processedEntry);
+        }
+        int pos = entries.indexOf(myEntry) + 1;
+        while (pos > 1 && entries.get(pos-1).getScoreLabel().getText().equals(entries.get(pos-2).getScoreLabel().getText())) {
+            pos--;
+        }
+        if (gameProgress.equals("End")) {
+            rank.setText("You finished in " + (pos) + ordinal(pos) + " place!");
+        } else {
+            String motivation = "";
+            if (pos == 1) {
+                motivation = "Keep it up!";
+            } else if (pos < entries.size() * 0.5) {
+                motivation = "Almost there!";
+            } else {
+                motivation = "Keep trying!";
+            }
+            rank.setText("You are in " + (pos) + ordinal(pos) + " place! " + motivation);
+        }
+        resizeLabels();
     }
 
     public void refresh() {
@@ -240,13 +293,34 @@ public class LeaderboardSoloController implements Initializable {
             }
         }
         for (LeaderboardEntry rawEntry : allTimeEntries) {
-            addLabel(rawEntry.getName(), rawEntry.getScore(), rawEntry.getId());
+            entries.add(getNearestIndex(rawEntry.getScore(), 0, entries.size() - 1), addLabel(rawEntry.getName(), rawEntry.getScore(), rawEntry.getId()));
         }
+        resizeLabels();
+    }
+
+    public void showEntries() {
+        data = FXCollections.observableList(entries);
+        leaderboardEntries.setItems(data);
     }
 
     public void resizeWidth(double width){
         grid.setPrefWidth(width);
         resizeLabels();
+    }
+
+    public void setEndScreen() {
+        mainMenuButton.setText("LEAVE");
+        mainMenuButton.setStyle("visibility: visible");
+        replayButton.setStyle("visibility: visible");
+
+    }
+
+    public void setMidScreen() {
+     mainMenuButton.setStyle("visibility: hidden");
+    }
+
+    public void replay() {
+        mainCtrl.joinGame(true);
     }
 
     public void resizeHeight(double height){

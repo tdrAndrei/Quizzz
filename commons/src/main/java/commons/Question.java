@@ -10,9 +10,9 @@ public abstract class Question {
     protected List<Activity> activities;
     protected int max_score;
     protected double difficulty;
-    protected int time;
+    protected double time;
 
-    public Question(String title, long answer, List<Activity> activities, int time) {
+    public Question(String title, long answer, List<Activity> activities, double time) {
         this.title = title;
         this.answer = answer;
         this.activities = activities;
@@ -43,7 +43,7 @@ public abstract class Question {
         this.activities = activities;
     }
 
-    public int getTime() {
+    public double getTime() {
         return time;
     }
 
@@ -63,7 +63,7 @@ public abstract class Question {
     }
 
     //Each question can implement its own logic for choosing the correct answer
-    public abstract int calculateScore(long answer, int seconds);
+    public abstract int calculateScore(long answer, double seconds);
 
     @Override
     public boolean equals(Object o) {
