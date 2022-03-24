@@ -9,7 +9,6 @@ import server.database.ActivityRepository;
 import java.util.List;
 import java.util.Random;
 import java.util.ArrayList;
-import java.util.Optional;
 import java.util.Comparator;
 
 @Service
@@ -82,13 +81,17 @@ public class QuestionService {
     }
 
     public Question makeEstimate(double seconds) {
+        Activity a = null;
+        boolean flag = false;
         long randomIndex = rm.nextInt(this.numActivities);
-        Optional<Activity> a = this.repo.findById(randomIndex);
-        while (a.isEmpty() || a.get().getConsumption_in_wh() <= 5){
+        while (!flag){
+            if (this.repo.findById(randomIndex).isPresent() && this.repo.findById(randomIndex).get().getConsumption_in_wh() > 5){
+                a = this.repo.findById(randomIndex).get();
+                flag = true;
+            }
             randomIndex = rm.nextInt(this.numActivities);
         }
-        a = this.repo.findById(randomIndex);
         String title = "How much energy does this activity take?";
-        return new EstimateQuestion(title, a.get().getConsumption_in_wh(), List.of(a.get()), seconds);
+        return new EstimateQuestion(title, a.getConsumption_in_wh(), List.of(a), seconds);
     }
 }

@@ -87,7 +87,7 @@ public class TestActivityRepository implements ActivityRepository {
 
     @Override
     public long count() {
-        return 0;
+        return activityList.size();
     }
 
     @Override
@@ -133,7 +133,7 @@ public class TestActivityRepository implements ActivityRepository {
 
     @Override
     public Optional<Activity> findById(Long aLong) {
-        return Optional.empty();
+        return Optional.of(activityList.get((int) aLong.longValue()));
     }
 
     @Override
