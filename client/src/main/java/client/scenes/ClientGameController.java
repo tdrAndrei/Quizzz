@@ -2,14 +2,19 @@ package client.scenes;
 
 import client.utils.ServerUtils;
 import commons.Messages.*;
+import javafx.animation.PathTransition;
 import commons.Player;
 import javafx.application.Platform;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
+import javafx.scene.shape.MoveTo;
+import javafx.scene.shape.Path;
+import javafx.scene.shape.VLineTo;
+import javafx.util.Duration;
 import javafx.util.Pair;
-
+import java.awt.*;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -21,6 +26,9 @@ public class ClientGameController {
     private LeaderboardSoloController leaderboardSoloController;
     private WaitingRoomController waitingRoomController;
     private Long gameId;
+    private Color[] timebarColors;
+    private boolean usedTimeJokerForCurrentQ;
+    private Timer timer;
 
     private boolean isPlaying = false;
 
@@ -40,6 +48,8 @@ public class ClientGameController {
     public ClientGameController(MainCtrl mainController, ServerUtils serverUtils) {
         this.mainController = mainController;
         this.serverUtils = serverUtils;
+        timebarColors = new Color[]{Color.green, Color.yellow, Color.red};
+        timer = new Timer();
     }
 
     public void initialize(Pair<MultiQuestionController, Parent> multiQuestion,
@@ -69,7 +79,6 @@ public class ClientGameController {
             multiQuestionController.setMulti(false);
             estimateQuestionController.setMulti(false);
             gameId = serverUtils.joinSolo(mainController.getUser());
-            mainController.showMultiQuestion();
         }
         Timer timer = new Timer();
         timer.scheduleAtFixedRate( new TimerTask() {
@@ -103,6 +112,7 @@ public class ClientGameController {
             case "NewQuestion":
                 NewQuestionMessage newQuestionMessage = (NewQuestionMessage) message;
                 disableJokerUsage = false;
+                setUsedTimeJokerForCurrentQ(false);
                 if (newQuestionMessage.getQuestionType().equals("MC")) {
                     Platform.runLater(() -> {
                         prepareMCQ(newQuestionMessage);
@@ -123,7 +133,6 @@ public class ClientGameController {
                 Platform.runLater(() -> {
                     estimateQuestionController.showAnswer(correctAnswerMessage);
                     multiQuestionController.showAnswer(correctAnswerMessage);
-                    multiQuestionController.changeScore(correctAnswerMessage.getScore());
                 });
                 break;
             case "ReduceTime":
@@ -140,6 +149,7 @@ public class ClientGameController {
 
     public void exitGame() {
         isPlaying = false;
+        timer.cancel();
         serverUtils.leaveGame(this.getGameId(), mainController.getUser().getId());
     }
 
@@ -169,6 +179,7 @@ public class ClientGameController {
 
     public void skipQuestion() {
         serverUtils.useNewQuestionJoker(gameId);
+        timer.cancel();
     }
 
     public void timeJoker(long userId) {
@@ -237,11 +248,54 @@ public class ClientGameController {
         setTimeLeft(timeLeft - seconds);
     }
 
+    public void updateProgressBarColor(double timeLeft, double maxTime, ProgressBar progressBar){
+
+        float[] newComponents = new float[3];
+        float[] upperColor = new float[3];
+        float[] lowerColor = new float[3];
+        double percent = 1;
+
+        if (timeLeft >= maxTime/2) {
+            percent = 1 - (maxTime - timeLeft)/(maxTime/2);
+            upperColor = timebarColors[0].getRGBColorComponents(new float[3]);
+            lowerColor = timebarColors[1].getRGBColorComponents(new float[3]);
+        } else {
+            percent = 1 - (maxTime / 2 - timeLeft)/(maxTime/2);
+            upperColor = timebarColors[1].getRGBColorComponents(new float[3]);
+            lowerColor = timebarColors[2].getRGBColorComponents(new float[3]);
+        }
+
+        for (int i = 0; i < 3; i ++) {
+            newComponents[i] = (float) (percent) * upperColor[i] + (float) (1 - percent) * lowerColor[i];
+        }
+
+        Color newColor = new Color(newComponents[0], newComponents[1], newComponents[2]);
+        progressBar.setStyle("-fx-accent: rgb(" + newColor.getRed() + ", " +
+                                                            newColor.getGreen() + ", " +
+                                                            newColor.getBlue() + ");");
+    }
+
+    public void startTimer(ProgressBar progressBar, Label timeText){
+
+        timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                double maxTime = getMaxTime();
+                double timeLeft = getTimeLeft();
+                updateTimeLeft(0.1, timeLeft);
+                Platform.runLater(() -> updateProgressBar(timeLeft, maxTime, progressBar, timeText));
+            }
+        }, 0, 100);
+
+    }
+
     public void updateProgressBar(double timeLeft, double maxTime, ProgressBar progressBar, Label timer){
         if (timeLeft >= 0){
             progressBar.setProgress(timeLeft/maxTime);
             int displayText = (int) Math.round(getTimeLeft());
             timer.setText(displayText + "S");
+            updateProgressBarColor(timeLeft, maxTime, progressBar);
         } else {
             progressBar.setProgress(0.0);
             int displayText = 0;
@@ -280,9 +334,11 @@ public class ClientGameController {
 
     public void prepareMCQ(NewQuestionMessage newQuestionMessage){
         mainController.showMultiQuestion();
+        multiQuestionController.setChosenAnswer(-1);
         setMaxTime(newQuestionMessage.getTime());
         setTimeLeft(newQuestionMessage.getTime());
         multiQuestionController.setJokersPic();
+        multiQuestionController.enableSubmittingAnswers();
         multiQuestionController.showQuestion(newQuestionMessage);
         multiQuestionController.setQuestions(newQuestionMessage.getActivities(), newQuestionMessage.getImagesBytes());
     }
@@ -299,6 +355,48 @@ public class ClientGameController {
         String userName = mainController.getUser().getName();
         waitingRoomController.showPlayers(playerList);
         waitingRoomController.showEntries();
+    }
+
+    public void changeScore(int score, Label pointsLabel, Label newPoints) {
+
+        String[] string = pointsLabel.getText().split(" ");
+
+        int currScore = Integer.parseInt(string[0]);
+        int pointsAdded = score - currScore;
+
+        if (isUsedTimeJokerForCurrentQ())
+            newPoints.setText(" + 2x " + pointsAdded / 2);
+        else
+            newPoints.setText(" + " + pointsAdded);
+
+        if (pointsAdded == 0)
+            newPoints.setStyle("-fx-text-fill: rgb(255,0,0);");
+        else
+            newPoints.setStyle("-fx-text-fill: rgb(0, 210, 28);");
+
+        pointsLabel.setText(currScore + " pts");
+
+        Path moveVertically = new Path();
+        moveVertically.getElements().add(new MoveTo(0, 0));
+        moveVertically.getElements().add(new VLineTo(-100));
+
+        PathTransition fadeOut = new PathTransition(Duration.seconds(3), moveVertically, newPoints);
+        fadeOut.play();
+
+        pointsLabel.setText(score + " pts");
+
+    }
+
+    public void setUsedTimeJokerForCurrentQ(boolean usedTimeJokerForCurrentQ) {
+        this.usedTimeJokerForCurrentQ = usedTimeJokerForCurrentQ;
+    }
+
+    public boolean isUsedTimeJokerForCurrentQ() {
+        return usedTimeJokerForCurrentQ;
+    }
+
+    public Timer getTimer() {
+        return timer;
     }
 
 }

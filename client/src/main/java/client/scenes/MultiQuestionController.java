@@ -8,7 +8,6 @@ import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import commons.Messages.NewQuestionMessage;
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
@@ -20,15 +19,11 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.Timer;
-import java.util.TimerTask;
-
 public class MultiQuestionController implements Initializable {
 
     @FXML
@@ -91,6 +86,18 @@ public class MultiQuestionController implements Initializable {
     @FXML
     private GridPane grid;
 
+    @FXML
+    private GridPane Answer1;
+
+    @FXML
+    private GridPane Answer2;
+
+    @FXML
+    private GridPane Answer3;
+
+    @FXML
+    private Label newPoints;
+
     private double baseWidth;
     private double baseHeight;
     private long chosenAnswer;
@@ -128,6 +135,7 @@ public class MultiQuestionController implements Initializable {
         if (!clientGameController.isDisableJokerUsage() && !clientGameController.isDoublePointsJokerUsed()) {
             doublePointsJoker.setImage(clientGameController.getUsedJoker());
             clientGameController.setDoublePointsJokerUsed(true);
+            clientGameController.setUsedTimeJokerForCurrentQ(true);
             useDoublePointsJoker();
         }
     }
@@ -146,8 +154,10 @@ public class MultiQuestionController implements Initializable {
         activity2Label.setStyle("-fx-text-fill: #000000");
         activity3Label.setStyle("-fx-text-fill: #000000");
         questionLabel.setText(message.getTitle());
+        clientGameController.startTimer(progressBar, timeText);
         questionLabel.setTextFill(Color.rgb(0, 0, 0));
     }
+
     public void colorIncorrectRed() {
         if (ans1pane.getBorder().equals(selectedAnswerBorder)) {
             ans1pane.setBorder(selectedWrongAnswerBorder);
@@ -158,6 +168,7 @@ public class MultiQuestionController implements Initializable {
             ans3pane.setBorder(selectedWrongAnswerBorder);
         }
     }
+
     public void showAnswer(CorrectAnswerMessage message) {
         long index = message.getCorrectAnswer();
         if (index == 0) {
@@ -178,12 +189,15 @@ public class MultiQuestionController implements Initializable {
             questionLabel.setPrefSize(2 * questionLabel.getWidth(), 2 * questionLabel.getHeight());
             questionLabel.setTextFill(Color.rgb(201, 89, 89));
         }
+        clientGameController.getTimer().cancel();
+        clientGameController.changeScore(message.getScore(), pointsLabel, newPoints);
         colorIncorrectRed();
     }
 
         @Override
         public void initialize (URL location, ResourceBundle resources){
 
+            newPoints.setText("");
             baseWidth = grid.getPrefWidth();
             baseHeight = grid.getPrefHeight();
 
@@ -193,7 +207,6 @@ public class MultiQuestionController implements Initializable {
             grid.heightProperty().addListener(e -> {
                 resize(grid.getWidth(), grid.getHeight());
             });
-
 
             for (Node node : grid.lookupAll(".highlightable")) {
                 node.setOnMouseEntered(e -> {
@@ -210,16 +223,6 @@ public class MultiQuestionController implements Initializable {
             ans3pane.setStyle("-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 10, 0.5, 0.0, 0.0);");
             progressBar.setProgress(1.0);
 
-            Timer timer = new Timer();
-            timer.scheduleAtFixedRate(new TimerTask() {
-                @Override
-                public void run() {
-                    double maxTime = clientGameController.getMaxTime();
-                    double timeLeft = clientGameController.getTimeLeft();
-                    clientGameController.updateTimeLeft(0.05, timeLeft);
-                    Platform.runLater(() -> clientGameController.updateProgressBar(clientGameController.getTimeLeft(), maxTime, progressBar, timeText));
-                }
-            }, 0, 100);
         }
 
         public void resize ( double width, double height){
@@ -283,10 +286,6 @@ public class MultiQuestionController implements Initializable {
             }
         }
 
-        public void changeScore(int score) {
-            pointsLabel.setText(score + " Pts");
-        }
-
         public void setQuestions(List<Activity> activities, List<byte[]> imageByteList) {
             Activity firstActivity = activities.get(0);
             question1Image.setImage(new Image(new ByteArrayInputStream(imageByteList.get(0))));
@@ -324,14 +323,17 @@ public class MultiQuestionController implements Initializable {
                     question1Image.setImage(new Image("/client.photos/bomb.png"));
                     activity1Label.setStyle("-fx-text-fill: #c95959");
                     activity1Label.setText("THIS ANSWER HAS BEEN ELIMINATED");
+                    Answer1.setDisable(true);
                 } else if (index == 1) {
                     question2Image.setImage(new Image("/client.photos/bomb.png"));
                     activity2Label.setStyle("-fx-text-fill: #c95959");
                     activity2Label.setText("THIS ANSWER HAS BEEN ELIMINATED");
+                    Answer2.setDisable(true);
                 } else {
                     question3Image.setImage(new Image("/client.photos/bomb.png"));
                     activity3Label.setStyle("-fx-text-fill: #c95959");
                     activity3Label.setText("THIS ANSWER HAS BEEN ELIMINATED");
+                    Answer3.setDisable(true);
                 }
         }
 
@@ -350,7 +352,8 @@ public class MultiQuestionController implements Initializable {
         eliminateJoker.setImage(new Image("/client.photos/jokerOneAnswer.png"));
         doublePointsJoker.setImage(new Image("/client.photos/doubleJoker.png"));
         skipQuestionJoker.setImage(new Image("/client.photos/timeJoker.png"));
-        pointsLabel.setText("0 Pts");
+        pointsLabel.setText("0 pts");
+        newPoints.setText("");
     }
 
     public void setJokersPic() {
@@ -364,6 +367,18 @@ public class MultiQuestionController implements Initializable {
 
     }
 
+    public void enableSubmittingAnswers() {
+
+        Answer1.setDisable(false);
+        Answer2.setDisable(false);
+        Answer3.setDisable(false);
+
+    }
+
+    public void setChosenAnswer(long chosenAnswer) {
+        this.chosenAnswer = chosenAnswer;
+    }
+
     public void setMulti(boolean multi) {
         isMulti = multi;
     }
@@ -371,5 +386,6 @@ public class MultiQuestionController implements Initializable {
     public boolean isMulti() {
         return isMulti;
     }
+
 }
 

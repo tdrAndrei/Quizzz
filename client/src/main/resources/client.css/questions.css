@@ -6,35 +6,20 @@
     -fx-background-color: #ffc5ac;
     -fx-font-family: 'Comicbon';
 }
-#progressBar {
-    -fx-accent: #f37500;
-    -fx-font-family: 'Comicbon';
-}
-
-#timer {
-    -fx-font-family: 'Comicbon';
-}
-
-#activity1Label {
-    -fx-font-family: 'Comicbon';
-}
-
-#submitAnswerButton {
+.setFont {
     -fx-font-family: 'Comicbon';
 }
 
 #answerLabel {
-    -fx-font-family: 'Comicbon';
     -fx-font-weight: bold;
 }
 
-#pointsLabel {
-    -fx-font-family: 'Comicbon';
+#newPoints {
+    -fx-font-weight: bold;
 }
 
 .button {
     -fx-background-color: #fdecd8;
-    -fx-font-family: 'Comicbon';
     -fx-background-radius: 5px;
 }
 .button:hover {
@@ -57,11 +42,9 @@
 
 #scoreBox {
     -fx-font-size: 20px;
-    -fx-font-family: 'Comicbon';
 }
 #questionLabel {
     -fx-font-size: 30px;
-    -fx-font-family: 'Comicbon';
     -fx-text-alignment: center;
 }
 

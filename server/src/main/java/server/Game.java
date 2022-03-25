@@ -41,7 +41,7 @@ public class Game {
 
         for (int i = 0; i < 20; i++) {
             int j = random.nextInt(10);
-            if (j <= 7) {
+            if (j <= 5) {
                 stageQueue.add(new MutablePair<>("Question", 20.0));
                 stageQueue.add(new MutablePair<>("CorrectAns", 3.0));
             } else {
