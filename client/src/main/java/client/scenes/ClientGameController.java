@@ -18,6 +18,7 @@ public class ClientGameController {
 
     private MultiQuestionController multiQuestionController;
     private EstimateQuestionController estimateQuestionController;
+    private CompareQuestionController compareQuestionController;
     private LeaderboardSoloController leaderboardSoloController;
     private WaitingRoomController waitingRoomController;
     private Long gameId;
@@ -44,10 +45,11 @@ public class ClientGameController {
 
     public void initialize(Pair<MultiQuestionController, Parent> multiQuestion,
                            Pair<EstimateQuestionController, Parent> estimateQuestion,
-                           Pair<LeaderboardSoloController, Parent> leaderboard,
+                           Pair<CompareQuestionController, Parent> compareQuestion, Pair<LeaderboardSoloController, Parent> leaderboard,
                            Pair<WaitingRoomController, Parent> waitingRoom) {
         this.multiQuestionController = multiQuestion.getKey();
         this.estimateQuestionController = estimateQuestion.getKey();
+        this.compareQuestionController = compareQuestion.getKey();
         this.leaderboardSoloController = leaderboard.getKey();
         this.waitingRoomController = waitingRoom.getKey();
     }
@@ -60,6 +62,7 @@ public class ClientGameController {
             estimateQuestionController.resetMulti();
             multiQuestionController.setMulti(true);
             estimateQuestionController.setMulti(true);
+            compareQuestionController.setMulti(true);
             gameId = serverUtils.joinMulti(mainController.getUser());
             mainController.showWaitingRoom();
             waitingRoomController.setGameId(gameId);
@@ -68,8 +71,9 @@ public class ClientGameController {
             estimateQuestionController.resetSolo();
             multiQuestionController.setMulti(false);
             estimateQuestionController.setMulti(false);
+            compareQuestionController.setMulti(false);
             gameId = serverUtils.joinSolo(mainController.getUser());
-            mainController.showMultiQuestion();
+            //mainController.showMultiQuestion();
         }
         Timer timer = new Timer();
         timer.scheduleAtFixedRate( new TimerTask() {
@@ -111,6 +115,10 @@ public class ClientGameController {
                     Platform.runLater(() -> {
                         prepareEstimateQ(newQuestionMessage);
                     });
+                } else if (newQuestionMessage.getQuestionType().equals("Compare")) {
+                    Platform.runLater(() -> {
+                        prepareCompareQ(newQuestionMessage);
+                    });
                 }
                 break;
             case "ShowLeaderboard":
@@ -122,6 +130,7 @@ public class ClientGameController {
                 disableJokerUsage = true;
                 Platform.runLater(() -> {
                     estimateQuestionController.showAnswer(correctAnswerMessage);
+                    compareQuestionController.showAnswer(correctAnswerMessage);
                     multiQuestionController.showAnswer(correctAnswerMessage);
                     multiQuestionController.changeScore(correctAnswerMessage.getScore());
                 });
@@ -134,7 +143,6 @@ public class ClientGameController {
                     estimateQuestionController.showTimeReduced(reduceTimeMessage.getUserName());
                 });
                 break;
-            default:
         }
     }
 
@@ -294,6 +302,15 @@ public class ClientGameController {
         estimateQuestionController.setJokersPic();
         estimateQuestionController.showQuestion(newQuestionMessage);
     }
+
+    public void prepareCompareQ(NewQuestionMessage newQuestionMessage){
+        mainController.showCompare();
+        setMaxTime(newQuestionMessage.getTime());
+        setTimeLeft(newQuestionMessage.getTime());
+        // compareQuestionController.setJokersPic(); <- doesn't exist yet
+        compareQuestionController.showQuestion(newQuestionMessage);
+    }
+
     public void updateWaitingRoom(NewPlayersMessage newPlayersMessage) {
         List<Player> playerList = newPlayersMessage.getPlayerList();
         String userName = mainController.getUser().getName();

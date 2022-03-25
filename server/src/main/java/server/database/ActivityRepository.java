@@ -13,4 +13,7 @@ public interface ActivityRepository extends JpaRepository< Activity, Long>{
     @Query("select a from Activity a where a.consumption_in_wh = ?1")
     List<Activity> findByConsumption(Long consumption);
 
+    @Query("select a from Activity a where a.consumption_in_wh > ?1 AND a.consumption_in_wh < ?2")
+    List<Activity> findByConsumption(Long lowerBound, Long upperBound);
+
 }

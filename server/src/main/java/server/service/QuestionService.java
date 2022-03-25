@@ -26,16 +26,15 @@ public class QuestionService {
         while (equalCons.size() < 2) {
             int indexRand = rm.nextInt(activityList.size());
             Activity rand = activityList.get(indexRand);
-            equalCons = this.repo.findByConsumption(rand.getConsumption_in_wh());
+            Long consumption = rand.getConsumption_in_wh();
+            equalCons = this.repo.findByConsumption(consumption*9/10, consumption*11/10);
         }
         Collections.shuffle(equalCons);
         Activity main = equalCons.get(0);
         answers.add(equalCons.get(1));
-
         while (answers.size() < 3) {
             Activity wrongAnswer = activityList.get(rm.nextInt(activityList.size()));
-            double x = Math.abs(wrongAnswer.getConsumption_in_wh() / main.getConsumption_in_wh() - 1);
-            if (x < 0.5 && x >= 0.1) {
+            if (!equalCons.contains(wrongAnswer)) {
                 answers.add(wrongAnswer);
             }
         }
