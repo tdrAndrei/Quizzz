@@ -7,10 +7,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import server.Game;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.io.FileInputStream;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -19,18 +17,34 @@ public class GameManagerTest {
 
     @BeforeEach
     public void init() throws JsonProcessingException {
-        this.gameManager = new GameManager(new QuestionService(new TestActivityRepository(), null) {
+        this.gameManager = new GameManager(new QuestionService(new TestActivityRepository(), new Random()) {
             public void QuestionService() {
 
             }
             @Override
             public Question makeMultipleChoice(double seconds) {
                 List<Activity> fakeActivities = new ArrayList<>();
-                fakeActivities.add(new Activity(0L, "/", "test_act_1", 3L,
+                fakeActivities.add(new Activity(0L, null, "test_act_1", 3L,
                         "testsrc"));
-                fakeActivities.add(new Activity(1L, "/", "test_act_2", 30L,
+                fakeActivities.add(new Activity(1L, null, "test_act_2", 30L,
                         "testsrc"));
-                fakeActivities.add(new Activity(2L, "/", "test_act_3", 300L,
+                fakeActivities.add(new Activity(2L, null, "test_act_3", 300L,
+                        "testsrc"));
+                fakeActivities.add(new Activity(3L, null, "test_act_4", 300L,
+                        "testsrc"));
+                return new MultiChoiceQuestion("TestTitle", 1, fakeActivities, seconds);
+            }
+
+            @Override
+            public Question makeCompare(double seconds) {
+                List<Activity> fakeActivities = new ArrayList<>();
+                fakeActivities.add(new Activity(0L, null, "test_act_1", 3L,
+                        "testsrc"));
+                fakeActivities.add(new Activity(1L, null, "test_act_2", 300L,
+                        "testsrc"));
+                fakeActivities.add(new Activity(2L, null, "test_act_3", 30L,
+                        "testsrc"));
+                fakeActivities.add(new Activity(3L, null, "test_act_4", 300L,
                         "testsrc"));
                 return new MultiChoiceQuestion("TestTitle", 1, fakeActivities, seconds);
             }

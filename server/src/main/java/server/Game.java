@@ -8,7 +8,6 @@ import server.service.LeaderBoardEntryService;
 import server.service.QuestionService;
 
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.*;
 import java.util.List;
 
@@ -252,7 +251,7 @@ public class Game {
                 FileInputStream fis = new FileInputStream(activity.getImage_path());
                 byte[] imageArr = fis.readAllBytes();
                 imagesBytes.add(imageArr);
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
