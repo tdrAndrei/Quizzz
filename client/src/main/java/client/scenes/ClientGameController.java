@@ -53,6 +53,10 @@ public class ClientGameController {
         this.waitingRoomController = waitingRoom.getKey();
     }
 
+    public void EmojiHandler(EmojiMessage message) {
+        System.out.println(message);
+    }
+
     public void startPolling(boolean isMulti) {
         isPlaying = true;
         enableAllJokers();
@@ -64,13 +68,10 @@ public class ClientGameController {
             gameId = serverUtils.joinMulti(mainController.getUser());
 
             serverUtils.getAndSetSession();  // Getting a websocket connection
-            serverUtils.registerForMessages(gameId); //Using our connection to subscribe to "/topic/emoji/{gameId}
+            serverUtils.registerForEmojiMessages(gameId, this::EmojiHandler); //Using our connection to subscribe to "/topic/emoji/{gameId}
 
             mainController.showWaitingRoom();
             waitingRoomController.setGameId(gameId);
-
-            serverUtils.sendEmojiTest(gameId, mainController.getUser().getName(), 6969, mainController.getUser().getId()); //this is for testing and should be removed and abstracted
-            serverUtils.sendEmojiTest(gameId, mainController.getUser().getName(), 6969, mainController.getUser().getId()); //this is for testing and should be removed and abstracted
 
         } else {
             multiQuestionController.resetSolo();
@@ -98,6 +99,10 @@ public class ClientGameController {
                 }
             }
         } , 0, 500);
+    }
+
+    public void sendEmoji(int emojiIndex) {
+        serverUtils.sendEmojiTest(gameId, mainController.getUser().getName(), emojiIndex, mainController.getUser().getId());
     }
 
     public void interpretMessage(Message message) throws InterruptedException {

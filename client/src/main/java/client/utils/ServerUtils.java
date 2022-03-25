@@ -22,6 +22,7 @@ import java.lang.reflect.Type;
 import java.net.URL;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+import java.util.function.Consumer;
 
 import commons.LeaderboardEntry;
 import commons.Messages.EmojiMessage;
@@ -45,7 +46,6 @@ public class ServerUtils {
 
     private static String SERVER = "";
     private StompSession session;
-
     public void setUrl(String url) {
         SERVER = url;
     }
@@ -84,7 +84,7 @@ public class ServerUtils {
         }
     }
 
-    public void registerForMessages(long gameId) {
+    public void registerForEmojiMessages(long gameId, Consumer<EmojiMessage> q) {
         session.subscribe("/topic/emoji/" + gameId, new StompFrameHandler() {
             @Override
             public Type getPayloadType(StompHeaders headers) {
@@ -94,8 +94,7 @@ public class ServerUtils {
             @Override
             public void handleFrame(StompHeaders headers, Object payload) {
                 EmojiMessage receivedMessage = (EmojiMessage) payload;
-                System.out.println(receivedMessage);
-                //Handling
+                q.accept(receivedMessage);
             }
         });
     }
