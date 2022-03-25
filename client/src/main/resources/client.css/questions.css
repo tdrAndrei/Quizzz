@@ -55,6 +55,10 @@
     -fx-border-radius: 2px;
 }
 
+.list-view{
+    -fx-background-color: #ffc5ac;
+}
+
 #scoreBox {
     -fx-font-size: 20px;
     -fx-font-family: 'Comicbon';

@@ -193,18 +193,42 @@
                </GridPane.margin>
             </Label>
             <Label fx:id="timeReduced" GridPane.columnIndex="1" />
-            <VBox prefHeight="99.0" prefWidth="394.0" GridPane.columnIndex="2" GridPane.rowIndex="3">
+            <VBox alignment="BOTTOM_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="181.0" prefWidth="301.0" spacing="5.0" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.rowSpan="2" GridPane.valignment="BOTTOM">
                <children>
-                  <HBox alignment="BOTTOM_LEFT" prefHeight="100.0" prefWidth="200.0">
+                  <ListView fx:id="chatList" prefHeight="125.0" prefWidth="301.0" styleClass="emojiChat" />
+                  <HBox alignment="BOTTOM_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" prefWidth="200.0">
                      <children>
-                        <ImageView fx:id="e1" blendMode="DARKEN" fitHeight="50.0" fitWidth="50.0" onMouseClicked="#processEmoji" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fx:id="e0" blendMode="DARKEN" fitHeight="50.0" fitWidth="50.0" onMouseClicked="#processEmoji" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@client.photos/angryEmoji.gif" />
+                              <Image url="@/client.photos/angryEmoji.gif" />
+                           </image>
+                        </ImageView>
+                        <ImageView fx:id="e1" blendMode="DARKEN" fitHeight="50.0" fitWidth="50.0" layoutX="10.0" layoutY="10.0" onMouseClicked="#processEmoji" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@/client.photos/eyebrowEmoji.gif" />
+                           </image>
+                        </ImageView>
+                        <ImageView fx:id="e2" blendMode="DARKEN" fitHeight="50.0" fitWidth="50.0" layoutX="60.0" layoutY="10.0" onMouseClicked="#processEmoji" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@/client.photos/devilEmoji.gif" />
+                           </image>
+                        </ImageView>
+                        <ImageView fx:id="e3" blendMode="DARKEN" fitHeight="50.0" fitWidth="50.0" layoutX="110.0" layoutY="10.0" onMouseClicked="#processEmoji" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@/client.photos/sunglassesEmoji.gif" />
+                           </image>
+                        </ImageView>
+                        <ImageView fx:id="e4" blendMode="DARKEN" fitHeight="50.0" fitWidth="50.0" layoutX="160.0" layoutY="10.0" onMouseClicked="#processEmoji" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@/client.photos/confoundedEmoji.gif" />
                            </image>
                         </ImageView>
                      </children>
                   </HBox>
                </children>
+               <GridPane.margin>
+                  <Insets />
+               </GridPane.margin>
             </VBox>
          </children>
          <padding>

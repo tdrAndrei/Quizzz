@@ -4,12 +4,15 @@ import client.utils.ServerUtils;
 import commons.Messages.*;
 import commons.Player;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
 import javafx.scene.Parent;
-import javafx.scene.control.Label;
-import javafx.scene.control.ProgressBar;
+import javafx.scene.control.*;
+import javafx.scene.effect.BlendMode;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.util.Pair;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -24,8 +27,12 @@ public class ClientGameController {
 
     private boolean isPlaying = false;
 
+    private final List<Image> emojiImageList;
+
     private final MainCtrl mainController;
     private final ServerUtils serverUtils;
+
+    private ListView<Pair<String, Integer>> chatList;
 
     private boolean skipQuestionJokerUsed = false;
     private boolean eliminateJokerUsed = false;
@@ -41,6 +48,12 @@ public class ClientGameController {
     public ClientGameController(MainCtrl mainController, ServerUtils serverUtils) {
         this.mainController = mainController;
         this.serverUtils = serverUtils;
+        emojiImageList = new ArrayList<>();
+        emojiImageList.add(new Image("client.photos\\angryEmoji.gif"));
+        emojiImageList.add(new Image("client.photos\\eyebrowEmoji.gif"));
+        emojiImageList.add(new Image("client.photos\\devilEmoji.gif"));
+        emojiImageList.add(new Image("client.photos\\sunglassesEmoji.gif"));
+        emojiImageList.add(new Image("client.photos\\confoundedEmoji.gif"));
     }
 
     public void initialize(Pair<MultiQuestionController, Parent> multiQuestion,
@@ -51,14 +64,32 @@ public class ClientGameController {
         this.estimateQuestionController = estimateQuestion.getKey();
         this.leaderboardSoloController = leaderboard.getKey();
         this.waitingRoomController = waitingRoom.getKey();
+        supplyListView(multiQuestion.getValue(), estimateQuestion.getValue());
+    }
+
+    public void supplyListView(Parent multiQuestionScene, Parent estimateQuestionScene) {
+        ListView<Pair<String, Integer>> MultiQuestionListView = (ListView<Pair<String, Integer>>) multiQuestionScene.lookup("#chatList");
+        //ListView<Pair<String, Integer>> estimateQuestionView = (ListView<Pair<String, Integer>>) estimateQuestionScene.lookup("#chatList");
+
+        configureListView();
+
+        MultiQuestionListView.setPlaceholder(this.chatList); //this is a trick to dynamically give a ListView
+        //estimateQuestionView.setPlaceholder(this.chatList);
     }
 
     public void EmojiHandler(EmojiMessage message) {
-        System.out.println(message);
+        Platform.runLater(() -> {
+            chatList.getItems().add(new Pair<>(message.getUsername(), message.getEmojiIndex()));
+            int size = chatList.getItems().size();
+            if (size > 3) {
+                chatList.getItems().remove(0);
+            }
+        });
     }
 
     public void startPolling(boolean isMulti) {
         isPlaying = true;
+        this.chatList.setItems(FXCollections.observableArrayList());
         enableAllJokers();
         if (isMulti) {
             multiQuestionController.resetMulti();
@@ -66,10 +97,8 @@ public class ClientGameController {
             multiQuestionController.setMulti(true);
             estimateQuestionController.setMulti(true);
             gameId = serverUtils.joinMulti(mainController.getUser());
-
             serverUtils.getAndSetSession();  // Getting a websocket connection
             serverUtils.registerForEmojiMessages(gameId, this::EmojiHandler); //Using our connection to subscribe to "/topic/emoji/{gameId}
-
             mainController.showWaitingRoom();
             waitingRoomController.setGameId(gameId);
 
@@ -100,7 +129,29 @@ public class ClientGameController {
             }
         } , 0, 500);
     }
-
+    public void configureListView() {
+        this.chatList = new ListView<>();
+        chatList.setCellFactory(param -> new ListCell<>() {
+            private ImageView imageView = new ImageView();
+            @Override
+            public void updateItem(Pair<String, Integer> valuePair, boolean empty) {
+                super.updateItem(valuePair, empty);
+                setContentDisplay(ContentDisplay.RIGHT);
+                setStyle("-fx-background-color: #ffc5ac;");
+                if (empty) {
+                    setText(null);
+                    setGraphic(null);
+                } else {
+                    imageView.setImage(emojiImageList.get(valuePair.getValue()));
+                    imageView.setFitHeight(32.0);
+                    imageView.setFitWidth(32.0);
+                    setText(valuePair.getKey());
+                    setGraphic(imageView);
+                    getGraphic().setBlendMode(BlendMode.DARKEN);
+                }
+            }
+        });
+    }
     public void sendEmoji(int emojiIndex) {
         serverUtils.sendEmojiTest(gameId, mainController.getUser().getName(), emojiIndex, mainController.getUser().getId());
     }
