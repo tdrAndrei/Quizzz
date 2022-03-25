@@ -25,28 +25,28 @@ public class TestActivityRepository implements ActivityRepository {
     public String json2 = "[\n" +
             "    {\n" +
             "        \"id\": \"0\",\n" +
-            "        \"image_path\": \"00/shower.png\",\n" +
+            "        \"image_path\": \"../profile_images/picture-maarten.jpg\",\n" +
             "        \"title\": \"Taking a hot shower for 6 minutes\",\n" +
             "        \"consumption_in_wh\": 4000,\n" +
             "        \"source\": \"https://www.quora.com/How-can-I-estimate-the-kWh-of-electricity-when-I-take-a-shower\"\n" +
             "    },\n" +
             "    {\n" +
             "        \"id\": \"0\",\n" +
-            "        \"image_path\": \"00/smartphone.png\",\n" +
+            "        \"image_path\": \"../profile_images/picture-maarten.jpg\",\n" +
             "        \"title\": \"Charging your smartphone at night\",\n" +
             "        \"consumption_in_wh\": 10,\n" +
             "        \"source\": \"https://9to5mac.com/2021/09/16/iphone-13-battery-life/\"\n" +
             "    },\n" +
             "    {\n" +
             "        \"id\": \"0\",\n" +
-            "        \"image_path\": \"xx/image.jpg\",\n" +
+            "        \"image_path\": \"../profile_images/picture-maarten.jpg\",\n" +
             "        \"title\": \"other questions follow in a similar way\",\n" +
             "        \"consumption_in_wh\": 42,\n" +
             "        \"source\": \"https://cse1105.pages.ewi.tudelft.nl/2021-2022/course-website\"\n" +
             "    },\n" +
             "    {\n" +
             "        \"id\": \"0\",\n" +
-            "        \"image_path\": \"xx/image.jpg\",\n" +
+            "        \"image_path\": \"../profile_images/picture-maarten.jpg\",\n" +
             "        \"title\": \"kek\",\n" +
             "        \"consumption_in_wh\": 43,\n" +
             "        \"source\": \"https://cse1105.pages.ewi.tudelft.nl/2021-2022/course-website\"\n" +
