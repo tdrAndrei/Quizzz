@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import commons.LeaderboardEntry;
+import commons.Messages.EmojiMessage;
 import commons.Messages.Message;
 import commons.User;
 import org.glassfish.jersey.client.ClientConfig;
@@ -87,19 +88,20 @@ public class ServerUtils {
         session.subscribe("/topic/emoji/" + gameId, new StompFrameHandler() {
             @Override
             public Type getPayloadType(StompHeaders headers) {
-                return Integer.class;
+                return EmojiMessage.class;
             }
 
             @Override
             public void handleFrame(StompHeaders headers, Object payload) {
-                Integer message = (Integer) payload;
-                System.out.println(message);
+                EmojiMessage receivedMessage = (EmojiMessage) payload;
+                System.out.println(receivedMessage);
+                //Handling
             }
         });
     }
 
-    public void sendEmojiTest(long gameId, int payload) {
-        session.send("/app/emoji/" + gameId, payload);
+    public void sendEmojiTest(long gameId, String username, int emojiIndex, long userId) {
+        session.send("/app/emoji/" + gameId, new EmojiMessage(userId, emojiIndex, username));
     }
 
     public List<Quote> getQuotes() {

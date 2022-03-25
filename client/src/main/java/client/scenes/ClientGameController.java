@@ -31,6 +31,7 @@ public class ClientGameController {
     private boolean eliminateJokerUsed = false;
     private boolean doublePointsJokerUsed = false;
     private boolean disableJokerUsage = false;
+
     private Image usedJoker = new Image("/client.photos/usedJoker.png");
 
     private double maxTime;
@@ -68,10 +69,9 @@ public class ClientGameController {
             mainController.showWaitingRoom();
             waitingRoomController.setGameId(gameId);
 
-            serverUtils.sendEmojiTest(gameId, 69); //this is for testing and should be removed and abstracted
-            serverUtils.sendEmojiTest(gameId, 69);
-            serverUtils.sendEmojiTest(gameId, 69);
-            serverUtils.sendEmojiTest(gameId, 69);
+            serverUtils.sendEmojiTest(gameId, mainController.getUser().getName(), 6969, mainController.getUser().getId()); //this is for testing and should be removed and abstracted
+            serverUtils.sendEmojiTest(gameId, mainController.getUser().getName(), 6969, mainController.getUser().getId()); //this is for testing and should be removed and abstracted
+
         } else {
             multiQuestionController.resetSolo();
             estimateQuestionController.resetSolo();
