@@ -21,6 +21,27 @@ import java.util.TimerTask;
 
 public class ClientGameController {
 
+    private GameState status;
+    private GameState gameMode;
+
+    public enum GameState {
+        NOTPLAYING,
+        WAITINGAREA,
+        MULTI,
+        SOLO,
+        NEWQUESTION,
+        SHOWANSWER,
+        SHOWLEADERBOARD;
+    }
+
+    public GameState getStatus() {
+        return status;
+    }
+
+    public void setStatus(GameState status) {
+        this.status = status;
+    }
+
     private MultiQuestionController multiQuestionController;
     private EstimateQuestionController estimateQuestionController;
     private LeaderboardSoloController leaderboardSoloController;
@@ -29,8 +50,6 @@ public class ClientGameController {
     private Color[] timebarColors;
     private boolean usedTimeJokerForCurrentQ;
     private Timer timer;
-
-    private boolean isPlaying = false;
 
     private final MainCtrl mainController;
     private final ServerUtils serverUtils;
@@ -63,28 +82,38 @@ public class ClientGameController {
     }
 
     public void startPolling(boolean isMulti) {
-        isPlaying = true;
+
         enableAllJokers();
+
         if (isMulti) {
+
+            this.gameMode = GameState.MULTI;
+
             multiQuestionController.resetMulti();
             estimateQuestionController.resetMulti();
-            multiQuestionController.setMulti(true);
-            estimateQuestionController.setMulti(true);
+
+            //multiQuestionController.setMulti(true);
+            //estimateQuestionController.setMulti(true);
+
             gameId = serverUtils.joinMulti(mainController.getUser());
             mainController.showWaitingRoom();
             waitingRoomController.setGameId(gameId);
         } else {
+
+            this.gameMode = GameState.SOLO;
+
             multiQuestionController.resetSolo();
             estimateQuestionController.resetSolo();
-            multiQuestionController.setMulti(false);
-            estimateQuestionController.setMulti(false);
+            //multiQuestionController.setMulti(false);
+            //estimateQuestionController.setMulti(false);
             gameId = serverUtils.joinSolo(mainController.getUser());
+
         }
         Timer timer = new Timer();
         timer.scheduleAtFixedRate( new TimerTask() {
             @Override
             public void run() {
-                if (!isPlaying) {
+                if (gameMode == GameState.NOTPLAYING) {
                     timer.cancel();
                     return;
                 }
@@ -95,6 +124,7 @@ public class ClientGameController {
                 }
                 if (message instanceof ShowLeaderboardMessage && ((ShowLeaderboardMessage) message).getGameProgress().equals("End")) {
                     timer.cancel();
+                    gameMode = GameState.NOTPLAYING;
                 }
             }
         } , 0, 500);
@@ -105,36 +135,43 @@ public class ClientGameController {
             case "None":
                 NullMessage nullMessage = (NullMessage) message;
                 break;
+
             case "NewPlayers":
                 NewPlayersMessage newPlayersMessage = (NewPlayersMessage) message;
                 updateWaitingRoom(newPlayersMessage);
                 break;
+
             case "NewQuestion":
                 NewQuestionMessage newQuestionMessage = (NewQuestionMessage) message;
+
+                status = GameState.NEWQUESTION;
+
                 disableJokerUsage = false;
                 setUsedTimeJokerForCurrentQ(false);
-                if (newQuestionMessage.getQuestionType().equals("MC")) {
-                    Platform.runLater(() -> {
-                        prepareMCQ(newQuestionMessage);
-                    });
-                } else if (newQuestionMessage.getQuestionType().equals("Estimate")) {
-                    Platform.runLater(() -> {
-                        prepareEstimateQ(newQuestionMessage);
-                    });
-                }
+                Platform.runLater(() -> {
+                    switch (newQuestionMessage.getQuestionType()) {
+                        case "MC": prepareMCQ(newQuestionMessage); break;
+                        case "Estimate": prepareEstimateQ(newQuestionMessage); break;
+                    }
+                });
                 break;
+
             case "ShowLeaderboard":
                 ShowLeaderboardMessage showLeaderboardMessage = (ShowLeaderboardMessage) message;
+                status = GameState.SHOWLEADERBOARD;
                 prepareLeaderboard(showLeaderboardMessage);
                 break;
+
             case "ShowCorrectAnswer":
                 CorrectAnswerMessage correctAnswerMessage = (CorrectAnswerMessage) message;
+                status = GameState.SHOWANSWER;
                 disableJokerUsage = true;
                 Platform.runLater(() -> {
                     estimateQuestionController.showAnswer(correctAnswerMessage);
                     multiQuestionController.showAnswer(correctAnswerMessage);
                 });
                 break;
+
             case "ReduceTime":
                 ReduceTimeMessage reduceTimeMessage = (ReduceTimeMessage) message;
                 Platform.runLater(() -> {
@@ -143,26 +180,21 @@ public class ClientGameController {
                     estimateQuestionController.showTimeReduced(reduceTimeMessage.getUserName());
                 });
                 break;
-            default:
         }
     }
 
     public void exitGame() {
-        isPlaying = false;
+        gameMode = GameState.NOTPLAYING;
         timer.cancel();
         serverUtils.leaveGame(this.getGameId(), mainController.getUser().getId());
     }
 
+    public boolean isPlaying() {
+        return gameMode != GameState.NOTPLAYING;
+    }
+
     public Long getGameId() {
         return gameId;
-    }
-
-    public boolean isPlaying() {
-        return isPlaying;
-    }
-
-    public void setPlaying(boolean playing) {
-        isPlaying = playing;
     }
 
     public void submitAnswer(long answer) {

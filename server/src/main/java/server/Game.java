@@ -236,7 +236,9 @@ public class Game {
         List<byte[]> imagesBytes = new ArrayList<>();
         for (Activity activity : question.getActivities()) {
             try {
-                FileInputStream fis = new FileInputStream(activity.getImage_path());
+                ClassLoader classLoader = Game.class.getClassLoader();
+                String path = classLoader.getResource(activity.getImage_path()).getPath();
+                FileInputStream fis = new FileInputStream(path);
                 byte[] imageArr = fis.readAllBytes();
                 imagesBytes.add(imageArr);
             } catch (IOException e) {
