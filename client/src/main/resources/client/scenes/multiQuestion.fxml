@@ -193,7 +193,7 @@
                </GridPane.margin>
             </Label>
             <Label fx:id="timeReduced" GridPane.columnIndex="1" />
-            <VBox alignment="BOTTOM_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="181.0" prefWidth="301.0" spacing="5.0" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.rowSpan="2" GridPane.valignment="BOTTOM">
+            <VBox fx:id="eVbox" alignment="BOTTOM_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="177.0" prefWidth="302.0" spacing="5.0" visible="false" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.rowSpan="2" GridPane.valignment="BOTTOM">
                <children>
                   <ListView fx:id="chatList" prefHeight="125.0" prefWidth="301.0" styleClass="emojiChat" />
                   <HBox alignment="BOTTOM_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" prefWidth="200.0">

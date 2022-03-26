@@ -10,6 +10,7 @@ import javafx.scene.control.*;
 import javafx.scene.effect.BlendMode;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.VBox;
 import javafx.util.Pair;
 
 import java.util.ArrayList;
@@ -32,8 +33,10 @@ public class ClientGameController {
     private final MainCtrl mainController;
     private final ServerUtils serverUtils;
 
-    private ListView<Pair<String, Integer>> chatList;
+    private ListView<Pair<String, Integer>> chatList = configureListView();
 
+    private Parent multiQuestionScene;
+    private Parent estimateQuestionScene;
     private boolean skipQuestionJokerUsed = false;
     private boolean eliminateJokerUsed = false;
     private boolean doublePointsJokerUsed = false;
@@ -68,13 +71,14 @@ public class ClientGameController {
     }
 
     public void supplyListView(Parent multiQuestionScene, Parent estimateQuestionScene) {
+        this.multiQuestionScene = multiQuestionScene;
+        this.estimateQuestionScene = estimateQuestionScene;
+
         ListView<Pair<String, Integer>> MultiQuestionListView = (ListView<Pair<String, Integer>>) multiQuestionScene.lookup("#chatList");
-        //ListView<Pair<String, Integer>> estimateQuestionView = (ListView<Pair<String, Integer>>) estimateQuestionScene.lookup("#chatList");
+        ListView<Pair<String, Integer>> estimateQuestionView = (ListView<Pair<String, Integer>>) estimateQuestionScene.lookup("#chatList");
 
-        configureListView();
-
+        estimateQuestionView.setPlaceholder(this.chatList);
         MultiQuestionListView.setPlaceholder(this.chatList); //this is a trick to dynamically give a ListView
-        //estimateQuestionView.setPlaceholder(this.chatList);
     }
 
     public void EmojiHandler(EmojiMessage message) {
@@ -87,10 +91,16 @@ public class ClientGameController {
         });
     }
 
+    public void initializeEmojiChat(boolean enabled) {
+        ((VBox) multiQuestionScene.lookup("#eVbox")).setVisible(enabled);
+        ((VBox) estimateQuestionScene.lookup("#eVbox")).setVisible(enabled);
+    }
+
     public void startPolling(boolean isMulti) {
         isPlaying = true;
         this.chatList.setItems(FXCollections.observableArrayList());
         enableAllJokers();
+        initializeEmojiChat(isMulti);
         if (isMulti) {
             multiQuestionController.resetMulti();
             estimateQuestionController.resetMulti();
@@ -129,9 +139,9 @@ public class ClientGameController {
             }
         } , 0, 500);
     }
-    public void configureListView() {
-        this.chatList = new ListView<>();
-        chatList.setCellFactory(param -> new ListCell<>() {
+    public ListView<Pair<String, Integer>> configureListView() {
+        ListView<Pair<String, Integer>> newChatList = new ListView<>();
+        newChatList.setCellFactory(param -> new ListCell<>() {
             private ImageView imageView = new ImageView();
             @Override
             public void updateItem(Pair<String, Integer> valuePair, boolean empty) {
@@ -151,6 +161,7 @@ public class ClientGameController {
                 }
             }
         });
+        return newChatList;
     }
     public void sendEmoji(int emojiIndex) {
         serverUtils.sendEmojiTest(gameId, mainController.getUser().getName(), emojiIndex, mainController.getUser().getId());

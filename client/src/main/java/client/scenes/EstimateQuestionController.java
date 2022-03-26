@@ -7,6 +7,7 @@ import commons.Messages.NewQuestionMessage;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -123,6 +124,12 @@ public class EstimateQuestionController implements Initializable {
 
         pointsLabel.setText(Integer.toString(message.getScore()) + " Pts");
 
+    }
+
+    public void processEmoji(Event event) {
+        ImageView emoji = (ImageView) event.getSource();
+        int emojiId = Integer.parseInt(emoji.getId().replace("e", ""));
+        clientGameController.sendEmoji(emojiId);
     }
 
     public void quit() throws IOException {
