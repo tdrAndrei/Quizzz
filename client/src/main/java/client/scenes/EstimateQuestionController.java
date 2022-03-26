@@ -15,13 +15,12 @@ import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
-
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
-public class EstimateQuestionController implements Initializable {
+public class EstimateQuestionController implements Initializable, QuestionScene {
 
     @FXML
     private ImageView doublePointsJoker;
@@ -34,9 +33,6 @@ public class EstimateQuestionController implements Initializable {
 
     @FXML
     private Label activity1Label;
-
-    @FXML
-    private Button exitButton;
 
     @FXML
     private Label questionTxt;
@@ -54,9 +50,6 @@ public class EstimateQuestionController implements Initializable {
     private ImageView question1Image;
 
     @FXML
-    private Button submitAnswerButton;
-
-    @FXML
     private ProgressBar progressBar;
 
     @FXML
@@ -71,12 +64,15 @@ public class EstimateQuestionController implements Initializable {
     @FXML
     private Label newPoints;
 
+    @FXML
+    private Button submitAnswerButton;
+
     private final MainCtrl mainCtrl;
     private final ClientGameController clientGameController;
     private final ServerUtils serverUtils;
     private ChangeListener<Number> changeListener;
 
-    private boolean isMulti;
+    private List<ImageView> jokerPics;
 
     @Inject
     public EstimateQuestionController(MainCtrl mainCtrl, ClientGameController clientGameController, ServerUtils serverUtils){
@@ -85,6 +81,7 @@ public class EstimateQuestionController implements Initializable {
         this.serverUtils = serverUtils;
     }
 
+    @Override
     public void showQuestion(NewQuestionMessage message) {
 
         clientGameController.startTimer(progressBar, timeText);
@@ -95,11 +92,13 @@ public class EstimateQuestionController implements Initializable {
         answerSlider.setMajorTickUnit( (answerSlider.getMax() - answerSlider.getMin()) * 1/10);
         answerSlider.setValue(answerSlider.getMin());
         answerSlider.setDisable(false);
+        submitAnswerButton.setDisable(false);
 
         questionTxt.setText(message.getTitle());
         activity1Label.setText(message.getActivities().get(0).getTitle());
         question1Image.setImage(new Image(new ByteArrayInputStream(message.getImagesBytes().get(0))));
 
+        pointsLabel.setText(clientGameController.getScore() + " pts");
         answerLabel.setText("");
         timeReduced.setText("");
         answerLabel.setStyle("-fx-text-fill: black");
@@ -107,69 +106,40 @@ public class EstimateQuestionController implements Initializable {
     }
 
     public void submitUserAnswer(){
-
-        answerSlider.valueProperty().removeListener(changeListener);
-        answerSlider.setDisable(true);
-        clientGameController.setDisableJokerUsage(true);
-
         clientGameController.submitAnswer((long) answerSlider.getValue());
-
     }
 
+    @Override
     public void showAnswer(CorrectAnswerMessage message) {
-
         answerSlider.valueProperty().removeListener(changeListener);
         answerSlider.setDisable(true);
 
         answerLabel.setText("The answer is " + message.getCorrectAnswer());
         answerLabel.setStyle("-fx-text-fill: rgb(131,210,0);");
-        clientGameController.getTimer().cancel();
+
         clientGameController.changeScore(message.getScore(), pointsLabel, newPoints);
-
     }
 
-    public void quit() throws IOException {
+    public void quit() {
         clientGameController.exitGame();
-        mainCtrl.showMainMenu();
     }
 
-    //(eliminate one answer joker) -> minimizes the range for the slider
     public void changeJoker1() {
-
-        if (!clientGameController.isDisableJokerUsage() && !clientGameController.isEliminateJokerUsed()) {
-            eliminateJoker.setImage(clientGameController.getUsedJoker());
-            clientGameController.setEliminateJokerUsed(true);
-            answerSlider.setMin(Math.floor(answerSlider.getMin() + answerSlider.getMin() * 1/4));
-            answerSlider.setMax(Math.floor(answerSlider.getMax() - answerSlider.getMin() * 1/4));
-        }
-
+        Joker joker = clientGameController.getRemainingJokers().get(0);
+        clientGameController.useJoker(joker, this::useEliminateJoker);
     }
 
-    //doublePointsJoker
     public void changeJoker2() {
-
-        if (!clientGameController.isDisableJokerUsage() && !clientGameController.isDoublePointsJokerUsed()) {
-            doublePointsJoker.setImage(clientGameController.getUsedJoker());
-            clientGameController.setDoublePointsJokerUsed(true);
-            clientGameController.setUsedTimeJokerForCurrentQ(true);
-            clientGameController.doublePoint();
-        }
-
+        Joker joker = clientGameController.getRemainingJokers().get(1);
+        clientGameController.useJoker(joker, this::useDoublePointsJoker);
     }
 
-    //skip question joker
     public void changeJoker3() {
-        if (!clientGameController.isDisableJokerUsage() && !clientGameController.isSkipQuestionJokerUsed()) {
-            if (isMulti) {
-                clientGameController.timeJoker(mainCtrl.getUser().getId());
-            } else {
-                questionTxt.setText("You skipped this question!");
-                clientGameController.skipQuestion();
-            }
-            skipQuestionJoker.setImage(clientGameController.getUsedJoker());
-            clientGameController.setSkipQuestionJokerUsed(true);
-        }
-        
+        Joker joker = clientGameController.getRemainingJokers().get(2);
+        if (joker == Joker.REDUCETIME)
+            clientGameController.useJoker(joker, this::useTimeJoker);
+        else
+            clientGameController.useJoker(joker, this::useSkipQuestionJoker);
     }
 
     public void resize(double width, double height){
@@ -193,44 +163,53 @@ public class EstimateQuestionController implements Initializable {
 
         progressBar.setProgress(1.0);
 
+        jokerPics = List.of(eliminateJoker, doublePointsJoker, skipQuestionJoker);
     }
 
+    @Override
     public void showTimeReduced(String name) {
         timeReduced.setText(name + " has reduced your time!");
     }
 
-    public void resetSolo() {
-        eliminateJoker.setImage(new Image("/client.photos/jokerOneAnswer.png"));
-        doublePointsJoker.setImage(new Image("/client.photos/doubleJoker.png"));
-        skipQuestionJoker.setImage(new Image("/client.photos/skipJoker.png"));
-        pointsLabel.setText("0 Pts");
-    }
-
-    public void resetMulti() {
-        eliminateJoker.setImage(new Image("/client.photos/jokerOneAnswer.png"));
-        doublePointsJoker.setImage(new Image("/client.photos/doubleJoker.png"));
-        skipQuestionJoker.setImage(new Image("/client.photos/timeJoker.png"));
-        pointsLabel.setText("0 pts");
-        newPoints.setText("");
-    }
-
-    public void setJokersPic() {
-
-        if (clientGameController.isEliminateJokerUsed())
-            eliminateJoker.setImage(clientGameController.getUsedJoker());
-        if (clientGameController.isDoublePointsJokerUsed())
-            doublePointsJoker.setImage(clientGameController.getUsedJoker());
-        if (clientGameController.isSkipQuestionJokerUsed())
-            skipQuestionJoker.setImage(clientGameController.getUsedJoker());
+    @Override
+    public void reset() {
 
     }
 
-    public void setMulti(boolean multi) {
-        isMulti = multi;
+    @Override
+    public Label getPointsLabel() {
+        return this.pointsLabel;
     }
 
-    public boolean isMulti() {
-        return isMulti;
+    @Override
+    public List<ImageView> getJokerPics() {
+        return jokerPics;
+    }
+
+    @Override
+    public void lockAnswer() {
+        answerSlider.valueProperty().removeListener(changeListener);
+        answerSlider.setDisable(true);
+        submitAnswerButton.setDisable(true);
+    }
+
+    public void useEliminateJoker(){
+        answerSlider.setMin(Math.floor(answerSlider.getMin() + answerSlider.getMin() * 1/4));
+        answerSlider.setMax(Math.floor(answerSlider.getMax() - answerSlider.getMin() * 1/4));
+        clientGameController.eliminateJoker();
+    }
+
+    public void useDoublePointsJoker(){
+        clientGameController.doublePoint();
+    }
+
+    public void useTimeJoker(){
+        clientGameController.timeJoker();
+    }
+
+    public void useSkipQuestionJoker(){
+        questionTxt.setText("You skipped this question!");
+        clientGameController.skipQuestion();
     }
 
 }

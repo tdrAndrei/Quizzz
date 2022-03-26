@@ -16,17 +16,21 @@
 package client.scenes;
 
 import client.utils.ServerUtils;
+import commons.Messages.CorrectAnswerMessage;
+import commons.Messages.NewQuestionMessage;
 import commons.User;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 
 
 import javax.inject.Inject;
 import java.io.IOException;
+import java.util.List;
 
 public class MainCtrl {
 
@@ -52,6 +56,9 @@ public class MainCtrl {
     private Scene waitingRoomScene;
 
     private ClientGameController clientGameController;
+
+    private List<QuestionScene> questionControllers;
+    private QuestionScene currentSceneController;
 
     @Inject
     private ServerUtils server;
@@ -84,6 +91,8 @@ public class MainCtrl {
 
         this.clientGameController = clientGameController;
 
+        questionControllers = List.of(multiCtrl, estimateQuestionController);
+
         showLogin();
         primaryStage.show();
 
@@ -95,6 +104,45 @@ public class MainCtrl {
                 e.printStackTrace();
             }
         });
+    }
+
+    public void resetQuestionScenes(List<Joker> jokers) {
+        setJokerPics(jokers);
+        for ( QuestionScene controller : questionControllers ) {
+            //Setting the points label for every scene
+            controller.getPointsLabel().setText("0 pts");
+
+            //additional logic that can't be generalized is done in this method
+            //You need to override it in the specific controller
+            controller.reset();
+        }
+    }
+
+    public void setJokerPics(List<Joker> jokers) {
+        for ( QuestionScene controller : questionControllers ) {
+            //Setting the joker images for all scenes
+            int index = 0;
+            for (Joker joker : jokers) {
+                controller.getJokerPics().get(index).setImage(new Image(joker.getPath()));
+                index++;
+            }
+        }
+    }
+
+    public void lockCurrentScene() {
+        currentSceneController.lockAnswer();
+    }
+
+    public void prepareCurrentScene(NewQuestionMessage newQuestionMessage) {
+        currentSceneController.showQuestion(newQuestionMessage);
+    }
+
+    public void showAnswerInCurrentScene(CorrectAnswerMessage correctAnswerMessage) {
+        currentSceneController.showAnswer(correctAnswerMessage);
+    }
+
+    public void showTimeReducedInCurrentScene(String name) {
+        currentSceneController.showTimeReduced(name);
     }
 
     public void showLeaderboardSolo() {
@@ -131,6 +179,7 @@ public class MainCtrl {
     }
 
     public void showEstimate(){
+        currentSceneController = estimateQuestionController;
         primaryStage.setTitle("Quizzzz!");
         primaryStage.setScene(estimateQuestionScene);
         estimateQuestionScene.widthProperty().addListener(e -> {
@@ -158,6 +207,7 @@ public class MainCtrl {
     }
 
     public void showMultiQuestion() {
+        currentSceneController = multiCtrl;
         primaryStage.setScene(multiScene);
     }
 

@@ -8,30 +8,34 @@ import javafx.application.Platform;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
-import javafx.scene.image.Image;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import javafx.scene.shape.VLineTo;
 import javafx.util.Duration;
 import javafx.util.Pair;
 import java.awt.*;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.stream.Collectors;
 
 public class ClientGameController {
 
     private GameState status;
-    private GameState gameMode;
+    private GameMode gameMode;
 
     public enum GameState {
-        NOTPLAYING,
-        WAITINGAREA,
-        MULTI,
-        SOLO,
         NEWQUESTION,
         SHOWANSWER,
-        SHOWLEADERBOARD;
+        SUBMITTEDANSWER,
+        SHOWLEADERBOARD
+    }
+
+    public enum GameMode {
+        NOTPLAYING,
+        MULTI,
+        SOLO
     }
 
     public GameState getStatus() {
@@ -47,18 +51,16 @@ public class ClientGameController {
     private LeaderboardSoloController leaderboardSoloController;
     private WaitingRoomController waitingRoomController;
     private Long gameId;
+    private int score;
     private Color[] timebarColors;
-    private boolean usedTimeJokerForCurrentQ;
-    private Timer timer;
+    private boolean doublePointsForThisRound;
+    private Timer progressBarThread;
 
     private final MainCtrl mainController;
     private final ServerUtils serverUtils;
 
-    private boolean skipQuestionJokerUsed = false;
-    private boolean eliminateJokerUsed = false;
-    private boolean doublePointsJokerUsed = false;
-    private boolean disableJokerUsage = false;
-    private Image usedJoker = new Image("/client.photos/usedJoker.png");
+    private List<Joker> remainingJokers;
+    private EnumSet<Joker> availableJokers;
 
     private double maxTime;
     private double timeLeft;
@@ -68,7 +70,7 @@ public class ClientGameController {
         this.mainController = mainController;
         this.serverUtils = serverUtils;
         timebarColors = new Color[]{Color.green, Color.yellow, Color.red};
-        timer = new Timer();
+        progressBarThread = new Timer();
     }
 
     public void initialize(Pair<MultiQuestionController, Parent> multiQuestion,
@@ -83,38 +85,30 @@ public class ClientGameController {
 
     public void startPolling(boolean isMulti) {
 
-        enableAllJokers();
-
         if (isMulti) {
-
-            this.gameMode = GameState.MULTI;
-
-            multiQuestionController.resetMulti();
-            estimateQuestionController.resetMulti();
-
-            //multiQuestionController.setMulti(true);
-            //estimateQuestionController.setMulti(true);
+            this.gameMode = GameMode.MULTI;
+            remainingJokers = List.of(Joker.ELIMINATE, Joker.DOUBLEPOINTS, Joker.REDUCETIME);
 
             gameId = serverUtils.joinMulti(mainController.getUser());
             mainController.showWaitingRoom();
             waitingRoomController.setGameId(gameId);
         } else {
+            this.gameMode = GameMode.SOLO;
+            remainingJokers = List.of(Joker.ELIMINATE, Joker.DOUBLEPOINTS, Joker.SKIPQUESTION);
 
-            this.gameMode = GameState.SOLO;
-
-            multiQuestionController.resetSolo();
-            estimateQuestionController.resetSolo();
-            //multiQuestionController.setMulti(false);
-            //estimateQuestionController.setMulti(false);
             gameId = serverUtils.joinSolo(mainController.getUser());
-
         }
-        Timer timer = new Timer();
-        timer.scheduleAtFixedRate( new TimerTask() {
+
+        availableJokers = EnumSet.copyOf(remainingJokers);
+        mainController.resetQuestionScenes(remainingJokers);
+
+
+        Timer pollingThread = new Timer();
+        pollingThread.scheduleAtFixedRate( new TimerTask() {
             @Override
             public void run() {
-                if (gameMode == GameState.NOTPLAYING) {
-                    timer.cancel();
+                if (gameMode == GameMode.NOTPLAYING) {
+                    pollingThread.cancel();
                     return;
                 }
                 Message message = serverUtils.pollUpdate(gameId, mainController.getUser().getId());
@@ -123,8 +117,8 @@ public class ClientGameController {
                 } catch (InterruptedException ignored) {
                 }
                 if (message instanceof ShowLeaderboardMessage && ((ShowLeaderboardMessage) message).getGameProgress().equals("End")) {
-                    timer.cancel();
-                    gameMode = GameState.NOTPLAYING;
+                    pollingThread.cancel();
+                    gameMode = GameMode.NOTPLAYING;
                 }
             }
         } , 0, 500);
@@ -146,13 +140,21 @@ public class ClientGameController {
 
                 status = GameState.NEWQUESTION;
 
-                disableJokerUsage = false;
-                setUsedTimeJokerForCurrentQ(false);
+                remainingJokers.forEach(joker -> {
+                    if (joker != Joker.USED)
+                        availableJokers.add(joker);
+                });
+                
+                setDoublePointsForThisRound(false);
                 Platform.runLater(() -> {
                     switch (newQuestionMessage.getQuestionType()) {
-                        case "MC": prepareMCQ(newQuestionMessage); break;
-                        case "Estimate": prepareEstimateQ(newQuestionMessage); break;
+                        case "MC": mainController.showMultiQuestion(); break;
+                        case "Estimate": mainController.showEstimate(); break;
                     }
+
+                    setMaxTime(newQuestionMessage.getTime());
+                    setTimeLeft(newQuestionMessage.getTime());
+                    mainController.prepareCurrentScene(newQuestionMessage);
                 });
                 break;
 
@@ -165,10 +167,12 @@ public class ClientGameController {
             case "ShowCorrectAnswer":
                 CorrectAnswerMessage correctAnswerMessage = (CorrectAnswerMessage) message;
                 status = GameState.SHOWANSWER;
-                disableJokerUsage = true;
+                progressBarThread.cancel();
+
+                availableJokers.clear();
+
                 Platform.runLater(() -> {
-                    estimateQuestionController.showAnswer(correctAnswerMessage);
-                    multiQuestionController.showAnswer(correctAnswerMessage);
+                    mainController.showAnswerInCurrentScene(correctAnswerMessage);
                 });
                 break;
 
@@ -176,21 +180,37 @@ public class ClientGameController {
                 ReduceTimeMessage reduceTimeMessage = (ReduceTimeMessage) message;
                 Platform.runLater(() -> {
                     setTimeLeft(reduceTimeMessage.getNewTime());
-                    multiQuestionController.showTimeReduced(reduceTimeMessage.getUserName());
-                    estimateQuestionController.showTimeReduced(reduceTimeMessage.getUserName());
+                    mainController.showTimeReducedInCurrentScene(reduceTimeMessage.getUserName());
                 });
                 break;
         }
     }
 
+    public void useJoker(Joker joker, Runnable onSuccess) {
+        if ( availableJokers.contains(joker) ) {
+
+            availableJokers.remove(joker);
+            remainingJokers = remainingJokers.stream().map(x -> {
+               if (x == joker)
+                   return Joker.USED;
+               else
+                   return x;
+            }).collect(Collectors.toList());
+            
+            mainController.setJokerPics(remainingJokers);
+            onSuccess.run();
+        }
+    }
+
     public void exitGame() {
-        gameMode = GameState.NOTPLAYING;
-        timer.cancel();
+        gameMode = GameMode.NOTPLAYING;
+        progressBarThread.cancel();
         serverUtils.leaveGame(this.getGameId(), mainController.getUser().getId());
+        mainController.showMainMenu();
     }
 
     public boolean isPlaying() {
-        return gameMode != GameState.NOTPLAYING;
+        return gameMode != GameMode.NOTPLAYING;
     }
 
     public Long getGameId() {
@@ -198,66 +218,31 @@ public class ClientGameController {
     }
 
     public void submitAnswer(long answer) {
+        if (status != GameState.NEWQUESTION || timeLeft <= 0)
+            return;
+
+        status = GameState.SUBMITTEDANSWER;
+        mainController.lockCurrentScene();
         serverUtils.submitAnswer(getGameId(), mainController.getUser().getId(), answer);
+        availableJokers.remove(Joker.ELIMINATE);
     }
 
     public void doublePoint() {
-        serverUtils.useDoublePointsJoker(getGameId(), mainController.getUser().getId());
+        serverUtils.useDoublePointsJoker(gameId, mainController.getUser().getId());
+        setDoublePointsForThisRound(true);
     }
 
     public long eliminateJoker() {
-        return serverUtils.eliminateJoker(getGameId());
+        return serverUtils.eliminateJoker(gameId);
     }
 
     public void skipQuestion() {
         serverUtils.useNewQuestionJoker(gameId);
-        timer.cancel();
+        progressBarThread.cancel();
     }
 
-    public void timeJoker(long userId) {
-        serverUtils.useTimeJoker(gameId, userId);
-    }
-
-    public void enableAllJokers() {
-        skipQuestionJokerUsed = false;
-        eliminateJokerUsed = false;
-        doublePointsJokerUsed = false;
-    }
-
-    public boolean isSkipQuestionJokerUsed() {
-        return skipQuestionJokerUsed;
-    }
-
-    public void setSkipQuestionJokerUsed(boolean skipQuestionJokerUsed) {
-        this.skipQuestionJokerUsed = skipQuestionJokerUsed;
-    }
-
-    public boolean isEliminateJokerUsed() {
-        return eliminateJokerUsed;
-    }
-
-    public void setEliminateJokerUsed(boolean eliminateJokerUsed) {
-        this.eliminateJokerUsed = eliminateJokerUsed;
-    }
-
-    public boolean isDoublePointsJokerUsed() {
-        return doublePointsJokerUsed;
-    }
-
-    public void setDoublePointsJokerUsed(boolean doublePointsJokerUsed) {
-        this.doublePointsJokerUsed = doublePointsJokerUsed;
-    }
-
-    public boolean isDisableJokerUsage() {
-        return disableJokerUsage;
-    }
-
-    public void setDisableJokerUsage(boolean disableJokerUsage) {
-        this.disableJokerUsage = disableJokerUsage;
-    }
-
-    public Image getUsedJoker() {
-        return usedJoker;
+    public void timeJoker() {
+        serverUtils.useTimeJoker(gameId, mainController.getUser().getId());
     }
 
     public double getTimeLeft(){
@@ -276,6 +261,10 @@ public class ClientGameController {
         this.maxTime = time;
     }
 
+    public int getScore() {
+        return score;
+    }
+
     public void updateTimeLeft(double seconds, double timeLeft){
         setTimeLeft(timeLeft - seconds);
     }
@@ -283,8 +272,8 @@ public class ClientGameController {
     public void updateProgressBarColor(double timeLeft, double maxTime, ProgressBar progressBar){
 
         float[] newComponents = new float[3];
-        float[] upperColor = new float[3];
-        float[] lowerColor = new float[3];
+        float[] upperColor;
+        float[] lowerColor;
         double percent = 1;
 
         if (timeLeft >= maxTime/2) {
@@ -308,9 +297,8 @@ public class ClientGameController {
     }
 
     public void startTimer(ProgressBar progressBar, Label timeText){
-
-        timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
+        progressBarThread = new Timer();
+        progressBarThread.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
                 double maxTime = getMaxTime();
@@ -319,7 +307,6 @@ public class ClientGameController {
                 Platform.runLater(() -> updateProgressBar(timeLeft, maxTime, progressBar, timeText));
             }
         }, 0, 100);
-
     }
 
     public void updateProgressBar(double timeLeft, double maxTime, ProgressBar progressBar, Label timer){
@@ -330,6 +317,7 @@ public class ClientGameController {
             updateProgressBarColor(timeLeft, maxTime, progressBar);
         } else {
             progressBar.setProgress(0.0);
+            mainController.lockCurrentScene();
             int displayText = 0;
             timer.setText(displayText + "S");
         }
@@ -364,27 +352,8 @@ public class ClientGameController {
         }
     }
 
-    public void prepareMCQ(NewQuestionMessage newQuestionMessage){
-        mainController.showMultiQuestion();
-        multiQuestionController.setChosenAnswer(-1);
-        setMaxTime(newQuestionMessage.getTime());
-        setTimeLeft(newQuestionMessage.getTime());
-        multiQuestionController.setJokersPic();
-        multiQuestionController.enableSubmittingAnswers();
-        multiQuestionController.showQuestion(newQuestionMessage);
-        multiQuestionController.setQuestions(newQuestionMessage.getActivities(), newQuestionMessage.getImagesBytes());
-    }
-
-    public void prepareEstimateQ(NewQuestionMessage newQuestionMessage){
-        mainController.showEstimate();
-        setMaxTime(newQuestionMessage.getTime());
-        setTimeLeft(newQuestionMessage.getTime());
-        estimateQuestionController.setJokersPic();
-        estimateQuestionController.showQuestion(newQuestionMessage);
-    }
     public void updateWaitingRoom(NewPlayersMessage newPlayersMessage) {
         List<Player> playerList = newPlayersMessage.getPlayerList();
-        String userName = mainController.getUser().getName();
         waitingRoomController.showPlayers(playerList);
         waitingRoomController.showEntries();
     }
@@ -396,7 +365,7 @@ public class ClientGameController {
         int currScore = Integer.parseInt(string[0]);
         int pointsAdded = score - currScore;
 
-        if (isUsedTimeJokerForCurrentQ())
+        if (hasDoublePointsForThisRound())
             newPoints.setText(" + 2x " + pointsAdded / 2);
         else
             newPoints.setText(" + " + pointsAdded);
@@ -407,6 +376,7 @@ public class ClientGameController {
             newPoints.setStyle("-fx-text-fill: rgb(0, 210, 28);");
 
         pointsLabel.setText(currScore + " pts");
+        System.out.println(currScore);
 
         Path moveVertically = new Path();
         moveVertically.getElements().add(new MoveTo(0, 0));
@@ -416,19 +386,35 @@ public class ClientGameController {
         fadeOut.play();
 
         pointsLabel.setText(score + " pts");
-
+        System.out.println(score);
     }
 
-    public void setUsedTimeJokerForCurrentQ(boolean usedTimeJokerForCurrentQ) {
-        this.usedTimeJokerForCurrentQ = usedTimeJokerForCurrentQ;
+    public void setDoublePointsForThisRound(boolean doublePointsForThisRound) {
+        this.doublePointsForThisRound = doublePointsForThisRound;
     }
 
-    public boolean isUsedTimeJokerForCurrentQ() {
-        return usedTimeJokerForCurrentQ;
+    public boolean hasDoublePointsForThisRound() {
+        return doublePointsForThisRound;
     }
 
     public Timer getTimer() {
-        return timer;
+        return progressBarThread;
+    }
+
+    public GameMode getGameMode() {
+        return gameMode;
+    }
+
+    public void setGameMode(GameMode gameMode) {
+        this.gameMode = gameMode;
+    }
+
+    public List<Joker> getRemainingJokers() {
+        return remainingJokers;
+    }
+
+    public EnumSet<Joker> getAvailableJokers() {
+        return availableJokers;
     }
 
 }
