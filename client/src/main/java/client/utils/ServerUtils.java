@@ -21,6 +21,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.List;
 
+import commons.Activity;
 import commons.LeaderboardEntry;
 import commons.Messages.Message;
 import commons.User;
@@ -68,6 +69,16 @@ public class ServerUtils {
                 .accept(APPLICATION_JSON) //
                 .get(new GenericType<List<LeaderboardEntry>>() {});
     }
+
+    public List<Activity> getActivties() {
+        return ClientBuilder.newClient(new ClientConfig()) //
+                .target(SERVER).path("api/admin/display") //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .get(new GenericType<List<Activity>>() {});
+    }
+
+
 
     public LeaderboardEntry addLeaderboardEntry(LeaderboardEntry leaderboardEntry) {
         return ClientBuilder.newClient(new ClientConfig()) //

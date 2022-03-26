@@ -45,6 +45,9 @@ public class MainCtrl {
     private LeaderboardSoloController leaderboardSoloController;
     private Scene leaderboardSoloScene;
 
+    private AdminController adminController;
+    private Scene adminScene;
+
     private EstimateQuestionController estimateQuestionController;
     private Scene estimateQuestionScene;
 
@@ -61,7 +64,8 @@ public class MainCtrl {
                            Pair<MultiQuestionController, Parent> multiQuestion,
                            Pair<LeaderboardSoloController, Parent> leaderboardSolo,
                            Pair<EstimateQuestionController, Parent> estimateQuestion,
-                           ClientGameController clientGameController, Pair<WaitingRoomController, Parent> waitingRoom ) {
+                           ClientGameController clientGameController, Pair<WaitingRoomController, Parent> waitingRoom, Pair<AdminController, Parent> adminController
+    ) {
         this.primaryStage = primaryStage;
 
         this.loginController = login.getKey();
@@ -81,6 +85,10 @@ public class MainCtrl {
 
         this.waitingRoomController = waitingRoom.getKey();
         this.waitingRoomScene = new Scene(waitingRoom.getValue());
+
+        this.adminController = adminController.getKey();
+        this.adminScene = new Scene(adminController.getValue());
+
 
         this.clientGameController = clientGameController;
 
@@ -128,6 +136,12 @@ public class MainCtrl {
         waitingRoomController.resetState();
         primaryStage.setScene(waitingRoomScene);
 
+    }
+
+    public void showAdmin() {
+        primaryStage.setTitle("Quizzzz!");
+        adminController.refresh();
+        primaryStage.setScene(adminScene);
     }
 
     public void showEstimate(){
