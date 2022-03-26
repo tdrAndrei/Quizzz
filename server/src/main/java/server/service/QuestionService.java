@@ -27,10 +27,18 @@ public class QuestionService {
             int indexRand = rm.nextInt(activityList.size());
             Activity rand = activityList.get(indexRand);
             Long consumption = rand.getConsumption_in_wh();
-            equalCons = this.repo.findByConsumption(consumption*9/10, consumption*11/10);
+            equalCons = this.repo.findByConsumption(consumption);
         }
         Collections.shuffle(equalCons);
         Activity main = equalCons.get(0);
+        try {
+            int idx = 1;
+            while (equalCons.get(idx).getSource().equals(main.getSource()) || equalCons.get(idx).getTitle().equals(main.getTitle())) {
+                idx++;
+            }
+        } catch (IndexOutOfBoundsException e) {
+            return makeCompare(seconds);
+        }
         answers.add(equalCons.get(1));
         while (answers.size() < 3) {
             Activity wrongAnswer = activityList.get(rm.nextInt(activityList.size()));
