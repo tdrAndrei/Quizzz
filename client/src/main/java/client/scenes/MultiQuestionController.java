@@ -9,18 +9,21 @@ import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import commons.Messages.NewQuestionMessage;
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
+import javafx.util.Pair;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -32,6 +35,8 @@ import java.util.TimerTask;
 
 public class MultiQuestionController implements Initializable {
 
+    @FXML
+    private ListView<Pair<String, Integer>> emojiChatView;
     @FXML
     private ImageView doublePointsJoker;
 
@@ -215,6 +220,7 @@ public class MultiQuestionController implements Initializable {
                 clientGameController.updateTimeLeft(0.05, timeLeft);
                 Platform.runLater(() -> clientGameController.updateProgressBar(clientGameController.getTimeLeft(), maxTime, progressBar, timeText));
             }}, 0, 100);
+        clientGameController.configureListView(emojiChatView);
     }
     public void resize ( double width, double height){
         if (width < grid.getMinWidth() || height < grid.getMinHeight())
@@ -245,11 +251,7 @@ public class MultiQuestionController implements Initializable {
             }
         }
     }
-    public void processEmoji(Event event) {
-        ImageView emoji = (ImageView) event.getSource();
-        int emojiId = Integer.parseInt(emoji.getId().replace("e", ""));
-        clientGameController.sendEmoji(emojiId);
-    }
+
     public void submit1(){
         if (!clientGameController.isDisableJokerUsage()) {
             chosenAnswer = 0;
@@ -349,6 +351,16 @@ public class MultiQuestionController implements Initializable {
         if (clientGameController.isSkipQuestionJokerUsed())
             skipQuestionJoker.setImage(clientGameController.getUsedJoker());
 
+    }
+
+    public void processEmoji(Event event) {
+        ImageView emoji = (ImageView) event.getSource();
+        int emojiId = Integer.parseInt(emoji.getId().replace("e", ""));
+        clientGameController.sendEmoji(emojiId);
+    }
+
+    public void subscribeToEmojiUpdate(ObservableList<Pair<String, Integer>> newEmojiList) {
+        this.emojiChatView.setItems(newEmojiList);
     }
 
     public void setMulti(boolean multi) {
