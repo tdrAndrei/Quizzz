@@ -18,7 +18,7 @@ class QuestionTest {
     public void init() {
         TIME = 20;
         multi = new MultiChoiceQuestion("Choose between 3", 2, null, TIME);
-        estimate = new EstimateQuestion("How much energy it takes to watch netflix?", 800, null, TIME);
+        estimate = new EstimateQuestion("How much energy it takes to watch netflix?", 800, null, null, TIME);
     }
 
     @Test
