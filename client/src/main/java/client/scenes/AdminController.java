@@ -77,6 +77,9 @@ public class AdminController implements Initializable {
     private Button menuButton;
 
     @FXML
+    private Button newActivity;
+
+    @FXML
     private TableColumn<?, ?> editCol;
 
     @FXML
@@ -136,6 +139,11 @@ public class AdminController implements Initializable {
         }
         showEntries();
     }
+
+    public void goToAddActivityScreen() {
+        mainCtrl.showAddActivity();
+    }
+
 
 
 }
