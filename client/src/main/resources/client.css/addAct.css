@@ -26,3 +26,21 @@
     -fx-alignment: baseline-left;
     -fx-padding: 5 0 5 10;
 }
+
+#warnField {
+    -fx-font-size: 15;
+    -fx-text-fill: #8c8888;
+}
+
+#imageWarnLabel {
+    -fx-font-size: 15;
+    -fx-text-fill: #8c8888;
+}
+#numberWarnLabel {
+    -fx-font-size: 15;
+    -fx-text-fill: #8c8888;
+}
+#messageLabel {
+    -fx-font-size: 11;
+    -fx-text-fill: #35a435;
+}

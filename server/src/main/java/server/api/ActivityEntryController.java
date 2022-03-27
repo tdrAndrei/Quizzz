@@ -2,35 +2,49 @@ package server.api;
 
 import commons.Activity;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import server.database.ActivityRepository;
 import server.service.ActivityEntryService;
+
 
 import java.util.List;
 
+
 @RestController
-@RequestMapping(path = "api/admin/display")
+@RequestMapping(path = "api/admin")
 public class ActivityEntryController {
 
 
     private final ActivityEntryService activityEntryService;
+    private final ActivityRepository activityRepository;
 
     @Autowired
-    public ActivityEntryController(ActivityEntryService activityEntryService) {
+    public ActivityEntryController(ActivityEntryService activityEntryService, ActivityRepository activityRepository) {
         this.activityEntryService = activityEntryService;
+        this.activityRepository = activityRepository;
     }
 
-    @GetMapping
+    @GetMapping(path = "/display")
     public List<Activity> getEntries() {
         return activityEntryService.getAllEntries();
     }
 
-//    @PostMapping
-//    public ResponseEntity<LeaderboardEntry> addLeaderboardEntry(@RequestBody LeaderboardEntry leaderboardEntry) {
-//        LeaderboardEntry insertedEntry = leaderBoardEntryService.insert(leaderboardEntry);
-//        if (insertedEntry == null) {
-//            return ResponseEntity.badRequest().build();
-//        }
-//        return ResponseEntity.ok(insertedEntry);
-//    }
+    @PostMapping(path = "/add")
+    public ResponseEntity<Activity> addActivity(@RequestBody Activity activity) {
+
+        if (isNullOrEmpty(activity.getTitle())|| isNullOrEmpty(activity.getImage_path())
+                || activity.getConsumption_in_wh() < 0
+                || isNullOrEmpty(activity.getSource())) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        Activity saved = activityRepository.save(activity);
+        return ResponseEntity.ok(saved);
+    }
+
+    private static boolean isNullOrEmpty(String s) {
+        return s == null || s.isEmpty();
+    }
 }
 

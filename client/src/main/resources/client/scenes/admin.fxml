@@ -28,7 +28,7 @@
             </Button>
             <TableView fx:id="tableView" nodeOrientation="LEFT_TO_RIGHT" prefHeight="376.0" prefWidth="524.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="1" GridPane.rowSpan="2">
               <columns>
-                <TableColumn fx:id="titleCol" prefWidth="462.0" sortable="false" text="Title" />
+                <TableColumn fx:id="titleCol" prefWidth="462.0" sortable="false" text="   Activities" />
                 <TableColumn fx:id="editCol" maxWidth="120.0" minWidth="72.0" prefWidth="72.0" sortable="false" text="Edit" />
               </columns>
                <columnResizePolicy>

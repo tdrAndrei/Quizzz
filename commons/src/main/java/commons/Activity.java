@@ -53,6 +53,13 @@ public class Activity {
         this.source = source;
     }
 
+    public Activity(String image_path, String title, Long consumption_in_wh, String source) {
+        this.image_path = image_path;
+        this.title = title;
+        this.consumption_in_wh = consumption_in_wh;
+        this.source = source;
+    }
+
     /**
      * Instantiates a new Activity
      * The empty, package level constructor is used for object mappers.

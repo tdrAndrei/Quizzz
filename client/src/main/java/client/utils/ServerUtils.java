@@ -189,6 +189,13 @@ public class ServerUtils {
                 .accept(APPLICATION_JSON)
                 .get();
     }
+    public Activity addActivity(Activity activity) {
+        return ClientBuilder.newClient(new ClientConfig()) //
+                .target(SERVER).path("api/admin/add") //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .post(Entity.entity(activity, APPLICATION_JSON), Activity.class);
+    }
 
     public Quote addQuote(Quote quote) {
         return ClientBuilder.newClient(new ClientConfig()) //
