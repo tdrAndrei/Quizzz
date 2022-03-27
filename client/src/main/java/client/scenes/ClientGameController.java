@@ -56,11 +56,11 @@ public class ClientGameController {
         this.serverUtils = serverUtils;
         consumerOfEmojiList = new ArrayList<>();
         emojiImageList = new ArrayList<>();
-        emojiImageList.add(new Image("client.photos\\angryEmoji.gif"));
-        emojiImageList.add(new Image("client.photos\\eyebrowEmoji.gif"));
-        emojiImageList.add(new Image("client.photos\\devilEmoji.gif"));
-        emojiImageList.add(new Image("client.photos\\sunglassesEmoji.gif"));
-        emojiImageList.add(new Image("client.photos\\confoundedEmoji.gif"));
+        emojiImageList.add(new Image("client.photos/angryEmoji.gif"));
+        emojiImageList.add(new Image("client.photos/eyebrowEmoji.gif"));
+        emojiImageList.add(new Image("client.photos/devilEmoji.gif"));
+        emojiImageList.add(new Image("client.photos/sunglassesEmoji.gif"));
+        emojiImageList.add(new Image("client.photos/confoundedEmoji.gif"));
     }
 
     public void initialize(Pair<MultiQuestionController, Parent> multiQuestion,
