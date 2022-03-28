@@ -337,6 +337,17 @@ public class MultiQuestionController implements Initializable, QuestionScene {
         timeReduced.setText(name + " has reduced your time!");
     }
 
+    public void processEmoji(Event event) {
+        ImageView emoji = (ImageView) event.getSource();
+        int emojiId = Integer.parseInt(emoji.getId().replace("e", ""));
+        clientGameController.sendEmoji(emojiId);
+    }
+
+    @Override
+    public void subscribeToEmojiUpdate(ObservableList<Pair<String, Integer>> newEmojiList) {
+        this.emojiChatView.setItems(newEmojiList);
+    }
+
     @Override
     public void reset() {
     }

@@ -11,17 +11,20 @@ import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.effect.BlendMode;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.VBox;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import javafx.scene.shape.VLineTo;
 import javafx.util.Duration;
 import javafx.util.Pair;
 import java.awt.*;
-import java.util.EnumSet;
+import java.util.*;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
+import javafx.scene.image.Image;
 
 public class ClientGameController {
 
@@ -64,6 +67,12 @@ public class ClientGameController {
 
     private final MainCtrl mainController;
     private final ServerUtils serverUtils;
+
+    private ObservableList<Pair<String, Integer>> emojiChatList;
+    private List<Consumer<ObservableList<Pair<String, Integer>>>> consumerOfEmojiList;
+
+    private Parent multiQuestionScene;
+    private Parent estimateQuestionScene;
 
     private List<Joker> remainingJokers;
     private EnumSet<Joker> availableJokers;
@@ -203,7 +212,6 @@ public class ClientGameController {
     public void interpretMessage(Message message) throws InterruptedException {
         switch (message.getType()) {
             case "None":
-                NullMessage nullMessage = (NullMessage) message;
                 break;
 
             case "NewPlayers":
@@ -226,6 +234,7 @@ public class ClientGameController {
                     switch (newQuestionMessage.getQuestionType()) {
                         case "MC": mainController.showMultiQuestion(); break;
                         case "Estimate": mainController.showEstimate(); break;
+                        case "Compare": mainController.showCompare(); break;
                     }
 
                     setMaxTime(newQuestionMessage.getTime());

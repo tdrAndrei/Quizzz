@@ -14,6 +14,8 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
+import javafx.util.Pair;
+
 import java.io.ByteArrayInputStream;
 import java.net.URL;
 import java.util.List;
@@ -23,6 +25,7 @@ public class EstimateQuestionController implements Initializable, QuestionScene 
 
     @FXML
     private ListView<Pair<String, Integer>> emojiChatView;
+
     @FXML
     private ImageView doublePointsJoker;
 
@@ -167,6 +170,17 @@ public class EstimateQuestionController implements Initializable, QuestionScene 
     @Override
     public void showTimeReduced(String name) {
         timeReduced.setText(name + " has reduced your time!");
+    }
+
+    public void processEmoji(Event event) {
+        ImageView emoji = (ImageView) event.getSource();
+        int emojiId = Integer.parseInt(emoji.getId().replace("e", ""));
+        clientGameController.sendEmoji(emojiId);
+    }
+
+    @Override
+    public void subscribeToEmojiUpdate(ObservableList<Pair<String, Integer>> newEmojiList) {
+        this.emojiChatView.setItems(newEmojiList);
     }
 
     @Override

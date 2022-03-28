@@ -220,7 +220,7 @@ public class MainCtrl {
     }
 
     public void showCompare() {
-        primaryStage.setTitle("Quizzzz!");
+        currentSceneController = compareQuestionController;
         primaryStage.setScene(compareQuestionScene);
     }
 
