@@ -8,7 +8,6 @@ import server.service.LeaderBoardEntryService;
 import server.service.QuestionService;
 
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.*;
 import java.util.List;
 
