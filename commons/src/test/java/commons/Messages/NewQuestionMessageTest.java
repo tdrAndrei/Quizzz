@@ -21,7 +21,7 @@ class NewQuestionMessageTest {
 
         TIME = 20;
         multi = new MultiChoiceQuestion("Choose between 3", 2, null, TIME);
-        estimate = new EstimateQuestion("How much energy it takes to watch netflix?", 800, null, TIME);
+        estimate = new EstimateQuestion("How much energy it takes to watch netflix?", 800, null, null, TIME);
         int score = 999;
         message = new NewQuestionMessage("NewQuestionMessage", "MC", multi.getTitle(), multi.getActivities(), multi.getTime(), score, new ArrayList<>(), null);
     }

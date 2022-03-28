@@ -4,28 +4,27 @@ import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Messages.CorrectAnswerMessage;
 import commons.Messages.NewQuestionMessage;
-import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.ObservableList;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ProgressBar;
-import javafx.scene.control.Slider;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
+import javafx.util.Pair;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class EstimateQuestionController implements Initializable {
 
+    @FXML
+    private ListView<Pair<String, Integer>> emojiChatView;
     @FXML
     private ImageView doublePointsJoker;
 
@@ -71,6 +70,9 @@ public class EstimateQuestionController implements Initializable {
     @FXML
     private GridPane grid;
 
+    @FXML
+    private Label newPoints;
+
     private final MainCtrl mainCtrl;
     private final ClientGameController clientGameController;
     private final ServerUtils serverUtils;
@@ -86,6 +88,7 @@ public class EstimateQuestionController implements Initializable {
     }
 
     public void showQuestion(NewQuestionMessage message) {
+        clientGameController.startTimer(progressBar, timeText);
         answerSlider.valueProperty().addListener(changeListener);
         answerSlider.setMin(message.getBounds().get(0));
         answerSlider.setMax(message.getBounds().get(1));
@@ -119,9 +122,9 @@ public class EstimateQuestionController implements Initializable {
         answerSlider.setDisable(true);
 
         answerLabel.setText("The answer is " + message.getCorrectAnswer());
-        answerLabel.setStyle("-fx-text-fill: rgb(131,210,0)");
-
-        pointsLabel.setText(Integer.toString(message.getScore()) + " Pts");
+        answerLabel.setStyle("-fx-text-fill: rgb(131,210,0);");
+        clientGameController.getTimer().cancel();
+        clientGameController.changeScore(message.getScore(), pointsLabel, newPoints);
 
     }
 
@@ -148,6 +151,7 @@ public class EstimateQuestionController implements Initializable {
         if (!clientGameController.isDisableJokerUsage() && !clientGameController.isDoublePointsJokerUsed()) {
             doublePointsJoker.setImage(clientGameController.getUsedJoker());
             clientGameController.setDoublePointsJokerUsed(true);
+            clientGameController.setUsedTimeJokerForCurrentQ(true);
             clientGameController.doublePoint();
         }
 
@@ -177,6 +181,7 @@ public class EstimateQuestionController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
 
         answerLabel.setText("");
+        newPoints.setText("");
 
         changeListener = new ChangeListener<Number>() {
             @Override
@@ -185,20 +190,8 @@ public class EstimateQuestionController implements Initializable {
                 answerLabel.setText(Integer.toString(value));
             }
         };
-
         progressBar.setProgress(1.0);
-
-        Timer timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                double maxTime = clientGameController.getMaxTime();
-                double timeLeft = clientGameController.getTimeLeft();
-                clientGameController.updateTimeLeft(0.05, timeLeft);
-                Platform.runLater(() -> clientGameController.updateProgressBar(timeLeft, maxTime, progressBar, timeText));
-            }
-        }, 0, 100);
-
+        clientGameController.configureListView(emojiChatView);
     }
 
     public void showTimeReduced(String name) {
@@ -216,7 +209,8 @@ public class EstimateQuestionController implements Initializable {
         eliminateJoker.setImage(new Image("/client.photos/jokerOneAnswer.png"));
         doublePointsJoker.setImage(new Image("/client.photos/doubleJoker.png"));
         skipQuestionJoker.setImage(new Image("/client.photos/timeJoker.png"));
-        pointsLabel.setText("0 Pts");
+        pointsLabel.setText("0 pts");
+        newPoints.setText("");
     }
 
     public void setJokersPic() {
@@ -228,6 +222,16 @@ public class EstimateQuestionController implements Initializable {
         if (clientGameController.isSkipQuestionJokerUsed())
             skipQuestionJoker.setImage(clientGameController.getUsedJoker());
 
+    }
+
+    public void processEmoji(Event event) {
+        ImageView emoji = (ImageView) event.getSource();
+        int emojiId = Integer.parseInt(emoji.getId().replace("e", ""));
+        clientGameController.sendEmoji(emojiId);
+    }
+
+    public void subscribeToEmojiUpdate(ObservableList<Pair<String, Integer>> newEmojiList) {
+        this.emojiChatView.setItems(newEmojiList);
     }
 
     public void setMulti(boolean multi) {
