@@ -122,9 +122,6 @@ public class LeaderboardSoloController implements Initializable {
     @FXML
     private Label rank;
 
-    @FXML
-    private CheckBox selectUser;
-
     private ObservableList<LeaderboardEntryLabel> data;
 
     private List<LeaderboardEntryLabel> entries = new ArrayList<>();
@@ -194,27 +191,6 @@ public class LeaderboardSoloController implements Initializable {
         showEntries();
     }
 
-    public void selectAllFromUser() {
-        String name = mainCtrl.getUser().getName();
-        int pos = 0;
-        while (pos < entries.size()) {
-            LeaderboardEntryLabel entry = entries.get(pos);
-            if (entry.getNameLabel().getText().equals(name)) {
-                if (selectUser.isSelected()) {
-                    entries.get(pos).getScoreLabel().getStyleClass().add("selectedScore");
-                    int width = 64;
-                    entries.get(pos).getScoreLabel().setStyle("-fx-shape: \"M 0 50 L 150 100 L 700 100 L 700 0 L 150 0 L 0 50 z\"");
-                    entries.get(pos).getScoreLabel().setMinWidth(width);
-                    entries.get(pos).getScoreLabel().setMaxHeight(100);
-                } else {
-                    entries.get(pos).getScoreLabel().getStyleClass().remove("selectedScore");
-                }
-            }
-            pos++;
-        }
-        showEntries();
-    }
-
     public void showMine(Long entryId) {
         int pos = 0;
         while (pos < entries.size()) {
@@ -225,11 +201,11 @@ public class LeaderboardSoloController implements Initializable {
                 entries.get(pos).getScoreLabel().setStyle("-fx-shape: \"M 0 50 L 150 100 L 700 100 L 700 0 L 150 0 L 0 50 z\"");
                 entries.get(pos).getScoreLabel().setMinWidth(width);
                 entries.get(pos).getScoreLabel().setMaxHeight(100);
-                int pos2 = pos + 1;
-                while (pos2 > 1 && entries.get(pos2-1).getScoreLabel().getText().equals(entries.get(pos2-2).getScoreLabel().getText())) {
-                    pos2--;
+                pos++;
+                while (pos > 1 && entries.get(pos-1).getScoreLabel().getText().equals(entries.get(pos-2).getScoreLabel().getText())) {
+                    pos--;
                 }
-                rank.setText("You finished in " + (pos2) + ordinal(pos2) + " place!");
+                rank.setText("You finished in " + (pos) + ordinal(pos) + " place!");
                 break;
             }
             pos++;
@@ -287,8 +263,6 @@ public class LeaderboardSoloController implements Initializable {
         entries.clear();
         leaderboardEntries.scrollTo(0);
         rank.setText("ALL TIME SOLO LEADERBOARD");
-        selectUser.setSelected(false);
-        selectUser.setText("Show all for \"" + mainCtrl.getUser().getName() + "\"");
     }
 
     public void initMulti(List<LeaderboardEntry> multiEntries, String userName, String gameProgress) {
@@ -371,7 +345,6 @@ public class LeaderboardSoloController implements Initializable {
 
     public void setEndScreen() {
         hideNode(mainMenuButton);
-        hideNode(selectUser);
         showNode(leaveButton);
         showNode(replayButton);
         multiEndButtons.setMouseTransparent(false);
@@ -379,7 +352,6 @@ public class LeaderboardSoloController implements Initializable {
 
     public void setMidScreen() {
         hideNode(mainMenuButton);
-        hideNode(selectUser);
     }
 
     public void replay() {
