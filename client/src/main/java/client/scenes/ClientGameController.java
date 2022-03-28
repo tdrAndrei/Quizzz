@@ -5,19 +5,26 @@ import commons.Messages.*;
 import javafx.animation.PathTransition;
 import commons.Player;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.Parent;
+import javafx.scene.control.*;
 import javafx.scene.control.Label;
-import javafx.scene.control.ProgressBar;
+import javafx.scene.effect.BlendMode;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.VBox;
+import javafx.util.Pair;
+import java.awt.Color;
+import java.util.ArrayList;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import javafx.scene.shape.VLineTo;
 import javafx.util.Duration;
-import javafx.util.Pair;
-import java.awt.*;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.function.Consumer;
 
 public class ClientGameController {
 
@@ -32,13 +39,21 @@ public class ClientGameController {
 
     private boolean isPlaying = false;
 
+    private final List<Image> emojiImageList;
+
     private final MainCtrl mainController;
     private final ServerUtils serverUtils;
 
+    private ObservableList<Pair<String, Integer>> emojiChatList;
+    private List<Consumer<ObservableList<Pair<String, Integer>>>> consumerOfEmojiList;
+
+    private Parent multiQuestionScene;
+    private Parent estimateQuestionScene;
     private boolean skipQuestionJokerUsed = false;
     private boolean eliminateJokerUsed = false;
     private boolean doublePointsJokerUsed = false;
     private boolean disableJokerUsage = false;
+
     private Image usedJoker = new Image("/client.photos/usedJoker.png");
 
     private double maxTime;
@@ -48,6 +63,13 @@ public class ClientGameController {
     public ClientGameController(MainCtrl mainController, ServerUtils serverUtils) {
         this.mainController = mainController;
         this.serverUtils = serverUtils;
+        consumerOfEmojiList = new ArrayList<>();
+        emojiImageList = new ArrayList<>();
+        emojiImageList.add(new Image("client.photos/angryEmoji.gif"));
+        emojiImageList.add(new Image("client.photos/eyebrowEmoji.gif"));
+        emojiImageList.add(new Image("client.photos/devilEmoji.gif"));
+        emojiImageList.add(new Image("client.photos/sunglassesEmoji.gif"));
+        emojiImageList.add(new Image("client.photos/confoundedEmoji.gif"));
         timebarColors = new Color[]{Color.green, Color.yellow, Color.red};
         timer = new Timer();
     }
@@ -60,19 +82,56 @@ public class ClientGameController {
         this.estimateQuestionController = estimateQuestion.getKey();
         this.leaderboardSoloController = leaderboard.getKey();
         this.waitingRoomController = waitingRoom.getKey();
+
+        this.multiQuestionScene = multiQuestion.getValue();
+        this.estimateQuestionScene = estimateQuestion.getValue();
+
+        consumerOfEmojiList.add(multiQuestionController::subscribeToEmojiUpdate);
+        consumerOfEmojiList.add(estimateQuestionController::subscribeToEmojiUpdate);
+    }
+
+
+    public void EmojiHandler(EmojiMessage message) {
+        Platform.runLater(() -> {
+            emojiChatList.add(new Pair<>(message.getUsername(), message.getEmojiIndex()));
+            int size = emojiChatList.size();
+            if (size > 3) {
+                emojiChatList.remove(0);
+            }
+            for (var consumer : consumerOfEmojiList) {
+                consumer.accept(emojiChatList);
+            }
+        });
+    }
+
+    public void setVisibilityOfEmojiChat(boolean enabled) {
+        ((VBox) multiQuestionScene.lookup("#eVbox")).setVisible(enabled);
+        ((VBox) estimateQuestionScene.lookup("#eVbox")).setVisible(enabled);
+    }
+
+    public void emptyEmojiList() {
+        emojiChatList = FXCollections.observableArrayList();
+        for (var consumer : consumerOfEmojiList) {
+            consumer.accept(emojiChatList);
+        }
     }
 
     public void startPolling(boolean isMulti) {
         isPlaying = true;
         enableAllJokers();
+        setVisibilityOfEmojiChat(isMulti);
+        emptyEmojiList();
         if (isMulti) {
             multiQuestionController.resetMulti();
             estimateQuestionController.resetMulti();
             multiQuestionController.setMulti(true);
             estimateQuestionController.setMulti(true);
             gameId = serverUtils.joinMulti(mainController.getUser());
+            serverUtils.getAndSetSession();  // Getting a websocket connection
+            serverUtils.registerForEmojiMessages(gameId, this::EmojiHandler); //Using our connection to subscribe to "/topic/emoji/{gameId}
             mainController.showWaitingRoom();
             waitingRoomController.setGameId(gameId);
+
         } else {
             multiQuestionController.resetSolo();
             estimateQuestionController.resetSolo();
@@ -98,6 +157,32 @@ public class ClientGameController {
                 }
             }
         } , 0, 500);
+    }
+    public void configureListView(ListView<Pair<String, Integer>> emojiChatView) {
+        emojiChatView.setCellFactory(param -> new ListCell<>() {
+            private ImageView imageView = new ImageView();
+            @Override
+            public void updateItem(Pair<String, Integer> valuePair, boolean empty) {
+                super.updateItem(valuePair, empty);
+                setContentDisplay(ContentDisplay.RIGHT);
+                setStyle("-fx-background-color: #ffc5ac");
+                if (empty) {
+                    setText(null);
+                    setGraphic(null);
+                } else {
+                    setDisable(true);
+                    imageView.setImage(emojiImageList.get(valuePair.getValue()));
+                    imageView.setFitHeight(32.0);
+                    imageView.setFitWidth(32.0);
+                    setText(valuePair.getKey() + ": ");
+                    setGraphic(imageView);
+                    getGraphic().setBlendMode(BlendMode.DARKEN);
+                }
+            }
+        });
+    }
+    public void sendEmoji(int emojiIndex) {
+        serverUtils.sendEmojiTest(gameId, mainController.getUser().getName(), emojiIndex, mainController.getUser().getId());
     }
 
     public void interpretMessage(Message message) throws InterruptedException {

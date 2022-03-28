@@ -6,15 +6,15 @@ import commons.Messages.CorrectAnswerMessage;
 import commons.Messages.NewQuestionMessage;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.ObservableList;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ProgressBar;
-import javafx.scene.control.Slider;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
+import javafx.util.Pair;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -23,6 +23,8 @@ import java.util.ResourceBundle;
 
 public class EstimateQuestionController implements Initializable {
 
+    @FXML
+    private ListView<Pair<String, Integer>> emojiChatView;
     @FXML
     private ImageView doublePointsJoker;
 
@@ -86,9 +88,7 @@ public class EstimateQuestionController implements Initializable {
     }
 
     public void showQuestion(NewQuestionMessage message) {
-
         clientGameController.startTimer(progressBar, timeText);
-
         answerSlider.valueProperty().addListener(changeListener);
         answerSlider.setMin(message.getBounds().get(0));
         answerSlider.setMax(message.getBounds().get(1));
@@ -190,9 +190,8 @@ public class EstimateQuestionController implements Initializable {
                 answerLabel.setText(Integer.toString(value));
             }
         };
-
         progressBar.setProgress(1.0);
-
+        clientGameController.configureListView(emojiChatView);
     }
 
     public void showTimeReduced(String name) {
@@ -223,6 +222,16 @@ public class EstimateQuestionController implements Initializable {
         if (clientGameController.isSkipQuestionJokerUsed())
             skipQuestionJoker.setImage(clientGameController.getUsedJoker());
 
+    }
+
+    public void processEmoji(Event event) {
+        ImageView emoji = (ImageView) event.getSource();
+        int emojiId = Integer.parseInt(emoji.getId().replace("e", ""));
+        clientGameController.sendEmoji(emojiId);
+    }
+
+    public void subscribeToEmojiUpdate(ObservableList<Pair<String, Integer>> newEmojiList) {
+        this.emojiChatView.setItems(newEmojiList);
     }
 
     public void setMulti(boolean multi) {
