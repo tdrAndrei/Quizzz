@@ -57,6 +57,9 @@ public class MainCtrl {
     private AddActivityController addActivityController;
     private Scene addActivityScene;
 
+    private EditActivityController editActivityController;
+    private Scene editActivityScene;
+
     private ClientGameController clientGameController;
 
     @Inject
@@ -68,7 +71,8 @@ public class MainCtrl {
                            Pair<LeaderboardSoloController, Parent> leaderboardSolo,
                            Pair<EstimateQuestionController, Parent> estimateQuestion,
                            ClientGameController clientGameController, Pair<WaitingRoomController, Parent> waitingRoom, Pair<AdminController, Parent> adminController,
-                           Pair<AddActivityController, Parent> addActivity
+                           Pair<AddActivityController, Parent> addActivity,
+                           Pair<EditActivityController, Parent> editActivity
     ) {
         this.primaryStage = primaryStage;
 
@@ -96,6 +100,8 @@ public class MainCtrl {
         this.addActivityController = addActivity.getKey();
         this.addActivityScene = new Scene(addActivity.getValue());
 
+        this.editActivityController = editActivity.getKey();
+        this.editActivityScene = new Scene(editActivity.getValue());
 
         this.clientGameController = clientGameController;
 
@@ -154,6 +160,13 @@ public class MainCtrl {
     public void showAddActivity() {
         primaryStage.setTitle("Quizzzz!");
         primaryStage.setScene(addActivityScene);
+    }
+
+    public void showEditActivity(long id){
+        editActivityController.setCurrent(server.getActivityById(id));
+        editActivityController.resetBoxes();
+        primaryStage.setTitle("Quizzzz!");
+        primaryStage.setScene(editActivityScene);
     }
 
     public void showEstimate(){

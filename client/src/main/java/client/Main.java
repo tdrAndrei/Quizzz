@@ -48,9 +48,10 @@ public class Main extends Application {
         var waitingRoom = FXML.load(WaitingRoomController.class, "client", "scenes", "waitingRoom.fxml");
         var adminPanel = FXML.load(AdminController.class, "client", "scenes", "admin.fxml");
         var addActivityPanel = FXML.load(AddActivityController.class, "client", "scenes", "newActivity.fxml");
+        var editActivityPanel = FXML.load(EditActivityController.class, "client", "scenes", "editActivty.fxml");
         var clientGameController = INJECTOR.getInstance(ClientGameController.class);
         clientGameController.initialize(multiQuestion, estimateQuestion, leaderboardSolo, waitingRoom);
-        mainCtrl.initialize(primaryStage, login, mainMenu, multiQuestion, leaderboardSolo, estimateQuestion, clientGameController, waitingRoom, adminPanel, addActivityPanel);
+        mainCtrl.initialize(primaryStage, login, mainMenu, multiQuestion, leaderboardSolo, estimateQuestion, clientGameController, waitingRoom, adminPanel, addActivityPanel, editActivityPanel);
 
     }
 

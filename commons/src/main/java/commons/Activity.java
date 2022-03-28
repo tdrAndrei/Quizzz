@@ -112,7 +112,19 @@ public class Activity {
     public String getSource() {
         return source;
     }
-    
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setConsumption_in_wh(Long consumption_in_wh) {
+        this.consumption_in_wh = consumption_in_wh;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import server.database.ActivityRepository;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ActivityEntryService {
@@ -20,20 +21,27 @@ public class ActivityEntryService {
         return activityRepository.findAll();
     }
 
-//    public Optional<LeaderboardEntry> getById(Long id) {
-//        if (id < 0 || !leaderboardRepo.existsById(id)) {
-//            return Optional.empty();
-//        } else {
-//            return Optional.of(leaderboardRepo.findById(id).get());
-//        }
-//    }
-//
-//    public LeaderboardEntry insert(LeaderboardEntry entry) {
-//        if (entry == null || entry.getName().isEmpty()){
-//            return null;
-//        }
-//        return leaderboardRepo.save(entry);
-//    }
+    public Optional<Activity> updateById(long id, String title, long consumption, String source){
+        Optional<Activity> toUpdate = activityRepository.findById(id);
+
+        if (toUpdate.isEmpty()) {
+            return toUpdate;
+        } else {
+            toUpdate.get().setTitle(title);
+            toUpdate.get().setConsumption_in_wh(consumption);
+            toUpdate.get().setSource(source);
+            activityRepository.save(toUpdate.get());
+            return toUpdate;
+        }
+    }
+
+    public Activity getById(long id){
+        if (activityRepository.findById(id).isEmpty()) {
+            return null;
+        } else {
+            return activityRepository.findById(id).get();
+        }
+    }
 }
 
 

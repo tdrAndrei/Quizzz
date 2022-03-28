@@ -78,8 +78,6 @@ public class ServerUtils {
                 .get(new GenericType<List<Activity>>() {});
     }
 
-
-
     public LeaderboardEntry addLeaderboardEntry(LeaderboardEntry leaderboardEntry) {
         return ClientBuilder.newClient(new ClientConfig()) //
                 .target(SERVER).path("api/scores") //
@@ -195,6 +193,25 @@ public class ServerUtils {
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
                 .post(Entity.entity(activity, APPLICATION_JSON), Activity.class);
+    }
+
+    public void updateActivity(Activity activity, String title, long consumption, String source){
+        ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/admin/edit/" + activity.getId())
+                .queryParam("title", title)
+                .queryParam("consumption", consumption)
+                .queryParam("source", source)
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .put(Entity.entity(activity, APPLICATION_JSON), Activity.class);
+    }
+
+    public Activity getActivityById(long id){
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/admin/getById/" + id)
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .get(new GenericType<Activity>() {});
     }
 
     public Quote addQuote(Quote quote) {

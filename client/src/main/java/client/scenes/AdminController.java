@@ -25,10 +25,12 @@ class ActivityEntryLabel {
 
     Label title;
     Long entryId;
+    Label edit;
 
     public ActivityEntryLabel(Label title, Long entryId) {
         this.title = title;
         this.entryId = entryId;
+        this.edit = new Label("Edit");
     }
 
     public Label getTitle() {
@@ -45,6 +47,14 @@ class ActivityEntryLabel {
 
     public void setEntryId(Long entryId) {
         this.entryId = entryId;
+    }
+
+    public Label getEdit() {
+        return edit;
+    }
+
+    public void setEdit(Label edit) {
+        this.edit = edit;
     }
 
     @Override
@@ -80,7 +90,7 @@ public class AdminController implements Initializable {
     private Button newActivity;
 
     @FXML
-    private TableColumn<?, ?> editCol;
+    private TableColumn<ActivityEntryLabel, Label> editCol;
 
     @FXML
     private TableView tableView;
@@ -107,13 +117,13 @@ public class AdminController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         titleCol.setCellValueFactory(q -> new SimpleObjectProperty<>(q.getValue().getTitle()));
+        editCol.setCellValueFactory(q -> new SimpleObjectProperty<>(q.getValue().getEdit()));
     }
-
-
 
     public TableColumn<ActivityEntryLabel, Label> getTitleCol() {
         return titleCol;
     }
+
     public ActivityEntryLabel addLabel(String title, long entryId) {
         Label titleLabel = new Label();
         titleLabel.setText(title);
@@ -129,6 +139,7 @@ public class AdminController implements Initializable {
         data = FXCollections.observableList(entries);
         tableView.setItems(data);
     }
+
     public void refresh() {
         entries.clear();
         var allTimeEntries = server.getActivties();
@@ -136,12 +147,19 @@ public class AdminController implements Initializable {
         for (Activity activity: allTimeEntries) {
             ActivityEntryLabel activityEntryLabel = addLabel(activity.getTitle(), activity.getId());
             entries.add(activityEntryLabel);
+            activityEntryLabel.getEdit().setOnMouseClicked(event -> {
+                goToEditActivity(activity.getId());
+            });
         }
         showEntries();
     }
 
     public void goToAddActivityScreen() {
         mainCtrl.showAddActivity();
+    }
+
+    public void goToEditActivity(long id){
+        mainCtrl.showEditActivity(id);
     }
 
 
