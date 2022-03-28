@@ -145,10 +145,5 @@
 #rank {
     -fx-alignment: center;
     -fx-font-size: 32;
-    -fx-alignment: center;
     -fx-font-weight: Bold;
-}
-
-#selectUser {
-    -fx-alignment: bottom-right;
 }
