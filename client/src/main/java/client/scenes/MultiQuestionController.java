@@ -24,11 +24,10 @@ import javafx.scene.paint.Color;
 import javafx.util.Duration;
 import javafx.util.Pair;
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
-public class MultiQuestionController implements Initializable {
+public class MultiQuestionController implements Initializable, QuestionScene {
 
     @FXML
     private ListView<Pair<String, Integer>> emojiChatView;
@@ -107,6 +106,8 @@ public class MultiQuestionController implements Initializable {
     private double baseWidth;
     private double baseHeight;
     private long chosenAnswer;
+    private List<ImageView> jokerPics;
+
     private final Border correctAnswerBorder = new Border(new BorderStroke(new Color(0, 164.0/255.0, 78.0/255.0, 0.5), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(5)));
     private final Border selectedAnswerBorder = new Border(new BorderStroke(new Color(1, 0.9, 0, 0.5), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(5)));
     private final Border selectedWrongAnswerBorder = new Border(new BorderStroke(new Color(148.0/255.0, 0, 17.0/255.0, 0.5), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(5)));
@@ -115,8 +116,6 @@ public class MultiQuestionController implements Initializable {
     private final ClientGameController clientGameController;
     private final ServerUtils serverUtils;
 
-    private boolean isMulti;
-
     @Inject
     public MultiQuestionController(MainCtrl mainCtrl, ClientGameController clientGameController, ServerUtils serverUtils){
         this.mainCtrl = mainCtrl;
@@ -124,37 +123,32 @@ public class MultiQuestionController implements Initializable {
         this.serverUtils = serverUtils;
     }
 
-    public void quit() throws IOException {
+    public void quit() {
         clientGameController.exitGame();
-        mainCtrl.showMainMenu();
     }
 
     public void changeJoker1() {
-        if (!clientGameController.isDisableJokerUsage() && !clientGameController.isEliminateJokerUsed()) {
-            eliminateJoker.setImage(clientGameController.getUsedJoker());
-            clientGameController.setEliminateJokerUsed(true);
-            useEliminateJoker();
-        }
+        Joker joker = clientGameController.getRemainingJokers().get(0);
+        clientGameController.useJoker(joker, this::useEliminateJoker);
     }
 
     public void changeJoker2() {
-        if (!clientGameController.isDisableJokerUsage() && !clientGameController.isDoublePointsJokerUsed()) {
-            doublePointsJoker.setImage(clientGameController.getUsedJoker());
-            clientGameController.setDoublePointsJokerUsed(true);
-            clientGameController.setUsedTimeJokerForCurrentQ(true);
-            useDoublePointsJoker();
-        }
+        Joker joker = clientGameController.getRemainingJokers().get(1);
+        clientGameController.useJoker(joker, this::useDoublePointsJoker);
     }
 
     public void changeJoker3() {
-        if (!clientGameController.isDisableJokerUsage() && !clientGameController.isSkipQuestionJokerUsed()) {
-            skipQuestionJoker.setImage(clientGameController.getUsedJoker());
-            clientGameController.setSkipQuestionJokerUsed(true);
-            useSkipQuestionJoker();
-        }
+        Joker joker = clientGameController.getRemainingJokers().get(2);
+        if (joker == Joker.REDUCETIME)
+            clientGameController.useJoker(joker, this::useTimeJoker);
+        else
+            clientGameController.useJoker(joker, this::useSkipQuestionJoker);
     }
 
+    @Override
     public void showQuestion(NewQuestionMessage message) {
+        enableSubmittingAnswers();
+        pointsLabel.setText(clientGameController.getScore() + " pts");
         timeReduced.setText("");
         activity1Label.setStyle("-fx-text-fill: #000000");
         activity2Label.setStyle("-fx-text-fill: #000000");
@@ -162,6 +156,9 @@ public class MultiQuestionController implements Initializable {
         questionLabel.setText(message.getTitle());
         clientGameController.startTimer(progressBar, timeText);
         questionLabel.setTextFill(Color.rgb(0, 0, 0));
+        setChosenAnswer(-1);
+
+        setQuestions(message.getActivities(), message.getImagesBytes());
     }
 
     public void colorIncorrectRed() {
@@ -175,6 +172,7 @@ public class MultiQuestionController implements Initializable {
         }
     }
 
+    @Override
     public void showAnswer(CorrectAnswerMessage message) {
         long index = message.getCorrectAnswer();
         if (index == 0) {
@@ -194,22 +192,25 @@ public class MultiQuestionController implements Initializable {
             questionLabel.setText("Wrong!");
             questionLabel.setTextFill(Color.rgb(201, 89, 89));
         }
-        clientGameController.getTimer().cancel();
+
         clientGameController.changeScore(message.getScore(), pointsLabel, newPoints);
         colorIncorrectRed();
     }
 
     @Override
     public void initialize (URL location, ResourceBundle resources){
+
         newPoints.setText("");
         baseWidth = grid.getPrefWidth();
         baseHeight = grid.getPrefHeight();
+
         grid.widthProperty().addListener(e -> {
             resize(grid.getWidth(), grid.getHeight());
         });
         grid.heightProperty().addListener(e -> {
             resize(grid.getWidth(), grid.getHeight());
         });
+
         for (Node node : grid.lookupAll(".highlightable")) {
             node.setOnMouseEntered(e -> {
                 new Timeline(new KeyFrame(Duration.seconds(0), new KeyValue(node.scaleXProperty(), 1), new KeyValue(node.scaleYProperty(), 1)),
@@ -224,21 +225,26 @@ public class MultiQuestionController implements Initializable {
         ans2pane.setStyle("-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 10, 0.5, 0.0, 0.0);");
         ans3pane.setStyle("-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 10, 0.5, 0.0, 0.0);");
         progressBar.setProgress(1.0);
-        clientGameController.configureListView(emojiChatView);
+
+        jokerPics = List.of(eliminateJoker, doublePointsJoker, skipQuestionJoker);
     }
 
     public void resize ( double width, double height){
         if (width < grid.getMinWidth() || height < grid.getMinHeight())
             return;
+
         double ratioW = width / baseWidth;
         double ratioH = height / baseHeight;
+
         exitButton.setPrefWidth(Math.min(1.5, ratioW) * exitButton.getMinWidth());
         exitButton.setPrefHeight(Math.min(1.5, ratioH) * exitButton.getMinHeight());
         exitButton.setStyle("-fx-font-size: " + Math.min(ratioW * 19, 21) + "px");
+
         for (Node node : grid.lookupAll(".questionBackground")) {
             AnchorPane pane = (AnchorPane) node;
             pane.setPrefWidth(Math.min(2, ratioW) * pane.getMinWidth());
             pane.setPrefHeight(Math.min(2, ratioH) * pane.getMinHeight());
+
             GridPane questionCardGrid = (GridPane) pane.getChildren().get(0);
             for (Node e : questionCardGrid.getChildren()) {
                 if (e instanceof ImageView) {
@@ -248,6 +254,7 @@ public class MultiQuestionController implements Initializable {
                 }
             }
         }
+
         for (Node node : jokerContainer.getChildren()) {
             if (node instanceof ImageView) {
                 ImageView img = (ImageView) node;
@@ -258,29 +265,21 @@ public class MultiQuestionController implements Initializable {
     }
 
     public void submit1(){
-        if (!clientGameController.isDisableJokerUsage()) {
-            chosenAnswer = 0;
-            clientGameController.submitAnswer(0);
-            clientGameController.setDisableJokerUsage(true);
-            ans1pane.setBorder(selectedAnswerBorder);
-        }
+        chosenAnswer = 0;
+        clientGameController.submitAnswer(0);
+        ans1pane.setBorder(selectedAnswerBorder);
     }
     public void submit2(){
-        if (!clientGameController.isDisableJokerUsage()) {
-            chosenAnswer = 1;
-            clientGameController.submitAnswer(1);
-            clientGameController.setDisableJokerUsage(true);
-            ans2pane.setBorder(selectedAnswerBorder);
-        }
+        chosenAnswer = 1;
+        clientGameController.submitAnswer(1);
+        ans2pane.setBorder(selectedAnswerBorder);
     }
     public void submit3(){
-        if (!clientGameController.isDisableJokerUsage()) {
-            chosenAnswer = 2;
-            clientGameController.submitAnswer(2);
-            clientGameController.setDisableJokerUsage(true);
-            ans3pane.setBorder(selectedAnswerBorder);
-        }
+        chosenAnswer = 2;
+        clientGameController.submitAnswer(2);
+        ans3pane.setBorder(selectedAnswerBorder);
     }
+
     public void setQuestions(List<Activity> activities, List<byte[]> imageByteList) {
         Activity firstActivity = activities.get(0);
         question1Image.setImage(new Image(new ByteArrayInputStream(imageByteList.get(0))));
@@ -298,72 +297,53 @@ public class MultiQuestionController implements Initializable {
         ans2pane.setBorder(Border.EMPTY);
         ans3pane.setBorder(Border.EMPTY);
     }
-    public void useDoublePointsJoker() {
-        clientGameController.doublePoint();
-    }
+
     public void useSkipQuestionJoker() {
-        if (isMulti) {
-            clientGameController.timeJoker(mainCtrl.getUser().getId());
-        } else {
-            questionLabel.setText("You skipped this question!");
-            clientGameController.skipQuestion();
-        }
+        questionLabel.setText("You skipped this question!");
+        clientGameController.skipQuestion();
+    }
+
+    public void useTimeJoker(){
+        clientGameController.timeJoker();
     }
 
     public void useEliminateJoker() {
         long index = clientGameController.eliminateJoker();
+
         if (index == 0) {
             question1Image.setImage(new Image("/client.photos/bomb.png"));
             activity1Label.setStyle("-fx-text-fill: #c95959");
             activity1Label.setText("THIS ANSWER HAS BEEN ELIMINATED");
+            Answer1.setDisable(true);
         } else if (index == 1) {
             question2Image.setImage(new Image("/client.photos/bomb.png"));
             activity2Label.setStyle("-fx-text-fill: #c95959");
             activity2Label.setText("THIS ANSWER HAS BEEN ELIMINATED");
+            Answer2.setDisable(true);
         } else {
             question3Image.setImage(new Image("/client.photos/bomb.png"));
             activity3Label.setStyle("-fx-text-fill: #c95959");
             activity3Label.setText("THIS ANSWER HAS BEEN ELIMINATED");
+            Answer3.setDisable(true);
         }
     }
+
+    public void useDoublePointsJoker() {
+        clientGameController.doublePoint();
+    }
+
+    @Override
     public void showTimeReduced(String name) {
         timeReduced.setText(name + " has reduced your time!");
     }
 
-    public void resetSolo() {
-        eliminateJoker.setImage(new Image("/client.photos/jokerOneAnswer.png"));
-        doublePointsJoker.setImage(new Image("/client.photos/doubleJoker.png"));
-        skipQuestionJoker.setImage(new Image("/client.photos/skipJoker.png"));
-        pointsLabel.setText("0 Pts");
+    @Override
+    public void reset() {
     }
 
-    public void resetMulti() {
-        eliminateJoker.setImage(new Image("/client.photos/jokerOneAnswer.png"));
-        doublePointsJoker.setImage(new Image("/client.photos/doubleJoker.png"));
-        skipQuestionJoker.setImage(new Image("/client.photos/timeJoker.png"));
-        pointsLabel.setText("0 pts");
-        newPoints.setText("");
-    }
-
-    public void setJokersPic() {
-
-        if (clientGameController.isEliminateJokerUsed())
-            eliminateJoker.setImage(clientGameController.getUsedJoker());
-        if (clientGameController.isDoublePointsJokerUsed())
-            doublePointsJoker.setImage(clientGameController.getUsedJoker());
-        if (clientGameController.isSkipQuestionJokerUsed())
-            skipQuestionJoker.setImage(clientGameController.getUsedJoker());
-
-    }
-
-    public void processEmoji(Event event) {
-        ImageView emoji = (ImageView) event.getSource();
-        int emojiId = Integer.parseInt(emoji.getId().replace("e", ""));
-        clientGameController.sendEmoji(emojiId);
-    }
-
-    public void subscribeToEmojiUpdate(ObservableList<Pair<String, Integer>> newEmojiList) {
-        this.emojiChatView.setItems(newEmojiList);
+    @Override
+    public Label getPointsLabel() {
+        return this.pointsLabel;
     }
 
     public void enableSubmittingAnswers() {
@@ -376,12 +356,16 @@ public class MultiQuestionController implements Initializable {
         this.chosenAnswer = chosenAnswer;
     }
 
-    public void setMulti(boolean multi) {
-        isMulti = multi;
+    @Override
+    public List<ImageView> getJokerPics() {
+        return jokerPics;
     }
 
-    public boolean isMulti() {
-        return isMulti;
+    @Override
+    public void lockAnswer() {
+        Answer1.setDisable(true);
+        Answer2.setDisable(true);
+        Answer3.setDisable(true);
     }
 
 }
