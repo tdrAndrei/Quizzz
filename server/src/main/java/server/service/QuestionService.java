@@ -4,10 +4,8 @@ import commons.*;
 import org.springframework.stereotype.Service;
 import server.database.ActivityRepository;
 
-import java.util.List;
-import java.util.Random;
-import java.util.ArrayList;
-import java.util.Comparator;
+import java.io.File;
+import java.util.*;
 
 @Service
 public class QuestionService {
@@ -27,8 +25,8 @@ public class QuestionService {
         List<Activity> equalCons = new ArrayList<>();
 
         while (equalCons.size() < 2) {
-            int indexRand = rm.nextInt(activityList.size());
-            Activity rand = activityList.get(indexRand);
+            int indexRand = rm.nextInt(numActivities);
+            Activity rand = this.repo.findById((long) indexRand).get();
             Long consumption = rand.getConsumption_in_wh();
             equalCons = this.repo.findByConsumption(consumption);
         }
@@ -44,7 +42,7 @@ public class QuestionService {
         }
         answers.add(equalCons.get(1));
         while (answers.size() < 3) {
-            Activity wrongAnswer = activityList.get(rm.nextInt(activityList.size()));
+            Activity wrongAnswer = this.repo.findById((long) rm.nextInt(numActivities)).get();
             if (!equalCons.contains(wrongAnswer)) {
                 answers.add(wrongAnswer);
             }
