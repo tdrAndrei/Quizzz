@@ -127,6 +127,16 @@ public class QuestionService {
             randomIndex = rm.nextInt(this.numActivities);
         }
         String title = "How much energy does this activity take?";
-        return new EstimateQuestion(title, a.getConsumption_in_wh(), List.of(a), seconds);
+
+        Long c = a.getConsumption_in_wh();
+
+        Random rm = new Random();
+        int i = 2 + rm.nextInt(5);
+        int j = 2 + rm.nextInt(5);
+        List<Long> bounds = new ArrayList<Long>();
+        bounds.add(c - c * i / 10L);
+        bounds.add(c + c * j / 10L);
+
+        return new EstimateQuestion(title, a.getConsumption_in_wh(), List.of(a), bounds, seconds);
     }
 }

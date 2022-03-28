@@ -246,22 +246,12 @@ public class Game {
         return imagesBytes;
     }
     public void insertEstimateQuestionIntoDiff(Question question) {
+        EstimateQuestion estimateQuestion = (EstimateQuestion) question;
         for (long id : diffMap.keySet()) {
             List<byte[]> imagesBytes = getImageBytesList(question);
-            NewQuestionMessage questionMessage = new NewQuestionMessage("NewQuestion", "Estimate", question.getTitle(), question.getActivities(), question.getTime(), playerMap.get(id).getScore(), getBoundsForEstimate(question.getAnswer()), imagesBytes);
+            NewQuestionMessage questionMessage = new NewQuestionMessage("NewQuestion", "Estimate", question.getTitle(), question.getActivities(), question.getTime(), playerMap.get(id).getScore(), estimateQuestion.getBounds(), imagesBytes);
             diffMap.put(id, questionMessage);
         }
-    }
-
-
-    public List<Long> getBoundsForEstimate(long answer) {
-        Random rm = new Random();
-        int i = 2 + rm.nextInt(5);
-        int j = 2 + rm.nextInt(5);
-        List<Long> bounds = new ArrayList<Long>();
-        bounds.add(Long.valueOf(answer - answer * i / 10L));
-        bounds.add(Long.valueOf(answer + answer * j / 10L));
-        return bounds;
     }
 
     public void setMaxTime(Double time) {

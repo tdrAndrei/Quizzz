@@ -49,7 +49,7 @@ public class GameManagerTest {
                         "/"));
                 fakeActivities.add(new Activity(2L, "/", "test_act_3", 300L,
                         "/"));
-                return new EstimateQuestion("title", 1, fakeActivities, seconds);
+                return new EstimateQuestion("title", 1, fakeActivities, null, seconds);
             }
         }, new LeaderBoardEntryService(new TestLeaderboardEntryRepo()));
     }
