@@ -26,14 +26,14 @@ public class ClientGameController {
     private GameMode gameMode;
 
     public enum GameState {
-        NEWQUESTION,
-        SHOWANSWER,
-        SUBMITTEDANSWER,
-        SHOWLEADERBOARD
+        NEW_QUESTION,
+        SHOW_ANSWER,
+        SUBMITTED_ANSWER,
+        SHOW_LEADERBOARD
     }
 
     public enum GameMode {
-        NOTPLAYING,
+        NOT_PLAYING,
         MULTI,
         SOLO
     }
@@ -107,7 +107,7 @@ public class ClientGameController {
         pollingThread.scheduleAtFixedRate( new TimerTask() {
             @Override
             public void run() {
-                if (gameMode == GameMode.NOTPLAYING) {
+                if (gameMode == GameMode.NOT_PLAYING) {
                     pollingThread.cancel();
                     return;
                 }
@@ -118,7 +118,7 @@ public class ClientGameController {
                 }
                 if (message instanceof ShowLeaderboardMessage && ((ShowLeaderboardMessage) message).getGameProgress().equals("End")) {
                     pollingThread.cancel();
-                    gameMode = GameMode.NOTPLAYING;
+                    gameMode = GameMode.NOT_PLAYING;
                 }
             }
         } , 0, 500);
@@ -138,7 +138,7 @@ public class ClientGameController {
             case "NewQuestion":
                 NewQuestionMessage newQuestionMessage = (NewQuestionMessage) message;
 
-                status = GameState.NEWQUESTION;
+                status = GameState.NEW_QUESTION;
 
                 remainingJokers.forEach(joker -> {
                     if (joker != Joker.USED)
@@ -160,13 +160,13 @@ public class ClientGameController {
 
             case "ShowLeaderboard":
                 ShowLeaderboardMessage showLeaderboardMessage = (ShowLeaderboardMessage) message;
-                status = GameState.SHOWLEADERBOARD;
+                status = GameState.SHOW_LEADERBOARD;
                 prepareLeaderboard(showLeaderboardMessage);
                 break;
 
             case "ShowCorrectAnswer":
                 CorrectAnswerMessage correctAnswerMessage = (CorrectAnswerMessage) message;
-                status = GameState.SHOWANSWER;
+                status = GameState.SHOW_ANSWER;
                 progressBarThread.cancel();
 
                 availableJokers.clear();
@@ -203,14 +203,14 @@ public class ClientGameController {
     }
 
     public void exitGame() {
-        gameMode = GameMode.NOTPLAYING;
+        gameMode = GameMode.NOT_PLAYING;
         progressBarThread.cancel();
         serverUtils.leaveGame(this.getGameId(), mainController.getUser().getId());
         mainController.showMainMenu();
     }
 
     public boolean isPlaying() {
-        return gameMode != GameMode.NOTPLAYING;
+        return gameMode != GameMode.NOT_PLAYING;
     }
 
     public Long getGameId() {
@@ -218,10 +218,10 @@ public class ClientGameController {
     }
 
     public void submitAnswer(long answer) {
-        if (status != GameState.NEWQUESTION || timeLeft <= 0)
+        if (status != GameState.NEW_QUESTION || timeLeft <= 0)
             return;
 
-        status = GameState.SUBMITTEDANSWER;
+        status = GameState.SUBMITTED_ANSWER;
         mainController.lockCurrentScene();
         serverUtils.submitAnswer(getGameId(), mainController.getUser().getId(), answer);
         availableJokers.remove(Joker.ELIMINATE);
