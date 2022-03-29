@@ -24,7 +24,7 @@ public class GameManagerTest {
 
             }
             @Override
-            public Question makeMultipleChoice(int seconds) {
+            public Question makeMultipleChoice(double seconds) {
                 List<Activity> fakeActivities = new ArrayList<>();
                 fakeActivities.add(new Activity(0L, "/", "test_act_1", 3L,
                         "testsrc"));
@@ -41,7 +41,7 @@ public class GameManagerTest {
             }
 
             @Override
-            public Question makeEstimate(int seconds) {
+            public Question makeEstimate(double seconds) {
                 List<Activity> fakeActivities = new ArrayList<>();
                 fakeActivities.add(new Activity(0L, "/", "test_act_1", 3L,
                         "/"));
@@ -49,7 +49,7 @@ public class GameManagerTest {
                         "/"));
                 fakeActivities.add(new Activity(2L, "/", "test_act_3", 300L,
                         "/"));
-                return new EstimateQuestion("title", 1, fakeActivities, seconds);
+                return new EstimateQuestion("title", 1, fakeActivities, null, seconds);
             }
         }, new LeaderBoardEntryService(new TestLeaderboardEntryRepo()));
     }
@@ -155,11 +155,11 @@ public class GameManagerTest {
         long response2 = gameManager.joinMulti(user2);
         Game game = gameManager.getGameMap().get(response2);
 
-        Map<Long, Integer> timeMap = game.getMaxTime();
-        int check1 = timeMap.get(1L);
+        Map<Long, Double> timeMap = game.getMaxTime();
+        double check1 = timeMap.get(1L);
 
         gameManager.useTimeJoker(response, 2L);
-        int check2 = timeMap.get(1L);
+        double check2 = timeMap.get(1L);
 
         assertEquals(check2, check1 / 2);
     }
@@ -172,11 +172,11 @@ public class GameManagerTest {
         long response2 = gameManager.joinMulti(user2);
         Game game = gameManager.getGameMap().get(response2);
 
-        Map<Long, Integer> timeMap = game.getMaxTime();
-        int check1 = timeMap.get(2L);
+        Map<Long, Double> timeMap = game.getMaxTime();
+        double check1 = timeMap.get(2L);
 
         gameManager.useTimeJoker(response, 2L);
-        int check2 = timeMap.get(2L);
+        double check2 = timeMap.get(2L);
 
         assertEquals(check2, check1);
     }

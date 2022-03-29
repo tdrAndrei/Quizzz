@@ -10,11 +10,11 @@
 
 <AnchorPane prefHeight="800.0" prefWidth="1200.0" stylesheets="@/client.css/questions.css" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.EstimateQuestionController">
    <children>
-      <GridPane fx:id="grid" prefHeight="800.0" prefWidth="1200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <GridPane fx:id="grid" layoutX="-7.0" prefHeight="800.0" prefWidth="1200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="-7.0" AnchorPane.rightAnchor="7.0" AnchorPane.topAnchor="0.0">
         <columnConstraints>
             <ColumnConstraints hgrow="NEVER" maxWidth="900.0" minWidth="10.0" percentWidth="0.0" prefWidth="82.8" />
             <ColumnConstraints hgrow="NEVER" maxWidth="900.0" minWidth="0.0" percentWidth="34.0" prefWidth="89.2" />
-            <ColumnConstraints hgrow="ALWAYS" maxWidth="5000.0" minWidth="10.0" percentWidth="32.0" prefWidth="423.6000152587891" />
+            <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" percentWidth="32.0" prefWidth="100.0" />
             <ColumnConstraints hgrow="NEVER" maxWidth="400.0" minWidth="10.0" percentWidth="34.0" prefWidth="104.39999999999998" />
             <ColumnConstraints />
         </columnConstraints>
@@ -24,12 +24,12 @@
             <RowConstraints maxHeight="162.39999999999998" minHeight="10.0" percentHeight="70.0" prefHeight="130.40000000000003" vgrow="ALWAYS" />
         </rowConstraints>
          <children>
-            <Label fx:id="questionTxt" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" text="Question Text" textAlignment="CENTER" wrapText="true" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+            <Label fx:id="questionTxt" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" styleClass="setFont" text="Question Text" textAlignment="CENTER" wrapText="true" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
                <font>
                   <Font name="Comicbon" size="24.0" />
                </font>
             </Label>
-            <Button fx:id="exitButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="40.0" minWidth="130.0" mnemonicParsing="false" onAction="#quit" prefHeight="40.0" prefWidth="130.0" text="Exit Game" GridPane.rowIndex="2" GridPane.valignment="BOTTOM">
+            <Button fx:id="exitButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="40.0" minWidth="130.0" mnemonicParsing="false" onAction="#quit" prefHeight="40.0" prefWidth="130.0" styleClass="setFont" text="Exit Game" GridPane.rowIndex="2" GridPane.valignment="BOTTOM">
                <font>
                   <Font size="19.0" />
                </font>
@@ -37,10 +37,15 @@
                   <Insets bottom="30.0" left="30.0" />
                </GridPane.margin>
             </Button>
-            <HBox id="scoreBox" fx:id="scoreBox" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="35.0" prefWidth="200.0" spacing="10.0" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.valignment="TOP">
+            <HBox id="scoreBox" fx:id="scoreBox" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="48.0" prefWidth="360.0" spacing="10.0" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.valignment="TOP">
                <children>
-                  <Label maxHeight="1.7976931348623157E308" text="Your Score:" />
-                  <Label fx:id="pointsLabel" maxHeight="1.7976931348623157E308" text="0 Pts" />
+                  <Label maxHeight="1.7976931348623157E308" prefHeight="48.0" prefWidth="119.0" styleClass="setFont" text="Your Score:" />
+                  <Label fx:id="pointsLabel" maxHeight="1.7976931348623157E308" prefHeight="48.0" prefWidth="85.0" styleClass="setFont" text="0 Pts" />
+                  <Label fx:id="newPoints" alignment="BASELINE_RIGHT" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" prefHeight="48.0" prefWidth="150.0" styleClass="setFont" text="+ new pts">
+                     <font>
+                        <Font name="Comicbon" size="18.0" />
+                     </font>
+                  </Label>
                </children>
                <GridPane.margin>
                   <Insets top="30.0" />
@@ -77,7 +82,7 @@
                   <Insets left="30.0" />
                </GridPane.margin>
             </HBox>
-            <GridPane maxHeight="-Infinity" maxWidth="-Infinity" vgap="10.0" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.valignment="BOTTOM">
+            <GridPane maxHeight="-Infinity" maxWidth="1.7976931348623157E308" vgap="10.0" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.valignment="BOTTOM">
                <columnConstraints>
                   <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
                </columnConstraints>
@@ -86,18 +91,18 @@
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                </rowConstraints>
                <children>
-                  <Label fx:id="timeText" alignment="CENTER" contentDisplay="CENTER" prefHeight="27.0" prefWidth="51.0" text="10S" textAlignment="CENTER" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                  <ProgressBar fx:id="progressBar" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="382.0" progress="0.51" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+                  <Label fx:id="timeText" alignment="CENTER" contentDisplay="CENTER" prefHeight="27.0" prefWidth="51.0" styleClass="setFont" text="10S" textAlignment="CENTER" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
                      <font>
                         <Font size="21.0" />
                      </font>
                   </Label>
-                  <ProgressBar fx:id="progressBar" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="32.0" prefWidth="400.0" progress="0.51" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
                </children>
                <padding>
-                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                  <Insets bottom="10.0" top="10.0" />
                </padding>
             </GridPane>
-            <HBox alignment="CENTER_RIGHT" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="354.0" prefWidth="479.0" spacing="130.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="TOP">
+            <HBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="354.0" prefWidth="500.0" spacing="25.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="TOP">
                <children>
                   <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="400.0" prefWidth="400.0">
                      <children>
@@ -110,7 +115,7 @@
                               <RowConstraints maxHeight="95.99999237060547" minHeight="10.0" percentHeight="25.0" prefHeight="72.00003051757812" vgrow="SOMETIMES" />
                            </rowConstraints>
                            <children>
-                              <Label fx:id="activity1Label" maxHeight="-Infinity" maxWidth="-Infinity" text="Fully charging the laptop project laptop (HP ZBook Power G7)" textAlignment="CENTER" wrapText="true" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+                              <Label fx:id="activity1Label" maxHeight="-Infinity" maxWidth="-Infinity" styleClass="setFont" text="Fully charging the laptop project laptop (HP ZBook Power G7)" textAlignment="CENTER" wrapText="true" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
                               <ImageView fx:id="question1Image" fitHeight="228.0" fitWidth="279.0" pickOnBounds="true" preserveRatio="true" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
                                  <image>
                                     <Image url="@/client.photos/clothing-iron.jpg" />
@@ -131,6 +136,9 @@
                      </HBox.margin>
                   </AnchorPane>
                   <Slider fx:id="answerSlider" majorTickUnit="10000.0" maxHeight="-Infinity" minorTickCount="0" orientation="VERTICAL" prefHeight="360.0" prefWidth="50.0" showTickLabels="true">
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
                      <padding>
                         <Insets right="-14.0" />
                      </padding></Slider>
@@ -139,23 +147,64 @@
                   <Insets top="20.0" />
                </GridPane.margin>
             </HBox>
-            <HBox maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="50.0" prefWidth="100.0" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
+            <HBox maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="50.0" prefWidth="100.0" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="TOP">
                <children>
-                  <Label fx:id="answerLabel" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="91.0" prefWidth="226.0" text="Answer" textAlignment="JUSTIFY">
+                  <Label fx:id="answerLabel" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="91.0" prefWidth="226.0" styleClass="setFont" text="Answer" textAlignment="JUSTIFY">
                      <font>
                         <Font name="Comicbon" size="20.0" />
                      </font>
                   </Label>
                </children>
+               <GridPane.margin>
+                  <Insets left="30.0" />
+               </GridPane.margin>
             </HBox>
-            <Button fx:id="submitAnswerButton" layoutX="60.0" layoutY="720.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="40.0" minWidth="130.0" mnemonicParsing="false" onAction="#submitUserAnswer" prefHeight="40.0" prefWidth="130.0" text="Submit Answer" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="BOTTOM">
+            <Button fx:id="submitAnswerButton" layoutX="60.0" layoutY="720.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="40.0" minWidth="130.0" mnemonicParsing="false" onAction="#submitUserAnswer" prefHeight="40.0" prefWidth="130.0" text="Submit Answer" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
                <font>
                   <Font name="Comicbon" size="15.0" />
                </font>
                <GridPane.margin>
-                  <Insets bottom="100.0" right="-10.0" />
+                  <Insets bottom="100.0" left="30.0" right="-10.0" />
                </GridPane.margin>
             </Button>
+            <Label fx:id="timeReduced" GridPane.columnIndex="2" />
+            <VBox fx:id="eVbox" alignment="BOTTOM_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" spacing="5.0" visible="false" GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.rowIndex="2" GridPane.valignment="BOTTOM">
+               <children>
+                  <ListView fx:id="emojiChatView" blendMode="DARKEN" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="122.0" prefWidth="252.0" styleClass="emojiChat" />
+                  <HBox alignment="BOTTOM_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" prefWidth="200.0" spacing="5.0">
+                     <children>
+                        <ImageView fx:id="e0" blendMode="DARKEN" fitHeight="50.0" fitWidth="50.0" onMouseClicked="#processEmoji" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@/client.photos/angryEmojiStill.png" />
+                           </image>
+                        </ImageView>
+                        <ImageView fx:id="e1" blendMode="DARKEN" fitHeight="50.0" fitWidth="50.0" layoutX="10.0" layoutY="10.0" onMouseClicked="#processEmoji" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@/client.photos/eyebrowEmojiStill.png" />
+                           </image>
+                        </ImageView>
+                        <ImageView fx:id="e2" blendMode="DARKEN" fitHeight="50.0" fitWidth="50.0" layoutX="60.0" layoutY="10.0" onMouseClicked="#processEmoji" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@/client.photos/devilEmojiStill.png" />
+                           </image>
+                        </ImageView>
+                        <ImageView fx:id="e3" blendMode="DARKEN" fitHeight="50.0" fitWidth="50.0" layoutX="110.0" layoutY="10.0" onMouseClicked="#processEmoji" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@/client.photos/sunglassesEmojiStill.png" />
+                           </image>
+                        </ImageView>
+                        <ImageView fx:id="e4" blendMode="DARKEN" fitHeight="50.0" fitWidth="50.0" layoutX="160.0" layoutY="10.0" onMouseClicked="#processEmoji" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@/client.photos/confoundedEmojiStill.png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                  </HBox>
+               </children>
+               <GridPane.margin>
+                  <Insets />
+               </GridPane.margin>
+            </VBox>
          </children>
          <padding>
             <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />

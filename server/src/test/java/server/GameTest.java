@@ -55,18 +55,18 @@ class GameTest {
 
     @Test
     public void setMaxTimeTest() {
-        game.setMaxTime(37);
-        Integer[] testTimeArr = new Integer[game.getMaxTime().size()];
-        Arrays.fill(testTimeArr, 37);
+        game.setMaxTime(37.0);
+        Double[] testTimeArr = new Double[game.getMaxTime().size()];
+        Arrays.fill(testTimeArr, 37.0);
         assertArrayEquals(game.getMaxTime().values().toArray(), testTimeArr);
     }
 
     @Test
     public void halfTimeJokerTest() {
-        game.setMaxTime(36);
+        game.setMaxTime(36.0);
         game.halfTimeJoker(userTwo.getId());
-        assertEquals(game.getMaxTime().get(userTwo.getId()), 36);
-        assertEquals(game.getMaxTime().get(userThree.getId()), 18);
+        assertEquals(game.getMaxTime().get(userTwo.getId()), 36.0);
+        assertEquals(Math.round(game.getMaxTime().get(userThree.getId())), 18.0);
     }
 
     @Test
@@ -74,12 +74,12 @@ class GameTest {
         game.getStageQueue().clear();
         Question testMCQ = new MultiChoiceQuestion("Test", 2, new ArrayList<>(), 10);
         game.setCurrentQuestion(testMCQ);
-        game.getStageQueue().offer(new MutablePair<>("Question", 1));
-        game.getStageQueue().offer(new MutablePair<>("CorrectAns", 1));
-        game.getStageQueue().offer(new MutablePair<>("Leaderboard", 1));
-        game.getStageQueue().offer(new MutablePair<>("Estimate", 1));
-        game.getStageQueue().offer(new MutablePair<>("CorrectAns", 1));
-        game.getStageQueue().offer(new MutablePair<>("End", 1));
+        game.getStageQueue().offer(new MutablePair<>("Question", 1.0));
+        game.getStageQueue().offer(new MutablePair<>("CorrectAns", 1.0));
+        game.getStageQueue().offer(new MutablePair<>("Leaderboard", 1.0));
+        game.getStageQueue().offer(new MutablePair<>("Estimate", 1.0));
+        game.getStageQueue().offer(new MutablePair<>("CorrectAns", 1.0));
+        game.getStageQueue().offer(new MutablePair<>("End", 1.0));
         game.setStartTime(new Date());
         int countDown = 6;
         while (!game.getStageQueue().isEmpty()) {
@@ -133,8 +133,8 @@ class GameTest {
 
     @Test
     void ifStageNotEndedTest() {
-        Pair<String, Integer> nextStage = game.getStageQueue().peek();
-        game.setMaxTime(1000);
+        Pair<String, Double> nextStage = game.getStageQueue().peek();
+        game.setMaxTime(1000.0);
         game.setStartTime(new Date());
         game.ifStageEnded();
         assertEquals(nextStage, game.getStageQueue().peek());
@@ -142,8 +142,8 @@ class GameTest {
 
     @Test
     void ifStageEndedTest() throws InterruptedException {
-        Pair<String, Integer> nextStage = game.getStageQueue().peek();
-        game.setMaxTime(1);
+        Pair<String, Double> nextStage = game.getStageQueue().peek();
+        game.setMaxTime(1.0);
         game.setStartTime(new Date());
         Thread.sleep(1001);
         game.ifStageEnded();
@@ -224,9 +224,9 @@ class GameTest {
 
     @Test
     void getMaxTimeTest() {
-        game.setMaxTime(137);
+        game.setMaxTime(137.0);
         boolean allEqual = true;
-        for (Integer time: game.getMaxTime().values()) {
+        for (Double time: game.getMaxTime().values()) {
             if (time != 137) {
                 allEqual = false;
                 break;
