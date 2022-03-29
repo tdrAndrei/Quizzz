@@ -143,6 +143,7 @@
 }
 
 #rank {
+    -fx-alignment: center;
     -fx-font-size: 32;
     -fx-font-weight: Bold;
 }
