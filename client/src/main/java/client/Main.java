@@ -45,10 +45,11 @@ public class Main extends Application {
         var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
         var leaderboardSolo = FXML.load(LeaderboardSoloController.class, "client", "scenes", "LeaderboardSolo.fxml");
         var estimateQuestion = FXML.load(EstimateQuestionController.class, "client", "scenes", "estimateQuestion.fxml");
+        var compareQuestion = FXML.load(CompareQuestionController.class, "client", "scenes", "compareQuestion.fxml");
         var waitingRoom = FXML.load(WaitingRoomController.class, "client", "scenes", "waitingRoom.fxml");
         var clientGameController = INJECTOR.getInstance(ClientGameController.class);
-        clientGameController.initialize(multiQuestion, estimateQuestion, leaderboardSolo, waitingRoom);
-        mainCtrl.initialize(primaryStage, login, mainMenu, multiQuestion, leaderboardSolo, estimateQuestion, clientGameController, waitingRoom);
+        clientGameController.initialize(multiQuestion, estimateQuestion, compareQuestion, leaderboardSolo, waitingRoom);
+        mainCtrl.initialize(primaryStage, login, mainMenu, multiQuestion, compareQuestion, leaderboardSolo, estimateQuestion, clientGameController, waitingRoom);
 
     }
 

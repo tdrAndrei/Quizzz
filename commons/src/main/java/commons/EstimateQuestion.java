@@ -4,8 +4,11 @@ import java.util.List;
 
 public class EstimateQuestion extends Question {
 
-    public EstimateQuestion(String title, long answer, List<Activity> activities, double time) {
+    private List<Long> bounds;
+
+    public EstimateQuestion(String title, long answer, List<Activity> activities, List<Long> bounds, double time) {
         super(title, answer, activities, time);
+        this.bounds = bounds;
 
         setMax_score(100);
 
@@ -37,5 +40,13 @@ public class EstimateQuestion extends Question {
         while (p10 <= n)
             p10 *= 10;
         return p10 / 10L;
+    }
+
+    public void setBounds(List<Long> bounds) {
+        this.bounds = bounds;
+    }
+
+    public List<Long> getBounds() {
+        return bounds;
     }
 }

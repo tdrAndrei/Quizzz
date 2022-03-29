@@ -8,7 +8,6 @@ import server.service.LeaderBoardEntryService;
 import server.service.QuestionService;
 
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.*;
 import java.util.List;
 
@@ -41,8 +40,11 @@ public class Game {
 
         for (int i = 0; i < 20; i++) {
             int j = random.nextInt(10);
-            if (j <= 5) {
+            if (j <= 2) {
                 stageQueue.add(new MutablePair<>("Question", 20.0));
+                stageQueue.add(new MutablePair<>("CorrectAns", 3.0));
+            } else if (j <= 7) {
+                stageQueue.add(new MutablePair<>("Compare", 20.0));
                 stageQueue.add(new MutablePair<>("CorrectAns", 3.0));
             } else {
                 stageQueue.add(new MutablePair<>("Estimate", 20.0));
@@ -75,22 +77,27 @@ public class Game {
         }
         String stage = stagePair.getKey();
         startTime = new Date();
-        switch(stage) {
+
+        setMaxTime(stagePair.getValue());
+
+        switch (stage) {
             case "Question":
-                setMaxTime(stagePair.getValue());
                 currentQuestion = questionService.makeMultipleChoice(stagePair.getValue());
                 insertMCQQuestionIntoDiff(currentQuestion);
                 break;
 
             case "CorrectAns":
-                setMaxTime(stagePair.getValue());
                 insertCorrectAnswerIntoDiff();
                 break;
 
             case "Estimate":
-                setMaxTime(stagePair.getValue());
                 currentQuestion = questionService.makeEstimate(stagePair.getValue());
                 insertEstimateQuestionIntoDiff(currentQuestion);
+                break;
+
+            case "Compare":
+                currentQuestion = questionService.makeCompare(stagePair.getValue());
+                insertCompareQQuestionIntoDiff(currentQuestion);
                 break;
 
             case "Leaderboard":
@@ -98,12 +105,10 @@ public class Game {
                     setMaxTime(0.0);
                     break;
                 }
-                setMaxTime(stagePair.getValue());
                 insertMessageIntoDiff(new ShowLeaderboardMessage("ShowLeaderboard", "Mid", new ArrayList<>(playerMap.values())));
                 break;
 
             case "End":
-                setMaxTime(stagePair.getValue());
                 ShowLeaderboardMessage leaderboardMessage = new ShowLeaderboardMessage("ShowLeaderboard", "End", new ArrayList<>(playerMap.values()));
                 if (isSolo) {
                     Player player = playerMap.entrySet().iterator().next().getValue();
@@ -114,7 +119,6 @@ public class Game {
                 break;
 
             case "Waiting":
-                setMaxTime(stagePair.getValue());
                 break;
         }
     }
@@ -232,6 +236,14 @@ public class Game {
         }
     }
 
+    public void insertCompareQQuestionIntoDiff(Question question) {
+        for (long id : diffMap.keySet()) {
+            List<byte[]> imagesBytes = getImageBytesList(question);
+            NewQuestionMessage questionMessage = new NewQuestionMessage("NewQuestion", "Compare", question.getTitle(), question.getActivities(), question.getTime(), playerMap.get(id).getScore(), null, imagesBytes);
+            diffMap.put(id, questionMessage);
+        }
+    }
+
     public List<byte[]> getImageBytesList(Question question) {
         List<byte[]> imagesBytes = new ArrayList<>();
         for (Activity activity : question.getActivities()) {
@@ -239,29 +251,19 @@ public class Game {
                 FileInputStream fis = new FileInputStream(activity.getImage_path());
                 byte[] imageArr = fis.readAllBytes();
                 imagesBytes.add(imageArr);
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
         return imagesBytes;
     }
     public void insertEstimateQuestionIntoDiff(Question question) {
+        EstimateQuestion estimateQuestion = (EstimateQuestion) question;
         for (long id : diffMap.keySet()) {
             List<byte[]> imagesBytes = getImageBytesList(question);
-            NewQuestionMessage questionMessage = new NewQuestionMessage("NewQuestion", "Estimate", question.getTitle(), question.getActivities(), question.getTime(), playerMap.get(id).getScore(), getBoundsForEstimate(question.getAnswer()), imagesBytes);
+            NewQuestionMessage questionMessage = new NewQuestionMessage("NewQuestion", "Estimate", question.getTitle(), question.getActivities(), question.getTime(), playerMap.get(id).getScore(), estimateQuestion.getBounds(), imagesBytes);
             diffMap.put(id, questionMessage);
         }
-    }
-
-
-    public List<Long> getBoundsForEstimate(long answer) {
-        Random rm = new Random();
-        int i = 2 + rm.nextInt(5);
-        int j = 2 + rm.nextInt(5);
-        List<Long> bounds = new ArrayList<Long>();
-        bounds.add(Long.valueOf(answer - answer * i / 10L));
-        bounds.add(Long.valueOf(answer + answer * j / 10L));
-        return bounds;
     }
 
     public void setMaxTime(Double time) {

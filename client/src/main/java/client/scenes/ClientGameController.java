@@ -1,5 +1,6 @@
 package client.scenes;
 
+import client.EmojiChat;
 import client.utils.ServerUtils;
 import commons.Messages.*;
 import javafx.animation.PathTransition;
@@ -14,10 +15,8 @@ import javafx.scene.shape.VLineTo;
 import javafx.util.Duration;
 import javafx.util.Pair;
 import java.awt.*;
-import java.util.EnumSet;
+import java.util.*;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.stream.Collectors;
 
 public class ClientGameController {
@@ -48,13 +47,14 @@ public class ClientGameController {
 
     private MultiQuestionController multiQuestionController;
     private EstimateQuestionController estimateQuestionController;
+    private CompareQuestionController compareQuestionController;
     private LeaderboardSoloController leaderboardSoloController;
     private WaitingRoomController waitingRoomController;
     private Long gameId;
-    private int score;
     private Color[] timebarColors;
     private boolean doublePointsForThisRound;
     private Timer progressBarThread;
+    private final EmojiChat emojiChat;
 
     private final MainCtrl mainController;
     private final ServerUtils serverUtils;
@@ -69,18 +69,27 @@ public class ClientGameController {
     public ClientGameController(MainCtrl mainController, ServerUtils serverUtils) {
         this.mainController = mainController;
         this.serverUtils = serverUtils;
+
         timebarColors = new Color[]{Color.green, Color.yellow, Color.red};
         progressBarThread = new Timer();
+
+        emojiChat = new EmojiChat();
     }
 
     public void initialize(Pair<MultiQuestionController, Parent> multiQuestion,
                            Pair<EstimateQuestionController, Parent> estimateQuestion,
+                           Pair<CompareQuestionController, Parent> compareQuestion,
                            Pair<LeaderboardSoloController, Parent> leaderboard,
                            Pair<WaitingRoomController, Parent> waitingRoom) {
         this.multiQuestionController = multiQuestion.getKey();
         this.estimateQuestionController = estimateQuestion.getKey();
+        this.compareQuestionController = compareQuestion.getKey();
         this.leaderboardSoloController = leaderboard.getKey();
         this.waitingRoomController = waitingRoom.getKey();
+
+        emojiChat.addClient(multiQuestionController)
+                .addClient(estimateQuestionController)
+                .addClient(compareQuestionController);
     }
 
     public void startPolling(boolean isMulti) {
@@ -90,13 +99,21 @@ public class ClientGameController {
             remainingJokers = List.of(Joker.ELIMINATE, Joker.DOUBLEPOINTS, Joker.REDUCETIME);
 
             gameId = serverUtils.joinMulti(mainController.getUser());
+
+            serverUtils.getAndSetSession();  // Getting a websocket connection
+            serverUtils.registerForEmojiMessages(gameId, emojiChat::emojiHandler); //Using our connection to subscribe to "/topic/emoji/{gameId}
+            emojiChat.setVisibility(true);
+            emojiChat.resetChat();
+
             mainController.showWaitingRoom();
             waitingRoomController.setGameId(gameId);
+
         } else {
             this.gameMode = GameMode.SOLO;
             remainingJokers = List.of(Joker.ELIMINATE, Joker.DOUBLEPOINTS, Joker.SKIPQUESTION);
 
             gameId = serverUtils.joinSolo(mainController.getUser());
+            emojiChat.setVisibility(false);
         }
 
         availableJokers = EnumSet.copyOf(remainingJokers);
@@ -107,27 +124,30 @@ public class ClientGameController {
         pollingThread.scheduleAtFixedRate( new TimerTask() {
             @Override
             public void run() {
-                if (gameMode == GameMode.NOT_PLAYING) {
-                    pollingThread.cancel();
-                    return;
-                }
-                Message message = serverUtils.pollUpdate(gameId, mainController.getUser().getId());
-                try {
-                    interpretMessage(message);
-                } catch (InterruptedException ignored) {
-                }
-                if (message instanceof ShowLeaderboardMessage && ((ShowLeaderboardMessage) message).getGameProgress().equals("End")) {
-                    pollingThread.cancel();
-                    gameMode = GameMode.NOT_PLAYING;
-                }
+            if (gameMode == GameMode.NOT_PLAYING) {
+                pollingThread.cancel();
+                return;
+            }
+            Message message = serverUtils.pollUpdate(gameId, mainController.getUser().getId());
+            try {
+                interpretMessage(message);
+            } catch (InterruptedException ignored) {
+            }
+            if (message instanceof ShowLeaderboardMessage && ((ShowLeaderboardMessage) message).getGameProgress().equals("End")) {
+                pollingThread.cancel();
+                gameMode = GameMode.NOT_PLAYING;
+            }
             }
         } , 0, 500);
+    }
+
+    public void sendEmoji(int emojiIndex) {
+        serverUtils.sendEmojiTest(gameId, mainController.getUser().getName(), emojiIndex, mainController.getUser().getId());
     }
 
     public void interpretMessage(Message message) throws InterruptedException {
         switch (message.getType()) {
             case "None":
-                NullMessage nullMessage = (NullMessage) message;
                 break;
 
             case "NewPlayers":
@@ -150,6 +170,7 @@ public class ClientGameController {
                     switch (newQuestionMessage.getQuestionType()) {
                         case "MC": mainController.showMultiQuestion(); break;
                         case "Estimate": mainController.showEstimate(); break;
+                        case "Compare": mainController.showCompare(); break;
                     }
 
                     setMaxTime(newQuestionMessage.getTime());
@@ -259,10 +280,6 @@ public class ClientGameController {
 
     public void setMaxTime(double time){
         this.maxTime = time;
-    }
-
-    public int getScore() {
-        return score;
     }
 
     public void updateTimeLeft(double seconds, double timeLeft){
@@ -376,7 +393,6 @@ public class ClientGameController {
             newPoints.setStyle("-fx-text-fill: rgb(0, 210, 28);");
 
         pointsLabel.setText(currScore + " pts");
-        System.out.println(currScore);
 
         Path moveVertically = new Path();
         moveVertically.getElements().add(new MoveTo(0, 0));
@@ -385,8 +401,7 @@ public class ClientGameController {
         PathTransition fadeOut = new PathTransition(Duration.seconds(3), moveVertically, newPoints);
         fadeOut.play();
 
-        pointsLabel.setText(score + " pts");
-        System.out.println(score);
+        mainController.setPointsForAllScenes(score);
     }
 
     public void setDoublePointsForThisRound(boolean doublePointsForThisRound) {

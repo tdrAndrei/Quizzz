@@ -46,6 +46,9 @@ public class MainCtrl {
     private MultiQuestionController multiCtrl;
     private Scene multiScene;
 
+    private CompareQuestionController compareQuestionController;
+    private Scene compareQuestionScene;
+
     private LeaderboardSoloController leaderboardSoloController;
     private Scene leaderboardSoloScene;
 
@@ -66,9 +69,11 @@ public class MainCtrl {
     public void initialize(Stage primaryStage, Pair<LoginController, Parent> login,
                            Pair<MainMenuController, Parent> mainMenu,
                            Pair<MultiQuestionController, Parent> multiQuestion,
+                           Pair<CompareQuestionController, Parent> compareQuestion,
                            Pair<LeaderboardSoloController, Parent> leaderboardSolo,
                            Pair<EstimateQuestionController, Parent> estimateQuestion,
-                           ClientGameController clientGameController, Pair<WaitingRoomController, Parent> waitingRoom ) {
+                           ClientGameController clientGameController,
+                           Pair<WaitingRoomController, Parent> waitingRoom) {
         this.primaryStage = primaryStage;
 
         this.loginController = login.getKey();
@@ -79,6 +84,9 @@ public class MainCtrl {
 
         this.multiCtrl = multiQuestion.getKey();
         this.multiScene = new Scene(multiQuestion.getValue());
+
+        this.compareQuestionController = compareQuestion.getKey();
+        this.compareQuestionScene = new Scene(compareQuestion.getValue());
 
         this.leaderboardSoloController = leaderboardSolo.getKey();
         this.leaderboardSoloScene = new Scene(leaderboardSolo.getValue());
@@ -91,7 +99,7 @@ public class MainCtrl {
 
         this.clientGameController = clientGameController;
 
-        questionControllers = List.of(multiCtrl, estimateQuestionController);
+        questionControllers = List.of(multiCtrl, estimateQuestionController, compareQuestionController);
 
         showLogin();
         primaryStage.show();
@@ -108,14 +116,16 @@ public class MainCtrl {
 
     public void resetQuestionScenes(List<Joker> jokers) {
         setJokerPics(jokers);
+        setPointsForAllScenes(0);
         for ( QuestionScene controller : questionControllers ) {
-            //Setting the points label for every scene
-            controller.getPointsLabel().setText("0 pts");
-
             //additional logic that can't be generalized is done in this method
             //You need to override it in the specific controller
             controller.reset();
         }
+    }
+
+    public void setPointsForAllScenes(int score) {
+        questionControllers.forEach( q -> q.getPointsLabel().setText(score + " pts"));
     }
 
     public void setJokerPics(List<Joker> jokers) {
@@ -211,6 +221,10 @@ public class MainCtrl {
         primaryStage.setScene(multiScene);
     }
 
+    public void showCompare() {
+        currentSceneController = compareQuestionController;
+        primaryStage.setScene(compareQuestionScene);
+    }
 
     public void joinGame(boolean isMulti) {
         clientGameController.startPolling(isMulti);

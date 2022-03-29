@@ -27,7 +27,7 @@ import java.io.ByteArrayInputStream;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
-public class MultiQuestionController implements Initializable, QuestionScene {
+public class CompareQuestionController implements Initializable, QuestionScene {
 
     @FXML
     private ListView<Pair<String, Integer>> emojiChatView;
@@ -84,6 +84,12 @@ public class MultiQuestionController implements Initializable, QuestionScene {
     private Label questionLabel;
 
     @FXML
+    private Label questionImageLabel;
+
+    @FXML
+    private ImageView questionImage;
+
+    @FXML
     private Label timeText;
 
     @FXML
@@ -121,7 +127,7 @@ public class MultiQuestionController implements Initializable, QuestionScene {
     private final ServerUtils serverUtils;
 
     @Inject
-    public MultiQuestionController(MainCtrl mainCtrl, ClientGameController clientGameController, ServerUtils serverUtils){
+    public CompareQuestionController(MainCtrl mainCtrl, ClientGameController clientGameController, ServerUtils serverUtils){
         this.mainCtrl = mainCtrl;
         this.clientGameController = clientGameController;
         this.serverUtils = serverUtils;
@@ -160,7 +166,6 @@ public class MultiQuestionController implements Initializable, QuestionScene {
         clientGameController.startTimer(progressBar, timeText);
         questionLabel.setTextFill(Color.rgb(0, 0, 0));
         setChosenAnswer(-1);
-
         setQuestions(message.getActivities(), message.getImagesBytes());
     }
 
@@ -299,6 +304,9 @@ public class MultiQuestionController implements Initializable, QuestionScene {
         ans1pane.setBorder(Border.EMPTY);
         ans2pane.setBorder(Border.EMPTY);
         ans3pane.setBorder(Border.EMPTY);
+
+        questionImage.setImage(new Image(new ByteArrayInputStream(imageByteList.get(3))));
+        questionImageLabel.setText(activities.get(3).getTitle());
     }
 
     public void useSkipQuestionJoker() {
@@ -338,17 +346,6 @@ public class MultiQuestionController implements Initializable, QuestionScene {
     @Override
     public void showTimeReduced(String name) {
         timeReduced.setText(name + " has reduced your time!");
-    }
-
-    public void processEmoji(Event event) {
-        ImageView emoji = (ImageView) event.getSource();
-        int emojiId = Integer.parseInt(emoji.getId().replace("e", ""));
-        clientGameController.sendEmoji(emojiId);
-    }
-
-    @Override
-    public void displayEmojiChat(ObservableList<Pair<String, Integer>> newEmojiList) {
-        this.emojiChatView.setItems(newEmojiList);
     }
 
     @Override
@@ -391,6 +388,18 @@ public class MultiQuestionController implements Initializable, QuestionScene {
         Answer2.setDisable(true);
         Answer3.setDisable(true);
     }
+
+    public void processEmoji(Event event) {
+        ImageView emoji = (ImageView) event.getSource();
+        int emojiId = Integer.parseInt(emoji.getId().replace("e", ""));
+        clientGameController.sendEmoji(emojiId);
+    }
+
+    @Override
+    public void displayEmojiChat(ObservableList<Pair<String, Integer>> newEmojiList) {
+        this.emojiChatView.setItems(newEmojiList);
+    }
+
 
 }
 

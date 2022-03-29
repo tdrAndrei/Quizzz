@@ -6,21 +6,29 @@ import commons.Messages.CorrectAnswerMessage;
 import commons.Messages.NewQuestionMessage;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.ObservableList;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ProgressBar;
-import javafx.scene.control.Slider;
+import javafx.scene.Node;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
+import javafx.util.Pair;
+
 import java.io.ByteArrayInputStream;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
 public class EstimateQuestionController implements Initializable, QuestionScene {
+
+    @FXML
+    private ListView<Pair<String, Integer>> emojiChatView;
+
+    @FXML
+    private Node emojiChatContainer;
 
     @FXML
     private ImageView doublePointsJoker;
@@ -83,9 +91,7 @@ public class EstimateQuestionController implements Initializable, QuestionScene 
 
     @Override
     public void showQuestion(NewQuestionMessage message) {
-
         clientGameController.startTimer(progressBar, timeText);
-
         answerSlider.valueProperty().addListener(changeListener);
         answerSlider.setMin(message.getBounds().get(0));
         answerSlider.setMax(message.getBounds().get(1));
@@ -98,7 +104,6 @@ public class EstimateQuestionController implements Initializable, QuestionScene 
         activity1Label.setText(message.getActivities().get(0).getTitle());
         question1Image.setImage(new Image(new ByteArrayInputStream(message.getImagesBytes().get(0))));
 
-        pointsLabel.setText(clientGameController.getScore() + " pts");
         answerLabel.setText("");
         timeReduced.setText("");
         answerLabel.setStyle("-fx-text-fill: black");
@@ -160,7 +165,6 @@ public class EstimateQuestionController implements Initializable, QuestionScene 
                 answerLabel.setText(Integer.toString(value));
             }
         };
-
         progressBar.setProgress(1.0);
 
         jokerPics = List.of(eliminateJoker, doublePointsJoker, skipQuestionJoker);
@@ -169,6 +173,17 @@ public class EstimateQuestionController implements Initializable, QuestionScene 
     @Override
     public void showTimeReduced(String name) {
         timeReduced.setText(name + " has reduced your time!");
+    }
+
+    public void processEmoji(Event event) {
+        ImageView emoji = (ImageView) event.getSource();
+        int emojiId = Integer.parseInt(emoji.getId().replace("e", ""));
+        clientGameController.sendEmoji(emojiId);
+    }
+
+    @Override
+    public void displayEmojiChat(ObservableList<Pair<String, Integer>> newEmojiList) {
+        this.emojiChatView.setItems(newEmojiList);
     }
 
     @Override
@@ -184,6 +199,16 @@ public class EstimateQuestionController implements Initializable, QuestionScene 
     @Override
     public List<ImageView> getJokerPics() {
         return jokerPics;
+    }
+
+    @Override
+    public ListView<Pair<String, Integer>> getEmojiChatView() {
+        return this.emojiChatView;
+    }
+
+    @Override
+    public Node getEmojiChatContainer() {
+        return this.emojiChatContainer;
     }
 
     @Override

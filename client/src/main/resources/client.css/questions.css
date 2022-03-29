@@ -40,6 +40,10 @@
     -fx-border-radius: 2px;
 }
 
+.emojiChat{
+    -fx-background-color: #ffc5ac;
+}
+
 #scoreBox {
     -fx-font-size: 20px;
 }
