@@ -1,5 +1,6 @@
 package client.scenes;
 
+import client.EmojiChat;
 import client.utils.ServerUtils;
 import commons.Messages.*;
 import javafx.animation.PathTransition;
@@ -58,21 +59,13 @@ public class ClientGameController {
     private LeaderboardSoloController leaderboardSoloController;
     private WaitingRoomController waitingRoomController;
     private Long gameId;
-    private int score;
     private Color[] timebarColors;
     private boolean doublePointsForThisRound;
     private Timer progressBarThread;
-
-    private final List<Image> emojiImageList;
+    private final EmojiChat emojiChat;
 
     private final MainCtrl mainController;
     private final ServerUtils serverUtils;
-
-    private ObservableList<Pair<String, Integer>> emojiChatList;
-    private List<Consumer<ObservableList<Pair<String, Integer>>>> consumerOfEmojiList;
-
-    private Parent multiQuestionScene;
-    private Parent estimateQuestionScene;
 
     private List<Joker> remainingJokers;
     private EnumSet<Joker> availableJokers;
@@ -84,15 +77,11 @@ public class ClientGameController {
     public ClientGameController(MainCtrl mainController, ServerUtils serverUtils) {
         this.mainController = mainController;
         this.serverUtils = serverUtils;
-        consumerOfEmojiList = new ArrayList<>();
-        emojiImageList = new ArrayList<>();
-        emojiImageList.add(new Image("client.photos/angryEmoji.gif"));
-        emojiImageList.add(new Image("client.photos/eyebrowEmoji.gif"));
-        emojiImageList.add(new Image("client.photos/devilEmoji.gif"));
-        emojiImageList.add(new Image("client.photos/sunglassesEmoji.gif"));
-        emojiImageList.add(new Image("client.photos/confoundedEmoji.gif"));
+
         timebarColors = new Color[]{Color.green, Color.yellow, Color.red};
         progressBarThread = new Timer();
+
+        emojiChat = new EmojiChat();
     }
 
     public void initialize(Pair<MultiQuestionController, Parent> multiQuestion,
@@ -106,37 +95,9 @@ public class ClientGameController {
         this.leaderboardSoloController = leaderboard.getKey();
         this.waitingRoomController = waitingRoom.getKey();
 
-        this.multiQuestionScene = multiQuestion.getValue();
-        this.estimateQuestionScene = estimateQuestion.getValue();
-
-        consumerOfEmojiList.add(multiQuestionController::subscribeToEmojiUpdate);
-        consumerOfEmojiList.add(estimateQuestionController::subscribeToEmojiUpdate);
-    }
-
-
-    public void EmojiHandler(EmojiMessage message) {
-        Platform.runLater(() -> {
-            emojiChatList.add(new Pair<>(message.getUsername(), message.getEmojiIndex()));
-            int size = emojiChatList.size();
-            if (size > 3) {
-                emojiChatList.remove(0);
-            }
-            for (var consumer : consumerOfEmojiList) {
-                consumer.accept(emojiChatList);
-            }
-        });
-    }
-
-    public void setVisibilityOfEmojiChat(boolean enabled) {
-        ((VBox) multiQuestionScene.lookup("#eVbox")).setVisible(enabled);
-        ((VBox) estimateQuestionScene.lookup("#eVbox")).setVisible(enabled);
-    }
-
-    public void emptyEmojiList() {
-        emojiChatList = FXCollections.observableArrayList();
-        for (var consumer : consumerOfEmojiList) {
-            consumer.accept(emojiChatList);
-        }
+        emojiChat.addClient(multiQuestionController)
+                .addClient(estimateQuestionController)
+                .addClient(compareQuestionController);
     }
 
     public void startPolling(boolean isMulti) {
@@ -146,10 +107,12 @@ public class ClientGameController {
             remainingJokers = List.of(Joker.ELIMINATE, Joker.DOUBLEPOINTS, Joker.REDUCETIME);
 
             gameId = serverUtils.joinMulti(mainController.getUser());
+
             serverUtils.getAndSetSession();  // Getting a websocket connection
-            serverUtils.registerForEmojiMessages(gameId, this::EmojiHandler); //Using our connection to subscribe to "/topic/emoji/{gameId}
-            setVisibilityOfEmojiChat(true);
-            emptyEmojiList();
+            serverUtils.registerForEmojiMessages(gameId, emojiChat::emojiHandler); //Using our connection to subscribe to "/topic/emoji/{gameId}
+            emojiChat.setVisibility(true);
+            emojiChat.resetChat();
+
             mainController.showWaitingRoom();
             waitingRoomController.setGameId(gameId);
 
@@ -158,7 +121,7 @@ public class ClientGameController {
             remainingJokers = List.of(Joker.ELIMINATE, Joker.DOUBLEPOINTS, Joker.SKIPQUESTION);
 
             gameId = serverUtils.joinSolo(mainController.getUser());
-            setVisibilityOfEmojiChat(false);
+            emojiChat.setVisibility(false);
         }
 
         availableJokers = EnumSet.copyOf(remainingJokers);
@@ -169,45 +132,23 @@ public class ClientGameController {
         pollingThread.scheduleAtFixedRate( new TimerTask() {
             @Override
             public void run() {
-                if (gameMode == GameMode.NOT_PLAYING) {
-                    pollingThread.cancel();
-                    return;
-                }
-                Message message = serverUtils.pollUpdate(gameId, mainController.getUser().getId());
-                try {
-                    interpretMessage(message);
-                } catch (InterruptedException ignored) {
-                }
-                if (message instanceof ShowLeaderboardMessage && ((ShowLeaderboardMessage) message).getGameProgress().equals("End")) {
-                    pollingThread.cancel();
-                    gameMode = GameMode.NOT_PLAYING;
-                }
+            if (gameMode == GameMode.NOT_PLAYING) {
+                pollingThread.cancel();
+                return;
+            }
+            Message message = serverUtils.pollUpdate(gameId, mainController.getUser().getId());
+            try {
+                interpretMessage(message);
+            } catch (InterruptedException ignored) {
+            }
+            if (message instanceof ShowLeaderboardMessage && ((ShowLeaderboardMessage) message).getGameProgress().equals("End")) {
+                pollingThread.cancel();
+                gameMode = GameMode.NOT_PLAYING;
+            }
             }
         } , 0, 500);
     }
-    public void configureListView(ListView<Pair<String, Integer>> emojiChatView) {
-        emojiChatView.setCellFactory(param -> new ListCell<>() {
-            private ImageView imageView = new ImageView();
-            @Override
-            public void updateItem(Pair<String, Integer> valuePair, boolean empty) {
-                super.updateItem(valuePair, empty);
-                setContentDisplay(ContentDisplay.RIGHT);
-                setStyle("-fx-background-color: #ffc5ac");
-                if (empty) {
-                    setText(null);
-                    setGraphic(null);
-                } else {
-                    setDisable(true);
-                    imageView.setImage(emojiImageList.get(valuePair.getValue()));
-                    imageView.setFitHeight(32.0);
-                    imageView.setFitWidth(32.0);
-                    setText(valuePair.getKey() + ": ");
-                    setGraphic(imageView);
-                    getGraphic().setBlendMode(BlendMode.DARKEN);
-                }
-            }
-        });
-    }
+
     public void sendEmoji(int emojiIndex) {
         serverUtils.sendEmojiTest(gameId, mainController.getUser().getName(), emojiIndex, mainController.getUser().getId());
     }
@@ -349,10 +290,6 @@ public class ClientGameController {
         this.maxTime = time;
     }
 
-    public int getScore() {
-        return score;
-    }
-
     public void updateTimeLeft(double seconds, double timeLeft){
         setTimeLeft(timeLeft - seconds);
     }
@@ -464,7 +401,6 @@ public class ClientGameController {
             newPoints.setStyle("-fx-text-fill: rgb(0, 210, 28);");
 
         pointsLabel.setText(currScore + " pts");
-        System.out.println(currScore);
 
         Path moveVertically = new Path();
         moveVertically.getElements().add(new MoveTo(0, 0));
@@ -474,7 +410,6 @@ public class ClientGameController {
         fadeOut.play();
 
         mainController.setPointsForAllScenes(score);
-        System.out.println(score);
     }
 
     public void setDoublePointsForThisRound(boolean doublePointsForThisRound) {

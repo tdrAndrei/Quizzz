@@ -178,7 +178,7 @@
                </GridPane.margin>
             </Label>
             <Label fx:id="timeReduced" GridPane.columnIndex="1" />
-            <VBox fx:id="eVbox" alignment="BOTTOM_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="177.0" spacing="5.0" visible="false" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.rowIndex="2" GridPane.rowSpan="2" GridPane.valignment="BOTTOM">
+            <VBox fx:id="emojiChatContainer" alignment="BOTTOM_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="177.0" spacing="5.0" visible="false" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.rowIndex="2" GridPane.rowSpan="2" GridPane.valignment="BOTTOM">
                <children>
                   <ListView fx:id="emojiChatView" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="122.0" prefWidth="252.0" styleClass="emojiChat" />
                   <HBox alignment="BOTTOM_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" prefWidth="200.0" spacing="5.0">

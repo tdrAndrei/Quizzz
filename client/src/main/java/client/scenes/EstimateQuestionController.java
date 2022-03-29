@@ -10,6 +10,7 @@ import javafx.collections.ObservableList;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -25,6 +26,9 @@ public class EstimateQuestionController implements Initializable, QuestionScene 
 
     @FXML
     private ListView<Pair<String, Integer>> emojiChatView;
+
+    @FXML
+    private Node emojiChatContainer;
 
     @FXML
     private ImageView doublePointsJoker;
@@ -178,7 +182,7 @@ public class EstimateQuestionController implements Initializable, QuestionScene 
     }
 
     @Override
-    public void subscribeToEmojiUpdate(ObservableList<Pair<String, Integer>> newEmojiList) {
+    public void displayEmojiChat(ObservableList<Pair<String, Integer>> newEmojiList) {
         this.emojiChatView.setItems(newEmojiList);
     }
 
@@ -195,6 +199,16 @@ public class EstimateQuestionController implements Initializable, QuestionScene 
     @Override
     public List<ImageView> getJokerPics() {
         return jokerPics;
+    }
+
+    @Override
+    public ListView<Pair<String, Integer>> getEmojiChatView() {
+        return this.emojiChatView;
+    }
+
+    @Override
+    public Node getEmojiChatContainer() {
+        return this.emojiChatContainer;
     }
 
     @Override

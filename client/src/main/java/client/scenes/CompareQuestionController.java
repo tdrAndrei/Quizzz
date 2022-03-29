@@ -31,6 +31,10 @@ public class CompareQuestionController implements Initializable, QuestionScene {
 
     @FXML
     private ListView<Pair<String, Integer>> emojiChatView;
+
+    @FXML
+    private Node emojiChatContainer;
+
     @FXML
     private ImageView doublePointsJoker;
 
@@ -369,6 +373,16 @@ public class CompareQuestionController implements Initializable, QuestionScene {
     }
 
     @Override
+    public ListView<Pair<String, Integer>> getEmojiChatView() {
+        return this.emojiChatView;
+    }
+
+    @Override
+    public Node getEmojiChatContainer() {
+        return this.emojiChatContainer;
+    }
+
+    @Override
     public void lockAnswer() {
         Answer1.setDisable(true);
         Answer2.setDisable(true);
@@ -381,7 +395,8 @@ public class CompareQuestionController implements Initializable, QuestionScene {
         clientGameController.sendEmoji(emojiId);
     }
 
-    public void subscribeToEmojiUpdate(ObservableList<Pair<String, Integer>> newEmojiList) {
+    @Override
+    public void displayEmojiChat(ObservableList<Pair<String, Integer>> newEmojiList) {
         this.emojiChatView.setItems(newEmojiList);
     }
 
