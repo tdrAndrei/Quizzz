@@ -100,7 +100,6 @@ public class EstimateQuestionController implements Initializable, QuestionScene 
         activity1Label.setText(message.getActivities().get(0).getTitle());
         question1Image.setImage(new Image(new ByteArrayInputStream(message.getImagesBytes().get(0))));
 
-        pointsLabel.setText(clientGameController.getScore() + " pts");
         answerLabel.setText("");
         timeReduced.setText("");
         answerLabel.setStyle("-fx-text-fill: black");

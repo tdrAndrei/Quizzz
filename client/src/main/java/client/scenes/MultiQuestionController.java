@@ -148,7 +148,6 @@ public class MultiQuestionController implements Initializable, QuestionScene {
     @Override
     public void showQuestion(NewQuestionMessage message) {
         enableSubmittingAnswers();
-        pointsLabel.setText(clientGameController.getScore() + " pts");
         timeReduced.setText("");
         activity1Label.setStyle("-fx-text-fill: #000000");
         activity2Label.setStyle("-fx-text-fill: #000000");

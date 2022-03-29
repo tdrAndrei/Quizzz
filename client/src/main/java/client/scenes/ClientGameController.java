@@ -148,6 +148,8 @@ public class ClientGameController {
             gameId = serverUtils.joinMulti(mainController.getUser());
             serverUtils.getAndSetSession();  // Getting a websocket connection
             serverUtils.registerForEmojiMessages(gameId, this::EmojiHandler); //Using our connection to subscribe to "/topic/emoji/{gameId}
+            setVisibilityOfEmojiChat(true);
+            emptyEmojiList();
             mainController.showWaitingRoom();
             waitingRoomController.setGameId(gameId);
 
@@ -156,6 +158,7 @@ public class ClientGameController {
             remainingJokers = List.of(Joker.ELIMINATE, Joker.DOUBLEPOINTS, Joker.SKIPQUESTION);
 
             gameId = serverUtils.joinSolo(mainController.getUser());
+            setVisibilityOfEmojiChat(false);
         }
 
         availableJokers = EnumSet.copyOf(remainingJokers);
@@ -470,7 +473,7 @@ public class ClientGameController {
         PathTransition fadeOut = new PathTransition(Duration.seconds(3), moveVertically, newPoints);
         fadeOut.play();
 
-        pointsLabel.setText(score + " pts");
+        mainController.setPointsForAllScenes(score);
         System.out.println(score);
     }
 
