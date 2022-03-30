@@ -20,6 +20,51 @@ public class QuestionService {
         this.numActivities = (int) this.repo.count();
     }
 
+    public Question makeChooseConsumption(double seconds) {
+
+        List<Activity> answers = new ArrayList<>();
+
+        int index = rm.nextInt(numActivities);
+
+        while (processIndex(index, answers)){
+            index = rm.nextInt(numActivities);
+        }
+
+        Activity main = answers.get(0);
+        long mainConsumption = main.getConsumption_in_wh();
+        List<Long> consumptions = new ArrayList<>();
+
+        while (consumptions.size() < 2){
+
+            long p = 1;
+            while (p <= mainConsumption)
+                p *= 10L;
+
+            int c = rm.nextInt(4);
+            if (c == 0)
+                p = p/2L;
+            if (c == 1)
+                p = p/4L;
+            if (c == 2)
+                p = p/5L;
+            if (c == 3)
+                p = p/10L;
+
+            int dice = rm.nextInt(2);
+            if (dice == 0)
+                p = p + mainConsumption;
+            else
+                p = mainConsumption - p;
+
+            consumptions.add(p);
+
+        }
+
+        consumptions.add(mainConsumption);
+
+        return new ChooseConsumptionQuestion("How much energy does it take?", mainConsumption, answers, seconds, consumptions);
+    }
+
     public Question makeCompare(double seconds) {
         List<Activity> answers = new ArrayList<>();
         List<Activity> equalCons = new ArrayList<>();
@@ -56,14 +101,14 @@ public class QuestionService {
     public Question makeMultipleChoice(double seconds) {
         List<Activity> answers = new ArrayList<>();
 
-        int index1 = rm.nextInt(this.numActivities);
+        int index1 = rm.nextInt(numActivities);
         while (processIndex(index1, answers)){
-            index1 = rm.nextInt(this.numActivities);
+            index1 = rm.nextInt(numActivities);
         }
 
-        int index2 = rm.nextInt(this.numActivities);
+        int index2 = rm.nextInt(numActivities);
         while (Math.abs(index1 - index2) <= 1 || processIndex(index2, answers)) {
-            index2 = rm.nextInt(this.numActivities);
+            index2 = rm.nextInt(numActivities);
         }
 
         int index3 = (index1 + index2) / 2;
@@ -136,7 +181,7 @@ public class QuestionService {
     public Question makeEstimate(double seconds) {
         Activity a = null;
         boolean flag = false;
-        long randomIndex = rm.nextInt(this.numActivities);
+        long randomIndex = rm.nextInt(numActivities);
         while (!flag){
             if (this.repo.findById(randomIndex).isPresent()
                     && this.repo.findById(randomIndex).get().getConsumption_in_wh() > 5
@@ -151,7 +196,7 @@ public class QuestionService {
                 //just for testing
                 System.out.println("deleted corrupt activity");
             }
-            randomIndex = rm.nextInt(this.numActivities);
+            randomIndex = rm.nextInt(numActivities);
         }
         String title = "How much energy does this activity take?";
 

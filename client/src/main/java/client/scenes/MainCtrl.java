@@ -49,6 +49,9 @@ public class MainCtrl {
     private CompareQuestionController compareQuestionController;
     private Scene compareQuestionScene;
 
+    private ChooseConsumptionController chooseConsumptionController;
+    private Scene chooseConsumptionScene;
+
     private LeaderboardSoloController leaderboardSoloController;
     private Scene leaderboardSoloScene;
 
@@ -79,6 +82,7 @@ public class MainCtrl {
                            Pair<MainMenuController, Parent> mainMenu,
                            Pair<MultiQuestionController, Parent> multiQuestion,
                            Pair<CompareQuestionController, Parent> compareQuestion,
+                           Pair<ChooseConsumptionController, Parent> chooseConsumptionQuestion,
                            Pair<LeaderboardSoloController, Parent> leaderboardSolo,
                            Pair<EstimateQuestionController, Parent> estimateQuestion,
                            ClientGameController clientGameController, Pair<WaitingRoomController, Parent> waitingRoom, Pair<AdminController, Parent> adminController,
@@ -98,6 +102,9 @@ public class MainCtrl {
 
         this.compareQuestionController = compareQuestion.getKey();
         this.compareQuestionScene = new Scene(compareQuestion.getValue());
+
+        this.chooseConsumptionController = chooseConsumptionQuestion.getKey();
+        this.chooseConsumptionScene = new Scene(chooseConsumptionQuestion.getValue());
 
         this.leaderboardSoloController = leaderboardSolo.getKey();
         this.leaderboardSoloScene = new Scene(leaderboardSolo.getValue());
@@ -119,7 +126,7 @@ public class MainCtrl {
 
         this.clientGameController = clientGameController;
 
-        questionControllers = List.of(multiCtrl, estimateQuestionController, compareQuestionController);
+        questionControllers = List.of(multiCtrl, estimateQuestionController, compareQuestionController, chooseConsumptionController);
 
         showLogin();
         primaryStage.show();
@@ -262,6 +269,11 @@ public class MainCtrl {
     public void showCompare() {
         currentSceneController = compareQuestionController;
         primaryStage.setScene(compareQuestionScene);
+    }
+
+    public void showChooseConsumption() {
+        currentSceneController = chooseConsumptionController;
+        primaryStage.setScene(chooseConsumptionScene);
     }
 
     public void joinGame(boolean isMulti) {
