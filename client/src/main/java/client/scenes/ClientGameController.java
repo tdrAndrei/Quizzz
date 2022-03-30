@@ -1,60 +1,66 @@
 package client.scenes;
 
+import client.EmojiChat;
 import client.utils.ServerUtils;
 import commons.Messages.*;
 import javafx.animation.PathTransition;
 import commons.Player;
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.scene.Parent;
-import javafx.scene.control.*;
 import javafx.scene.control.Label;
-import javafx.scene.effect.BlendMode;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.VBox;
-import javafx.util.Pair;
-import java.awt.Color;
-import java.util.ArrayList;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import javafx.scene.shape.VLineTo;
 import javafx.util.Duration;
+import javafx.util.Pair;
+import java.awt.*;
+import java.util.*;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 public class ClientGameController {
 
+    private GameState status;
+    private GameMode gameMode;
+
+    public enum GameState {
+        NEW_QUESTION,
+        SHOW_ANSWER,
+        SUBMITTED_ANSWER,
+        SHOW_LEADERBOARD
+    }
+
+    public enum GameMode {
+        NOT_PLAYING,
+        MULTI,
+        SOLO
+    }
+
+    public GameState getStatus() {
+        return status;
+    }
+
+    public void setStatus(GameState status) {
+        this.status = status;
+    }
+
     private MultiQuestionController multiQuestionController;
     private EstimateQuestionController estimateQuestionController;
+    private CompareQuestionController compareQuestionController;
     private LeaderboardSoloController leaderboardSoloController;
     private WaitingRoomController waitingRoomController;
     private Long gameId;
     private Color[] timebarColors;
-    private boolean usedTimeJokerForCurrentQ;
-    private Timer timer;
-
-    private boolean isPlaying = false;
-
-    private final List<Image> emojiImageList;
+    private boolean doublePointsForThisRound;
+    private Timer progressBarThread;
+    private final EmojiChat emojiChat;
 
     private final MainCtrl mainController;
     private final ServerUtils serverUtils;
 
-    private ObservableList<Pair<String, Integer>> emojiChatList;
-    private List<Consumer<ObservableList<Pair<String, Integer>>>> consumerOfEmojiList;
-
-    private Parent multiQuestionScene;
-    private Parent estimateQuestionScene;
-    private boolean skipQuestionJokerUsed = false;
-    private boolean eliminateJokerUsed = false;
-    private boolean doublePointsJokerUsed = false;
-    private boolean disableJokerUsage = false;
-
-    private Image usedJoker = new Image("/client.photos/usedJoker.png");
+    private List<Joker> remainingJokers;
+    private EnumSet<Joker> availableJokers;
 
     private double maxTime;
     private double timeLeft;
@@ -63,124 +69,78 @@ public class ClientGameController {
     public ClientGameController(MainCtrl mainController, ServerUtils serverUtils) {
         this.mainController = mainController;
         this.serverUtils = serverUtils;
-        consumerOfEmojiList = new ArrayList<>();
-        emojiImageList = new ArrayList<>();
-        emojiImageList.add(new Image("client.photos/angryEmoji.gif"));
-        emojiImageList.add(new Image("client.photos/eyebrowEmoji.gif"));
-        emojiImageList.add(new Image("client.photos/devilEmoji.gif"));
-        emojiImageList.add(new Image("client.photos/sunglassesEmoji.gif"));
-        emojiImageList.add(new Image("client.photos/confoundedEmoji.gif"));
+
         timebarColors = new Color[]{Color.green, Color.yellow, Color.red};
-        timer = new Timer();
+        progressBarThread = new Timer();
+
+        emojiChat = new EmojiChat();
     }
 
     public void initialize(Pair<MultiQuestionController, Parent> multiQuestion,
                            Pair<EstimateQuestionController, Parent> estimateQuestion,
+                           Pair<CompareQuestionController, Parent> compareQuestion,
                            Pair<LeaderboardSoloController, Parent> leaderboard,
                            Pair<WaitingRoomController, Parent> waitingRoom) {
         this.multiQuestionController = multiQuestion.getKey();
         this.estimateQuestionController = estimateQuestion.getKey();
+        this.compareQuestionController = compareQuestion.getKey();
         this.leaderboardSoloController = leaderboard.getKey();
         this.waitingRoomController = waitingRoom.getKey();
 
-        this.multiQuestionScene = multiQuestion.getValue();
-        this.estimateQuestionScene = estimateQuestion.getValue();
-
-        consumerOfEmojiList.add(multiQuestionController::subscribeToEmojiUpdate);
-        consumerOfEmojiList.add(estimateQuestionController::subscribeToEmojiUpdate);
-    }
-
-
-    public void EmojiHandler(EmojiMessage message) {
-        Platform.runLater(() -> {
-            emojiChatList.add(new Pair<>(message.getUsername(), message.getEmojiIndex()));
-            int size = emojiChatList.size();
-            if (size > 3) {
-                emojiChatList.remove(0);
-            }
-            for (var consumer : consumerOfEmojiList) {
-                consumer.accept(emojiChatList);
-            }
-        });
-    }
-
-    public void setVisibilityOfEmojiChat(boolean enabled) {
-        ((VBox) multiQuestionScene.lookup("#eVbox")).setVisible(enabled);
-        ((VBox) estimateQuestionScene.lookup("#eVbox")).setVisible(enabled);
-    }
-
-    public void emptyEmojiList() {
-        emojiChatList = FXCollections.observableArrayList();
-        for (var consumer : consumerOfEmojiList) {
-            consumer.accept(emojiChatList);
-        }
+        emojiChat.addClient(multiQuestionController)
+                .addClient(estimateQuestionController)
+                .addClient(compareQuestionController);
     }
 
     public void startPolling(boolean isMulti) {
-        isPlaying = true;
-        enableAllJokers();
-        setVisibilityOfEmojiChat(isMulti);
-        emptyEmojiList();
+
         if (isMulti) {
-            multiQuestionController.resetMulti();
-            estimateQuestionController.resetMulti();
-            multiQuestionController.setMulti(true);
-            estimateQuestionController.setMulti(true);
+            this.gameMode = GameMode.MULTI;
+            remainingJokers = List.of(Joker.ELIMINATE, Joker.DOUBLEPOINTS, Joker.REDUCETIME);
+
             gameId = serverUtils.joinMulti(mainController.getUser());
+
             serverUtils.getAndSetSession();  // Getting a websocket connection
-            serverUtils.registerForEmojiMessages(gameId, this::EmojiHandler); //Using our connection to subscribe to "/topic/emoji/{gameId}
+            serverUtils.registerForEmojiMessages(gameId, emojiChat::emojiHandler); //Using our connection to subscribe to "/topic/emoji/{gameId}
+            emojiChat.setVisibility(true);
+            emojiChat.resetChat();
+
             mainController.showWaitingRoom();
             waitingRoomController.setGameId(gameId);
 
         } else {
-            multiQuestionController.resetSolo();
-            estimateQuestionController.resetSolo();
-            multiQuestionController.setMulti(false);
-            estimateQuestionController.setMulti(false);
+            this.gameMode = GameMode.SOLO;
+            remainingJokers = List.of(Joker.ELIMINATE, Joker.DOUBLEPOINTS, Joker.SKIPQUESTION);
+
             gameId = serverUtils.joinSolo(mainController.getUser());
+            emojiChat.setVisibility(false);
         }
-        Timer timer = new Timer();
-        timer.scheduleAtFixedRate( new TimerTask() {
+
+        availableJokers = EnumSet.copyOf(remainingJokers);
+        mainController.resetQuestionScenes(remainingJokers);
+
+
+        Timer pollingThread = new Timer();
+        pollingThread.scheduleAtFixedRate( new TimerTask() {
             @Override
             public void run() {
-                if (!isPlaying) {
-                    timer.cancel();
-                    return;
-                }
-                Message message = serverUtils.pollUpdate(gameId, mainController.getUser().getId());
-                try {
-                    interpretMessage(message);
-                } catch (InterruptedException ignored) {
-                }
-                if (message instanceof ShowLeaderboardMessage && ((ShowLeaderboardMessage) message).getGameProgress().equals("End")) {
-                    timer.cancel();
-                }
+            if (gameMode == GameMode.NOT_PLAYING) {
+                pollingThread.cancel();
+                return;
+            }
+            Message message = serverUtils.pollUpdate(gameId, mainController.getUser().getId());
+            try {
+                interpretMessage(message);
+            } catch (InterruptedException ignored) {
+            }
+            if (message instanceof ShowLeaderboardMessage && ((ShowLeaderboardMessage) message).getGameProgress().equals("End")) {
+                pollingThread.cancel();
+                gameMode = GameMode.NOT_PLAYING;
+            }
             }
         } , 0, 500);
     }
-    public void configureListView(ListView<Pair<String, Integer>> emojiChatView) {
-        emojiChatView.setCellFactory(param -> new ListCell<>() {
-            private ImageView imageView = new ImageView();
-            @Override
-            public void updateItem(Pair<String, Integer> valuePair, boolean empty) {
-                super.updateItem(valuePair, empty);
-                setContentDisplay(ContentDisplay.RIGHT);
-                setStyle("-fx-background-color: #ffc5ac");
-                if (empty) {
-                    setText(null);
-                    setGraphic(null);
-                } else {
-                    setDisable(true);
-                    imageView.setImage(emojiImageList.get(valuePair.getValue()));
-                    imageView.setFitHeight(32.0);
-                    imageView.setFitWidth(32.0);
-                    setText(valuePair.getKey() + ": ");
-                    setGraphic(imageView);
-                    getGraphic().setBlendMode(BlendMode.DARKEN);
-                }
-            }
-        });
-    }
+
     public void sendEmoji(int emojiIndex) {
         serverUtils.sendEmojiTest(gameId, mainController.getUser().getName(), emojiIndex, mainController.getUser().getId());
     }
@@ -188,129 +148,122 @@ public class ClientGameController {
     public void interpretMessage(Message message) throws InterruptedException {
         switch (message.getType()) {
             case "None":
-                NullMessage nullMessage = (NullMessage) message;
                 break;
+
             case "NewPlayers":
                 NewPlayersMessage newPlayersMessage = (NewPlayersMessage) message;
                 updateWaitingRoom(newPlayersMessage);
                 break;
+
             case "NewQuestion":
                 NewQuestionMessage newQuestionMessage = (NewQuestionMessage) message;
-                disableJokerUsage = false;
-                setUsedTimeJokerForCurrentQ(false);
-                if (newQuestionMessage.getQuestionType().equals("MC")) {
-                    Platform.runLater(() -> {
-                        prepareMCQ(newQuestionMessage);
-                    });
-                } else if (newQuestionMessage.getQuestionType().equals("Estimate")) {
-                    Platform.runLater(() -> {
-                        prepareEstimateQ(newQuestionMessage);
-                    });
-                }
-                break;
-            case "ShowLeaderboard":
-                ShowLeaderboardMessage showLeaderboardMessage = (ShowLeaderboardMessage) message;
-                prepareLeaderboard(showLeaderboardMessage);
-                break;
-            case "ShowCorrectAnswer":
-                CorrectAnswerMessage correctAnswerMessage = (CorrectAnswerMessage) message;
-                disableJokerUsage = true;
+
+                status = GameState.NEW_QUESTION;
+
+                remainingJokers.forEach(joker -> {
+                    if (joker != Joker.USED)
+                        availableJokers.add(joker);
+                });
+                
+                setDoublePointsForThisRound(false);
                 Platform.runLater(() -> {
-                    estimateQuestionController.showAnswer(correctAnswerMessage);
-                    multiQuestionController.showAnswer(correctAnswerMessage);
+                    switch (newQuestionMessage.getQuestionType()) {
+                        case "MC": mainController.showMultiQuestion(); break;
+                        case "Estimate": mainController.showEstimate(); break;
+                        case "Compare": mainController.showCompare(); break;
+                    }
+
+                    setMaxTime(newQuestionMessage.getTime());
+                    setTimeLeft(newQuestionMessage.getTime());
+                    mainController.prepareCurrentScene(newQuestionMessage);
                 });
                 break;
+
+            case "ShowLeaderboard":
+                ShowLeaderboardMessage showLeaderboardMessage = (ShowLeaderboardMessage) message;
+                status = GameState.SHOW_LEADERBOARD;
+                prepareLeaderboard(showLeaderboardMessage);
+                break;
+
+            case "ShowCorrectAnswer":
+                CorrectAnswerMessage correctAnswerMessage = (CorrectAnswerMessage) message;
+                status = GameState.SHOW_ANSWER;
+                progressBarThread.cancel();
+
+                availableJokers.clear();
+
+                Platform.runLater(() -> {
+                    mainController.showAnswerInCurrentScene(correctAnswerMessage);
+                });
+                break;
+
             case "ReduceTime":
                 ReduceTimeMessage reduceTimeMessage = (ReduceTimeMessage) message;
                 Platform.runLater(() -> {
                     setTimeLeft(reduceTimeMessage.getNewTime());
-                    multiQuestionController.showTimeReduced(reduceTimeMessage.getUserName());
-                    estimateQuestionController.showTimeReduced(reduceTimeMessage.getUserName());
+                    mainController.showTimeReducedInCurrentScene(reduceTimeMessage.getUserName());
                 });
                 break;
-            default:
+        }
+    }
+
+    public void useJoker(Joker joker, Runnable onSuccess) {
+        if ( availableJokers.contains(joker) ) {
+
+            availableJokers.remove(joker);
+            remainingJokers = remainingJokers.stream().map(x -> {
+               if (x == joker)
+                   return Joker.USED;
+               else
+                   return x;
+            }).collect(Collectors.toList());
+            
+            mainController.setJokerPics(remainingJokers);
+            onSuccess.run();
         }
     }
 
     public void exitGame() {
-        isPlaying = false;
-        timer.cancel();
+        gameMode = GameMode.NOT_PLAYING;
+        progressBarThread.cancel();
         serverUtils.leaveGame(this.getGameId(), mainController.getUser().getId());
+        mainController.showMainMenu();
+    }
+
+    public boolean isPlaying() {
+        return gameMode != GameMode.NOT_PLAYING;
     }
 
     public Long getGameId() {
         return gameId;
     }
 
-    public boolean isPlaying() {
-        return isPlaying;
-    }
-
-    public void setPlaying(boolean playing) {
-        isPlaying = playing;
-    }
-
     public void submitAnswer(long answer) {
+        if (status != GameState.NEW_QUESTION || timeLeft <= 0)
+            return;
+
+        status = GameState.SUBMITTED_ANSWER;
+        mainController.lockCurrentScene();
         serverUtils.submitAnswer(getGameId(), mainController.getUser().getId(), answer);
+        availableJokers.remove(Joker.ELIMINATE);
     }
 
     public void doublePoint() {
-        serverUtils.useDoublePointsJoker(getGameId(), mainController.getUser().getId());
+        serverUtils.useDoublePointsJoker(gameId, mainController.getUser().getId());
+        setDoublePointsForThisRound(true);
     }
 
     public long eliminateJoker() {
-        return serverUtils.eliminateJoker(getGameId());
+        return serverUtils.eliminateJoker(gameId);
     }
 
     public void skipQuestion() {
         serverUtils.useNewQuestionJoker(gameId);
-        timer.cancel();
+        progressBarThread.cancel();
     }
 
-    public void timeJoker(long userId) {
-        serverUtils.useTimeJoker(gameId, userId);
-    }
-
-    public void enableAllJokers() {
-        skipQuestionJokerUsed = false;
-        eliminateJokerUsed = false;
-        doublePointsJokerUsed = false;
-    }
-
-    public boolean isSkipQuestionJokerUsed() {
-        return skipQuestionJokerUsed;
-    }
-
-    public void setSkipQuestionJokerUsed(boolean skipQuestionJokerUsed) {
-        this.skipQuestionJokerUsed = skipQuestionJokerUsed;
-    }
-
-    public boolean isEliminateJokerUsed() {
-        return eliminateJokerUsed;
-    }
-
-    public void setEliminateJokerUsed(boolean eliminateJokerUsed) {
-        this.eliminateJokerUsed = eliminateJokerUsed;
-    }
-
-    public boolean isDoublePointsJokerUsed() {
-        return doublePointsJokerUsed;
-    }
-
-    public void setDoublePointsJokerUsed(boolean doublePointsJokerUsed) {
-        this.doublePointsJokerUsed = doublePointsJokerUsed;
-    }
-
-    public boolean isDisableJokerUsage() {
-        return disableJokerUsage;
-    }
-
-    public void setDisableJokerUsage(boolean disableJokerUsage) {
-        this.disableJokerUsage = disableJokerUsage;
-    }
-
-    public Image getUsedJoker() {
-        return usedJoker;
+    public void timeJoker() {
+        serverUtils.useTimeJoker(gameId, mainController.getUser().getId());
     }
 
     public double getTimeLeft(){
@@ -336,8 +289,8 @@ public class ClientGameController {
     public void updateProgressBarColor(double timeLeft, double maxTime, ProgressBar progressBar){
 
         float[] newComponents = new float[3];
-        float[] upperColor = new float[3];
-        float[] lowerColor = new float[3];
+        float[] upperColor;
+        float[] lowerColor;
         double percent = 1;
 
         if (timeLeft >= maxTime/2) {
@@ -361,9 +314,8 @@ public class ClientGameController {
     }
 
     public void startTimer(ProgressBar progressBar, Label timeText){
-
-        timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
+        progressBarThread = new Timer();
+        progressBarThread.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
                 double maxTime = getMaxTime();
@@ -372,7 +324,6 @@ public class ClientGameController {
                 Platform.runLater(() -> updateProgressBar(timeLeft, maxTime, progressBar, timeText));
             }
         }, 0, 100);
-
     }
 
     public void updateProgressBar(double timeLeft, double maxTime, ProgressBar progressBar, Label timer){
@@ -383,6 +334,7 @@ public class ClientGameController {
             updateProgressBarColor(timeLeft, maxTime, progressBar);
         } else {
             progressBar.setProgress(0.0);
+            mainController.lockCurrentScene();
             int displayText = 0;
             timer.setText(displayText + "S");
         }
@@ -417,27 +369,8 @@ public class ClientGameController {
         }
     }
 
-    public void prepareMCQ(NewQuestionMessage newQuestionMessage){
-        mainController.showMultiQuestion();
-        multiQuestionController.setChosenAnswer(-1);
-        setMaxTime(newQuestionMessage.getTime());
-        setTimeLeft(newQuestionMessage.getTime());
-        multiQuestionController.setJokersPic();
-        multiQuestionController.enableSubmittingAnswers();
-        multiQuestionController.showQuestion(newQuestionMessage);
-        multiQuestionController.setQuestions(newQuestionMessage.getActivities(), newQuestionMessage.getImagesBytes());
-    }
-
-    public void prepareEstimateQ(NewQuestionMessage newQuestionMessage){
-        mainController.showEstimate();
-        setMaxTime(newQuestionMessage.getTime());
-        setTimeLeft(newQuestionMessage.getTime());
-        estimateQuestionController.setJokersPic();
-        estimateQuestionController.showQuestion(newQuestionMessage);
-    }
     public void updateWaitingRoom(NewPlayersMessage newPlayersMessage) {
         List<Player> playerList = newPlayersMessage.getPlayerList();
-        String userName = mainController.getUser().getName();
         waitingRoomController.showPlayers(playerList);
         waitingRoomController.showEntries();
     }
@@ -449,7 +382,7 @@ public class ClientGameController {
         int currScore = Integer.parseInt(string[0]);
         int pointsAdded = score - currScore;
 
-        if (isUsedTimeJokerForCurrentQ())
+        if (hasDoublePointsForThisRound())
             newPoints.setText(" + 2x " + pointsAdded / 2);
         else
             newPoints.setText(" + " + pointsAdded);
@@ -468,20 +401,35 @@ public class ClientGameController {
         PathTransition fadeOut = new PathTransition(Duration.seconds(3), moveVertically, newPoints);
         fadeOut.play();
 
-        pointsLabel.setText(score + " pts");
-
+        mainController.setPointsForAllScenes(score);
     }
 
-    public void setUsedTimeJokerForCurrentQ(boolean usedTimeJokerForCurrentQ) {
-        this.usedTimeJokerForCurrentQ = usedTimeJokerForCurrentQ;
+    public void setDoublePointsForThisRound(boolean doublePointsForThisRound) {
+        this.doublePointsForThisRound = doublePointsForThisRound;
     }
 
-    public boolean isUsedTimeJokerForCurrentQ() {
-        return usedTimeJokerForCurrentQ;
+    public boolean hasDoublePointsForThisRound() {
+        return doublePointsForThisRound;
     }
 
     public Timer getTimer() {
-        return timer;
+        return progressBarThread;
+    }
+
+    public GameMode getGameMode() {
+        return gameMode;
+    }
+
+    public void setGameMode(GameMode gameMode) {
+        this.gameMode = gameMode;
+    }
+
+    public List<Joker> getRemainingJokers() {
+        return remainingJokers;
+    }
+
+    public EnumSet<Joker> getAvailableJokers() {
+        return availableJokers;
     }
 
 }

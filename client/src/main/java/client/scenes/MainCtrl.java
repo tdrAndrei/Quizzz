@@ -16,17 +16,21 @@
 package client.scenes;
 
 import client.utils.ServerUtils;
+import commons.Messages.CorrectAnswerMessage;
+import commons.Messages.NewQuestionMessage;
 import commons.User;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 
 
 import javax.inject.Inject;
 import java.io.IOException;
+import java.util.List;
 
 public class MainCtrl {
 
@@ -41,6 +45,9 @@ public class MainCtrl {
 
     private MultiQuestionController multiCtrl;
     private Scene multiScene;
+
+    private CompareQuestionController compareQuestionController;
+    private Scene compareQuestionScene;
 
     private LeaderboardSoloController leaderboardSoloController;
     private Scene leaderboardSoloScene;
@@ -62,18 +69,22 @@ public class MainCtrl {
 
     private ClientGameController clientGameController;
 
+    private List<QuestionScene> questionControllers;
+    private QuestionScene currentSceneController;
+
     @Inject
     private ServerUtils server;
 
     public void initialize(Stage primaryStage, Pair<LoginController, Parent> login,
                            Pair<MainMenuController, Parent> mainMenu,
                            Pair<MultiQuestionController, Parent> multiQuestion,
+                           Pair<CompareQuestionController, Parent> compareQuestion,
                            Pair<LeaderboardSoloController, Parent> leaderboardSolo,
                            Pair<EstimateQuestionController, Parent> estimateQuestion,
                            ClientGameController clientGameController, Pair<WaitingRoomController, Parent> waitingRoom, Pair<AdminController, Parent> adminController,
                            Pair<AddActivityController, Parent> addActivity,
-                           Pair<EditActivityController, Parent> editActivity
-    ) {
+                           Pair<EditActivityController, Parent> editActivity) {
+
         this.primaryStage = primaryStage;
 
         this.loginController = login.getKey();
@@ -84,6 +95,9 @@ public class MainCtrl {
 
         this.multiCtrl = multiQuestion.getKey();
         this.multiScene = new Scene(multiQuestion.getValue());
+
+        this.compareQuestionController = compareQuestion.getKey();
+        this.compareQuestionScene = new Scene(compareQuestion.getValue());
 
         this.leaderboardSoloController = leaderboardSolo.getKey();
         this.leaderboardSoloScene = new Scene(leaderboardSolo.getValue());
@@ -105,6 +119,8 @@ public class MainCtrl {
 
         this.clientGameController = clientGameController;
 
+        questionControllers = List.of(multiCtrl, estimateQuestionController, compareQuestionController);
+
         showLogin();
         primaryStage.show();
 
@@ -116,6 +132,47 @@ public class MainCtrl {
                 e.printStackTrace();
             }
         });
+    }
+
+    public void resetQuestionScenes(List<Joker> jokers) {
+        setJokerPics(jokers);
+        setPointsForAllScenes(0);
+        for ( QuestionScene controller : questionControllers ) {
+            //additional logic that can't be generalized is done in this method
+            //You need to override it in the specific controller
+            controller.reset();
+        }
+    }
+
+    public void setPointsForAllScenes(int score) {
+        questionControllers.forEach( q -> q.getPointsLabel().setText(score + " pts"));
+    }
+
+    public void setJokerPics(List<Joker> jokers) {
+        for ( QuestionScene controller : questionControllers ) {
+            //Setting the joker images for all scenes
+            int index = 0;
+            for (Joker joker : jokers) {
+                controller.getJokerPics().get(index).setImage(new Image(joker.getPath()));
+                index++;
+            }
+        }
+    }
+
+    public void lockCurrentScene() {
+        currentSceneController.lockAnswer();
+    }
+
+    public void prepareCurrentScene(NewQuestionMessage newQuestionMessage) {
+        currentSceneController.showQuestion(newQuestionMessage);
+    }
+
+    public void showAnswerInCurrentScene(CorrectAnswerMessage correctAnswerMessage) {
+        currentSceneController.showAnswer(correctAnswerMessage);
+    }
+
+    public void showTimeReducedInCurrentScene(String name) {
+        currentSceneController.showTimeReduced(name);
     }
 
     public void showLeaderboardSolo() {
@@ -170,6 +227,7 @@ public class MainCtrl {
     }
 
     public void showEstimate(){
+        currentSceneController = estimateQuestionController;
         primaryStage.setTitle("Quizzzz!");
         primaryStage.setScene(estimateQuestionScene);
         estimateQuestionScene.widthProperty().addListener(e -> {
@@ -197,9 +255,14 @@ public class MainCtrl {
     }
 
     public void showMultiQuestion() {
+        currentSceneController = multiCtrl;
         primaryStage.setScene(multiScene);
     }
 
+    public void showCompare() {
+        currentSceneController = compareQuestionController;
+        primaryStage.setScene(compareQuestionScene);
+    }
 
     public void joinGame(boolean isMulti) {
         clientGameController.startPolling(isMulti);

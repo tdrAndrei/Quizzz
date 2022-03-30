@@ -1,17 +1,11 @@
 package server.service;
 
-import commons.Activity;
-import commons.EstimateQuestion;
-import commons.MultiChoiceQuestion;
-import commons.Question;
+import commons.*;
 import org.springframework.stereotype.Service;
 import server.database.ActivityRepository;
 
 import java.io.File;
-import java.util.List;
-import java.util.Random;
-import java.util.ArrayList;
-import java.util.Comparator;
+import java.util.*;
 
 @Service
 public class QuestionService {
@@ -24,6 +18,39 @@ public class QuestionService {
         this.repo = repo;
         this.rm = rm;
         this.numActivities = (int) this.repo.count();
+    }
+
+    public Question makeCompare(double seconds) {
+        List<Activity> answers = new ArrayList<>();
+        List<Activity> equalCons = new ArrayList<>();
+
+        while (equalCons.size() < 2) {
+            int indexRand = rm.nextInt(numActivities);
+            Activity rand = this.repo.findById((long) indexRand).get();
+            Long consumption = rand.getConsumption_in_wh();
+            equalCons = this.repo.findByConsumption(consumption);
+        }
+        Collections.shuffle(equalCons);
+        Activity main = equalCons.get(0);
+        try {
+            int idx = 1;
+            while (equalCons.get(idx).getSource().equals(main.getSource()) || equalCons.get(idx).getTitle().equals(main.getTitle())) {
+                idx++;
+            }
+        } catch (IndexOutOfBoundsException e) {
+            return makeCompare(seconds);
+        }
+        answers.add(equalCons.get(1));
+        while (answers.size() < 3) {
+            Activity wrongAnswer = this.repo.findById((long) rm.nextInt(numActivities)).get();
+            if (!equalCons.contains(wrongAnswer)) {
+                answers.add(wrongAnswer);
+            }
+        }
+        Collections.shuffle(answers);
+        answers.add(main);
+        int answer = answers.indexOf(equalCons.get(1));
+        return new CompareQuestion("What can you do instead of ... ?", answer, answers, seconds);
     }
 
     public Question makeMultipleChoice(double seconds) {

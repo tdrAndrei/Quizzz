@@ -215,4 +215,14 @@ public class TestActivityRepository implements ActivityRepository {
     public <S extends Activity, R> R findBy(Example<S> example, Function<FluentQuery.FetchableFluentQuery<S>, R> queryFunction) {
         return null;
     }
+
+    @Override
+    public List<Activity> findByConsumption(Long consumption) {
+        return null;
+    }
+
+    @Override
+    public List<Activity> findByConsumption(Long lowerBound, Long upperBound) {
+        return null;
+    }
 }

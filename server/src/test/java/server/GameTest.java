@@ -142,6 +142,16 @@ class GameTest {
 
     @Test
     void ifStageEndedTest() throws InterruptedException {
+        game.getStageQueue().clear();
+        Question testMCQ = new MultiChoiceQuestion("Test", 2, new ArrayList<>(), 10);
+        game.setCurrentQuestion(testMCQ);
+        game.getStageQueue().offer(new MutablePair<>("Question", 1.0));
+        game.getStageQueue().offer(new MutablePair<>("CorrectAns", 1.0));
+        game.getStageQueue().offer(new MutablePair<>("Leaderboard", 1.0));
+        game.getStageQueue().offer(new MutablePair<>("Estimate", 1.0));
+        game.getStageQueue().offer(new MutablePair<>("CorrectAns", 1.0));
+        game.getStageQueue().offer(new MutablePair<>("End", 1.0));
+        game.setStartTime(new Date());
         Pair<String, Double> nextStage = game.getStageQueue().peek();
         game.setMaxTime(1.0);
         game.setStartTime(new Date());

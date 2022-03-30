@@ -14,13 +14,16 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.util.Pair;
+import java.io.ByteArrayInputStream;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
-public class MultiQuestionController implements Initializable, QuestionScene {
+public class CompareQuestionController implements Initializable, QuestionScene {
 
     @FXML
     private ListView<Pair<String, Integer>> emojiChatView;
@@ -77,6 +80,12 @@ public class MultiQuestionController implements Initializable, QuestionScene {
     private Label questionLabel;
 
     @FXML
+    private Label questionImageLabel;
+
+    @FXML
+    private ImageView questionImage;
+
+    @FXML
     private Label timeText;
 
     @FXML
@@ -100,17 +109,19 @@ public class MultiQuestionController implements Initializable, QuestionScene {
     @FXML
     private Label newPoints;
 
-    private UIController uiController;
-
     private long chosenAnswer;
     private List<ImageView> jokerPics;
+
+    private UIController uiController;
+
+    private final Border selectedAnswerBorder = new Border(new BorderStroke(new Color(1, 0.9, 0, 0.5), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(5)));
 
     private MainCtrl mainCtrl;
     private final ClientGameController clientGameController;
     private final ServerUtils serverUtils;
 
     @Inject
-    public MultiQuestionController(MainCtrl mainCtrl, ClientGameController clientGameController, ServerUtils serverUtils){
+    public CompareQuestionController(MainCtrl mainCtrl, ClientGameController clientGameController, ServerUtils serverUtils){
         this.mainCtrl = mainCtrl;
         this.clientGameController = clientGameController;
         this.serverUtils = serverUtils;
@@ -129,6 +140,8 @@ public class MultiQuestionController implements Initializable, QuestionScene {
     public void showQuestion(NewQuestionMessage message) {
         uiController.showQuestion(message);
         setChosenAnswer(-1);
+        questionImage.setImage(new Image(new ByteArrayInputStream(message.getImagesBytes().get(3))));
+        questionImageLabel.setText(message.getActivities().get(3).getTitle());
         clientGameController.startTimer(progressBar, timeText);
     }
 
@@ -211,6 +224,7 @@ public class MultiQuestionController implements Initializable, QuestionScene {
     @Override
     public void reset() {
     }
+
     @Override
     public Label getPointsLabel() {
         return this.pointsLabel;
