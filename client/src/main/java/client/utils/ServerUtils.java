@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 
+import commons.Activity;
 import commons.LeaderboardEntry;
 import commons.Messages.EmojiMessage;
 import commons.Messages.Message;
@@ -117,6 +118,14 @@ public class ServerUtils {
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
                 .get(new GenericType<List<LeaderboardEntry>>() {});
+    }
+
+    public List<Activity> getActivties() {
+        return ClientBuilder.newClient(new ClientConfig()) //
+                .target(SERVER).path("api/admin/display") //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .get(new GenericType<List<Activity>>() {});
     }
 
     public LeaderboardEntry addLeaderboardEntry(LeaderboardEntry leaderboardEntry) {
@@ -227,6 +236,32 @@ public class ServerUtils {
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .get();
+    }
+    public Activity addActivity(Activity activity) {
+        return ClientBuilder.newClient(new ClientConfig()) //
+                .target(SERVER).path("api/admin/add") //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .post(Entity.entity(activity, APPLICATION_JSON), Activity.class);
+    }
+
+    public void updateActivity(Activity activity, String title, long consumption, String source){
+        ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/admin/edit/" + activity.getId())
+                .queryParam("title", title)
+                .queryParam("consumption", consumption)
+                .queryParam("source", source)
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .put(Entity.entity(activity, APPLICATION_JSON), Activity.class);
+    }
+
+    public Activity getActivityById(long id){
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/admin/getById/" + id)
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .get(new GenericType<Activity>() {});
     }
 
     public Quote addQuote(Quote quote) {

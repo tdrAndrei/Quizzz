@@ -45,11 +45,20 @@ public class MainCtrl {
     private LeaderboardSoloController leaderboardSoloController;
     private Scene leaderboardSoloScene;
 
+    private AdminController adminController;
+    private Scene adminScene;
+
     private EstimateQuestionController estimateQuestionController;
     private Scene estimateQuestionScene;
 
     private WaitingRoomController waitingRoomController;
     private Scene waitingRoomScene;
+
+    private AddActivityController addActivityController;
+    private Scene addActivityScene;
+
+    private EditActivityController editActivityController;
+    private Scene editActivityScene;
 
     private ClientGameController clientGameController;
 
@@ -61,7 +70,10 @@ public class MainCtrl {
                            Pair<MultiQuestionController, Parent> multiQuestion,
                            Pair<LeaderboardSoloController, Parent> leaderboardSolo,
                            Pair<EstimateQuestionController, Parent> estimateQuestion,
-                           ClientGameController clientGameController, Pair<WaitingRoomController, Parent> waitingRoom ) {
+                           ClientGameController clientGameController, Pair<WaitingRoomController, Parent> waitingRoom, Pair<AdminController, Parent> adminController,
+                           Pair<AddActivityController, Parent> addActivity,
+                           Pair<EditActivityController, Parent> editActivity
+    ) {
         this.primaryStage = primaryStage;
 
         this.loginController = login.getKey();
@@ -81,6 +93,15 @@ public class MainCtrl {
 
         this.waitingRoomController = waitingRoom.getKey();
         this.waitingRoomScene = new Scene(waitingRoom.getValue());
+
+        this.adminController = adminController.getKey();
+        this.adminScene = new Scene(adminController.getValue());
+
+        this.addActivityController = addActivity.getKey();
+        this.addActivityScene = new Scene(addActivity.getValue());
+
+        this.editActivityController = editActivity.getKey();
+        this.editActivityScene = new Scene(editActivity.getValue());
 
         this.clientGameController = clientGameController;
 
@@ -128,6 +149,24 @@ public class MainCtrl {
         waitingRoomController.resetState();
         primaryStage.setScene(waitingRoomScene);
 
+    }
+
+    public void showAdmin() {
+        primaryStage.setTitle("Quizzzz!");
+        adminController.refresh();
+        primaryStage.setScene(adminScene);
+    }
+
+    public void showAddActivity() {
+        primaryStage.setTitle("Quizzzz!");
+        primaryStage.setScene(addActivityScene);
+    }
+
+    public void showEditActivity(long id){
+        editActivityController.setCurrent(server.getActivityById(id));
+        editActivityController.resetBoxes();
+        primaryStage.setTitle("Quizzzz!");
+        primaryStage.setScene(editActivityScene);
     }
 
     public void showEstimate(){
