@@ -37,7 +37,6 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException {
-
         var login = FXML.load(LoginController.class, "client", "scenes", "Login.fxml");
         var mainMenu = FXML.load(MainMenuController.class, "client", "scenes", "main.fxml");
         var multiQuestion = FXML.load(MultiQuestionController.class, "client", "scenes", "multiQuestion.fxml");
@@ -47,10 +46,13 @@ public class Main extends Application {
         var estimateQuestion = FXML.load(EstimateQuestionController.class, "client", "scenes", "estimateQuestion.fxml");
         var compareQuestion = FXML.load(CompareQuestionController.class, "client", "scenes", "compareQuestion.fxml");
         var waitingRoom = FXML.load(WaitingRoomController.class, "client", "scenes", "waitingRoom.fxml");
+        var adminPanel = FXML.load(AdminController.class, "client", "scenes", "admin.fxml");
+        var addActivityPanel = FXML.load(AddActivityController.class, "client", "scenes", "newActivity.fxml");
+        var editActivityPanel = FXML.load(EditActivityController.class, "client", "scenes", "editActivty.fxml");
         var clientGameController = INJECTOR.getInstance(ClientGameController.class);
-        clientGameController.initialize(multiQuestion, estimateQuestion, compareQuestion, leaderboardSolo, waitingRoom);
-        mainCtrl.initialize(primaryStage, login, mainMenu, multiQuestion, compareQuestion, leaderboardSolo, estimateQuestion, clientGameController, waitingRoom);
 
+        clientGameController.initialize(multiQuestion, estimateQuestion, compareQuestion, leaderboardSolo, waitingRoom);
+        mainCtrl.initialize(primaryStage, login, mainMenu, multiQuestion, compareQuestion, leaderboardSolo, estimateQuestion, clientGameController, waitingRoom, adminPanel, addActivityPanel, editActivityPanel);
     }
 
 }

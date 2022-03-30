@@ -9,6 +9,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 
 import javax.inject.Inject;
 import java.net.URL;
@@ -22,11 +23,13 @@ class LeaderboardEntryLabel {
     Label nameLabel;
     Label scoreLabel;
     Long entryId;
+    Integer rank;
 
     public LeaderboardEntryLabel(Long entryId, Label nameLabel, Label scoreLabel) {
         this.entryId = entryId;
         this.nameLabel=nameLabel;
         this.scoreLabel=scoreLabel;
+        this.rank = -1;
     }
 
     public Long getEntryId() {
@@ -57,19 +60,29 @@ class LeaderboardEntryLabel {
         this.scoreLabel = scoreLabel;
     }
 
+    public Integer getRank() {
+        return rank;
+    }
+
+    public void setRank(Integer rank) {
+        this.rank = rank;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof LeaderboardEntryLabel)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
         LeaderboardEntryLabel that = (LeaderboardEntryLabel) o;
-        return Objects.equals(scoreLabel, that.scoreLabel) && Objects.equals(nameLabel, that.nameLabel);
+        return Objects.equals(nameLabel, that.nameLabel) && Objects.equals(scoreLabel, that.scoreLabel) && Objects.equals(entryId, that.entryId) && Objects.equals(rank, that.rank);
     }
 
     @Override
     public String toString() {
-        return "LeaderboardEntry{" +
+        return "LeaderboardEntryLabel{" +
                 "nameLabel=" + nameLabel +
                 ", scoreLabel=" + scoreLabel +
+                ", entryId=" + entryId +
+                ", rank=" + rank +
                 '}';
     }
 }
@@ -89,10 +102,19 @@ public class LeaderboardSoloController implements Initializable {
     private Button replayButton;
 
     @FXML
+    private Button leaveButton;
+
+    @FXML
+    private HBox multiEndButtons;
+
+    @FXML
     private TableColumn<LeaderboardEntryLabel, Label> colName;
 
     @FXML
     private TableColumn<LeaderboardEntryLabel, Label> colScore;
+
+    @FXML
+    private TableColumn<LeaderboardEntryLabel, Integer> colRank;
 
     @FXML
     private GridPane grid;
@@ -159,6 +181,12 @@ public class LeaderboardSoloController implements Initializable {
             }
             entries.get(i).getNameLabel().setStyle("-fx-shape: \"M 0 100 L "+(minWidth)+" 100 L "+(minWidth+25)+" 50 L "+(minWidth)+" 0 L 0 0 L 0 100 z\"");
             entries.get(i).getNameLabel().setMinWidth(minWidth);
+
+            int pos = i+1;
+            while (pos > 1 && entries.get(pos-1).getScoreLabel().getText().equals(entries.get(pos-2).getScoreLabel().getText())) {
+                pos--;
+            }
+            entries.get(i).setRank(pos);
         }
         showEntries();
     }
@@ -173,7 +201,11 @@ public class LeaderboardSoloController implements Initializable {
                 entries.get(pos).getScoreLabel().setStyle("-fx-shape: \"M 0 50 L 150 100 L 700 100 L 700 0 L 150 0 L 0 50 z\"");
                 entries.get(pos).getScoreLabel().setMinWidth(width);
                 entries.get(pos).getScoreLabel().setMaxHeight(100);
-                rank.setText("You finished in " + (pos+1) + ordinal(pos+1) + " place!");
+                pos++;
+                while (pos > 1 && entries.get(pos-1).getScoreLabel().getText().equals(entries.get(pos-2).getScoreLabel().getText())) {
+                    pos--;
+                }
+                rank.setText("You finished in " + (pos) + ordinal(pos) + " place!");
                 break;
             }
             pos++;
@@ -181,6 +213,7 @@ public class LeaderboardSoloController implements Initializable {
         showEntries();
         leaderboardEntries.scrollTo(pos);
     }
+
     public static String ordinal(int n) {
         if (n % 100 > 3 && n % 100 < 21) {
             return "th";
@@ -200,6 +233,7 @@ public class LeaderboardSoloController implements Initializable {
         leaderboardEntries.setSelectionModel(null);
         colName.setCellValueFactory(q -> new SimpleObjectProperty<>(q.getValue().getNameLabel()));
         colScore.setCellValueFactory(q -> new SimpleObjectProperty<>(q.getValue().getScoreLabel()));
+        colRank.setCellValueFactory(q -> new SimpleObjectProperty<>(q.getValue().getRank()));
     }
 
     public void backToMainMenu(){
@@ -222,12 +256,13 @@ public class LeaderboardSoloController implements Initializable {
     }
 
     public void resetState() {
-        replayButton.setStyle("visibility: hidden");
-        mainMenuButton.setText("BACK");
-        mainMenuButton.setStyle("visibility: visible");
+        multiEndButtons.setMouseTransparent(true);
+        hideNode(leaveButton);
+        hideNode(replayButton);
+        showNode(mainMenuButton);
         entries.clear();
         leaderboardEntries.scrollTo(0);
-        rank.setText("");
+        rank.setText("ALL TIME SOLO LEADERBOARD");
     }
 
     public void initMulti(List<LeaderboardEntry> multiEntries, String userName, String gameProgress) {
@@ -309,14 +344,14 @@ public class LeaderboardSoloController implements Initializable {
     }
 
     public void setEndScreen() {
-        mainMenuButton.setText("LEAVE");
-        mainMenuButton.setStyle("visibility: visible");
-        replayButton.setStyle("visibility: visible");
-
+        hideNode(mainMenuButton);
+        showNode(leaveButton);
+        showNode(replayButton);
+        multiEndButtons.setMouseTransparent(false);
     }
 
     public void setMidScreen() {
-     mainMenuButton.setStyle("visibility: hidden");
+        hideNode(mainMenuButton);
     }
 
     public void replay() {
@@ -327,5 +362,13 @@ public class LeaderboardSoloController implements Initializable {
         grid.setPrefHeight(height);
     }
 
+    public void hideNode(Control c) {
+        c.setMouseTransparent(true);
+        c.setStyle("visibility: hidden");
+    }
 
+    public void showNode(Control c) {
+        c.setMouseTransparent(false);
+        c.setStyle("visibility: visible");
+    }
 }
