@@ -60,7 +60,8 @@ public class QuestionService {
             else
                 p = mainConsumption - p;
 
-            consumptions.add(p);
+            if (!consumptions.contains(p))
+                consumptions.add(p);
 
         }
 
