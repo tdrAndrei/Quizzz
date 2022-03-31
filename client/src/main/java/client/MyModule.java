@@ -31,7 +31,6 @@ public class MyModule implements Module {
         binder.bind(ServerUtils.class).in(Scopes.SINGLETON);
         binder.bind(MainMenuController.class).in(Scopes.SINGLETON);
         binder.bind(MultiQuestionController.class).in(Scopes.SINGLETON);
-        binder.bind(CompareQuestionController.class).in(Scopes.SINGLETON);
         binder.bind(ChooseConsumptionController.class).in(Scopes.SINGLETON);
         binder.bind(WaitingRoomController.class).in(Scopes.SINGLETON);
         binder.bind(LeaderboardSoloController.class).in(Scopes.SINGLETON);

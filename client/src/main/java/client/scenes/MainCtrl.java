@@ -49,9 +49,6 @@ public class MainCtrl {
     private MultiQuestionController multiCtrl;
     private Scene multiScene;
 
-    private CompareQuestionController compareQuestionController;
-    private Scene compareQuestionScene;
-
     private ChooseConsumptionController chooseConsumptionController;
     private Scene chooseConsumptionScene;
 
@@ -84,7 +81,6 @@ public class MainCtrl {
     public void initialize(Stage primaryStage, Pair<LoginController, Parent> login,
                            Pair<MainMenuController, Parent> mainMenu,
                            Pair<MultiQuestionController, Parent> multiQuestion,
-                           Pair<CompareQuestionController, Parent> compareQuestion,
                            Pair<ChooseConsumptionController, Parent> chooseConsumptionQuestion,
                            Pair<LeaderboardSoloController, Parent> leaderboardSolo,
                            Pair<EstimateQuestionController, Parent> estimateQuestion,
@@ -102,9 +98,6 @@ public class MainCtrl {
 
         this.multiCtrl = multiQuestion.getKey();
         this.multiScene = new Scene(multiQuestion.getValue());
-
-        this.compareQuestionController = compareQuestion.getKey();
-        this.compareQuestionScene = new Scene(compareQuestion.getValue());
 
         this.chooseConsumptionController = chooseConsumptionQuestion.getKey();
         this.chooseConsumptionScene = new Scene(chooseConsumptionQuestion.getValue());
@@ -129,7 +122,7 @@ public class MainCtrl {
 
         this.clientGameController = clientGameController;
 
-        questionControllers = List.of(multiCtrl, estimateQuestionController, compareQuestionController, chooseConsumptionController);
+        questionControllers = List.of(multiCtrl, estimateQuestionController, chooseConsumptionController);
 
         showLogin();
         primaryStage.show();
@@ -295,11 +288,6 @@ public class MainCtrl {
     public void showMultiQuestion() {
         currentSceneController = multiCtrl;
         primaryStage.setScene(multiScene);
-    }
-
-    public void showCompare() {
-        currentSceneController = compareQuestionController;
-        primaryStage.setScene(compareQuestionScene);
     }
 
     public void showChooseConsumption() {

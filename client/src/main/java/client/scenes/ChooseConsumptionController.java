@@ -229,11 +229,6 @@ public class ChooseConsumptionController implements Initializable, QuestionScene
 
     @Override
     public void reset() {
-        for (Button answer : answers) {
-            answer.setDisable(false);
-            answer.getStyleClass().remove("correctAnsButton");
-            answer.getStyleClass().remove("incorrectAnsButton");
-        }
     }
 
     public void setChosenAnswer(long chosenAnswer) {
