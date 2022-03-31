@@ -44,13 +44,21 @@ public class ActivityEntryController {
     }
 
     @PutMapping(path = "/edit/{activityId}")
-    public void updateActivity(@PathVariable("activityId") Long activityId, @RequestParam String title, @RequestParam long consumption, @RequestParam String source){
-        activityEntryService.updateById(activityId, title, consumption, source);
+    public ResponseEntity<?> updateActivity(@PathVariable("activityId") Long activityId, @RequestParam String title, @RequestParam long consumption, @RequestParam String source){
+        if (activityEntryService.updateById(activityId, title, consumption, source).isEmpty()){
+            return ResponseEntity.badRequest().build();
+        }
+
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping(path = "/getById/{activityId}")
-    public Activity getById(@PathVariable("activityId") Long id){
-        return activityEntryService.getById(id);
+    public ResponseEntity<Activity> getById(@PathVariable("activityId") Long id){
+        if (activityEntryService.findById(id) == null){
+            return ResponseEntity.badRequest().build();
+        } else {
+            return ResponseEntity.ok(activityEntryService.findById(id));
+        }
     }
 
     private static boolean isNullOrEmpty(String s) {
