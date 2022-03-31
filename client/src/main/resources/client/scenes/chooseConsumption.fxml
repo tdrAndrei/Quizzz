@@ -113,7 +113,7 @@
             </GridPane>
             <HBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="354.0" prefWidth="500.0" spacing="25.0" GridPane.columnSpan="3" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.rowSpan="2" GridPane.valignment="CENTER">
                <children>
-                  <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="400.0" prefWidth="400.0">
+                  <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="400.0" prefWidth="400.0" styleClass="questionBackground">
                      <children>
                         <GridPane layoutX="4.0" layoutY="4.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="300.0" prefWidth="300.0" styleClass="questionCardGrid" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="4.0">
                            <columnConstraints>
@@ -136,10 +136,6 @@
                      <padding>
                         <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
                      </padding>
-                     <styleClass>
-                        <String fx:value="questionBackground" />
-                        <String fx:value="highlightable" />
-                     </styleClass>
                      <HBox.margin>
                         <Insets />
                      </HBox.margin>
@@ -275,6 +271,12 @@
                   <Insets bottom="125.0" left="50.0" />
                </GridPane.margin>
             </VBox>
+            <Label fx:id="questionsLeftLabel" text="Label" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="BOTTOM">
+               <styleClass>
+                  <String fx:value="questionsLeftLabel" />
+                  <String fx:value="setFont" />
+               </styleClass>
+            </Label>
          </children>
          <padding>
             <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />

@@ -28,12 +28,14 @@ public class Game {
     private final Queue<Pair<String, Double>> stageQueue = new LinkedList<>();
     private final Map<Long, Message> diffMap = new HashMap<>();
     private int amountAnswered = 0;
+    private int numberOfQuestions;
     private final LeaderBoardEntryService leaderBoardEntryService;
 
     public Game(long id, QuestionService questionService, LeaderBoardEntryService leaderBoardEntryService) {
         this.id = id;
         this.leaderBoardEntryService = leaderBoardEntryService;
         this.questionService = questionService;
+        this.numberOfQuestions = 0;
 
         Random random = new Random();
         stageQueue.add(new MutablePair<>("Waiting", Double.MAX_VALUE));
@@ -50,6 +52,7 @@ public class Game {
             } else {
                 stageQueue.add(new MutablePair<>("Estimate", 20.0));
             }
+            numberOfQuestions ++;
             stageQueue.add(new MutablePair<>("CorrectAns", 3.0));
 
             if (i == 9) {
@@ -151,7 +154,11 @@ public class Game {
         diffMap.put(userId, new NullMessage("None"));
         return update;
     }
-
+    
+    public int getNumberOfQuestions() {
+        return this.numberOfQuestions;
+    }
+    
     public void removePlayer(long userId) {
         playerMap.remove(userId);
         diffMap.remove(userId);

@@ -86,6 +86,9 @@ public class MultiQuestionController implements Initializable, QuestionScene {
     private Label timeReduced;
 
     @FXML
+    private Label questionsLeftLabel;
+
+    @FXML
     private GridPane grid;
 
     @FXML
@@ -168,6 +171,11 @@ public class MultiQuestionController implements Initializable, QuestionScene {
     @Override
     public List<ImageView> getJokerPics() {
         return jokerPics;
+    }
+
+    @Override
+    public Label getQuestionsLeftLabel() {
+        return this.questionsLeftLabel;
     }
 
     public void useSkipQuestionJoker() {

@@ -39,6 +39,7 @@ public class ChooseConsumptionController implements Initializable, QuestionScene
     @FXML private Label timeText;
     @FXML private ImageView questionImage;
     @FXML private Label timeReduced;
+    @FXML private Label questionsLeftLabel;
     @FXML private Button exitButton;
     @FXML private GridPane grid;
 
@@ -127,6 +128,11 @@ public class ChooseConsumptionController implements Initializable, QuestionScene
     @Override
     public List<ImageView> getJokerPics() {
         return this.jokerPics;
+    }
+
+    @Override
+    public Label getQuestionsLeftLabel() {
+        return this.questionsLeftLabel;
     }
 
     @Override
