@@ -1,8 +1,8 @@
-## Team meeting week 7 - notes
+## Team meeting week 8 - notes
 Date:           29-03-2022\
 Main focus:     Final meeting & last deadlines\
 Chair:          Ana Bătrîneanu\
-Note taker:     Kayleigh Jones\
+Note taker:     Kayleigh Jones & Wiktor Grzybko\
 
 # Opening
 All team members were present physically, except Kayleigh due to COVID.
@@ -26,12 +26,11 @@ All team members were present physically, except Kayleigh due to COVID.
 - client functionality needs to be tested, fxml doesn't
 
 ## General
-paths: it's ok? 
-duplicate code 
-4 question types means 4 FXMLs & controllers, 
+- Image paths for admin panel are fine the way we do it now
+- For preventing duplicate code when creating different question types, abstract code to a utility class
 
 # Closing
-
+- We agreed to use a utility class for handling UI for the question types that are still to be implemented. 
 
 
 
