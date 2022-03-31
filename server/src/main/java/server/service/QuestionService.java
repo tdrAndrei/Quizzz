@@ -40,6 +40,8 @@ public class QuestionService {
             while (p <= mainConsumption)
                 p *= 10L;
 
+            p/=10;
+
             int c = rm.nextInt(4);
             if (c == 0)
                 p = p/2L;
@@ -50,6 +52,8 @@ public class QuestionService {
             if (c == 3)
                 p = p/10L;
 
+            p = Math.max(1, p);
+            
             int dice = rm.nextInt(2);
             if (dice == 0)
                 p = p + mainConsumption;
@@ -95,7 +99,7 @@ public class QuestionService {
         Collections.shuffle(answers);
         answers.add(main);
         int answer = answers.indexOf(equalCons.get(1));
-        return new CompareQuestion("What can you do instead of ... ?", answer, answers, seconds);
+        return new CompareQuestion("What can you do instead of ... ", answer, answers, seconds);
     }
 
     public Question makeMultipleChoice(double seconds) {

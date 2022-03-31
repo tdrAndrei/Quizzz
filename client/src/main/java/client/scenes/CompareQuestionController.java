@@ -14,100 +14,68 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ProgressBar;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.util.Pair;
-import java.io.ByteArrayInputStream;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 public class CompareQuestionController implements Initializable, QuestionScene {
 
-    @FXML
-    private ListView<Pair<String, Integer>> emojiChatView;
+    @FXML private ListView<Pair<String, Integer>> emojiChatView;
 
-    @FXML
-    private Node emojiChatContainer;
+    @FXML private Node emojiChatContainer;
 
-    @FXML
-    private ImageView doublePointsJoker;
+    @FXML private ImageView doublePointsJoker;
 
-    @FXML
-    private ImageView eliminateJoker;
+    @FXML private ImageView eliminateJoker;
 
-    @FXML
-    private ImageView skipQuestionJoker;
+    @FXML private ImageView skipQuestionJoker;
 
-    @FXML
-    private HBox jokerContainer;
+    @FXML private HBox jokerContainer;
 
-    @FXML
-    private AnchorPane ans1pane;
+    @FXML private AnchorPane ans1pane;
 
-    @FXML
-    private AnchorPane ans2pane;
+    @FXML private AnchorPane ans2pane;
 
-    @FXML
-    private AnchorPane ans3pane;
+    @FXML private AnchorPane ans3pane;
 
-    @FXML
-    private Button exitButton;
+    @FXML private Button exitButton;
 
-    @FXML
-    private ProgressBar progressBar;
+    @FXML private ProgressBar progressBar;
 
-    @FXML
-    private ImageView question1Image;
+    @FXML private ImageView question1Image;
 
-    @FXML
-    private ImageView question3Image;
+    @FXML private ImageView question3Image;
 
-    @FXML
-    private ImageView question2Image;
+    @FXML private ImageView question2Image;
 
-    @FXML
-    private Label activity1Label;
+    @FXML private Label activity1Label;
 
-    @FXML
-    private Label activity2Label;
+    @FXML private Label activity2Label;
 
-    @FXML
-    private Label activity3Label;
+    @FXML private Label activity3Label;
 
-    @FXML
-    private Label questionLabel;
+    @FXML private Label questionLabel;
 
-    @FXML
-    private Label questionImageLabel;
+    @FXML private Label timeText;
 
-    @FXML
-    private ImageView questionImage;
+    @FXML private Label pointsLabel;
 
-    @FXML
-    private Label timeText;
+    @FXML private Label timeReduced;
 
-    @FXML
-    private Label pointsLabel;
+    @FXML private GridPane grid;
 
-    @FXML
-    private Label timeReduced;
+    @FXML private GridPane answer1;
 
-    @FXML
-    private GridPane grid;
+    @FXML private GridPane answer2;
 
-    @FXML
-    private GridPane answer1;
+    @FXML private GridPane answer3;
 
-    @FXML
-    private GridPane answer2;
+    @FXML private Label newPoints;
 
-    @FXML
-    private GridPane answer3;
-
-    @FXML
-    private Label newPoints;
+    @FXML private Label mainActivityTitle;
 
     private long chosenAnswer;
     private List<ImageView> jokerPics;
@@ -140,14 +108,14 @@ public class CompareQuestionController implements Initializable, QuestionScene {
     public void showQuestion(NewQuestionMessage message) {
         uiController.showQuestion(message);
         setChosenAnswer(-1);
-        questionImage.setImage(new Image(new ByteArrayInputStream(message.getImagesBytes().get(3))));
-        questionImageLabel.setText(message.getActivities().get(3).getTitle());
+        mainActivityTitle.setText(message.getActivities().get(3).getTitle() + "?");
         clientGameController.startTimer(progressBar, timeText);
     }
 
     @Override
     public void showAnswer(CorrectAnswerMessage message) {
         uiController.showAnswer(message, chosenAnswer);
+        mainActivityTitle.setText("");
         clientGameController.changeScore(message.getScore(), pointsLabel, newPoints);
     }
 

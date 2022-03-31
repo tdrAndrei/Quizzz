@@ -211,6 +211,7 @@ public class MultiQuestionController implements Initializable, QuestionScene {
     @Override
     public void reset() {
     }
+    
     @Override
     public Label getPointsLabel() {
         return this.pointsLabel;
