@@ -45,7 +45,6 @@ public class Main extends Application {
         var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
         var leaderboardSolo = FXML.load(LeaderboardSoloController.class, "client", "scenes", "LeaderboardSolo.fxml");
         var estimateQuestion = FXML.load(EstimateQuestionController.class, "client", "scenes", "estimateQuestion.fxml");
-        var compareQuestion = FXML.load(CompareQuestionController.class, "client", "scenes", "compareQuestion.fxml");
 
         var chooseConsumption = FXML.load(ChooseConsumptionController.class, "client", "scenes", "chooseConsumption.fxml");
 
@@ -55,8 +54,8 @@ public class Main extends Application {
         var editActivityPanel = FXML.load(EditActivityController.class, "client", "scenes", "editActivity.fxml");
         var clientGameController = INJECTOR.getInstance(ClientGameController.class);
 
-        clientGameController.initialize(multiQuestion, estimateQuestion, compareQuestion, chooseConsumption, leaderboardSolo, waitingRoom);
-        mainCtrl.initialize(primaryStage, login, mainMenu, multiQuestion, compareQuestion, chooseConsumption, leaderboardSolo, estimateQuestion, clientGameController, waitingRoom, adminPanel, addActivityPanel, editActivityPanel);
+        clientGameController.initialize(multiQuestion, estimateQuestion, chooseConsumption, leaderboardSolo, waitingRoom);
+        mainCtrl.initialize(primaryStage, login, mainMenu, multiQuestion, chooseConsumption, leaderboardSolo, estimateQuestion, clientGameController, waitingRoom, adminPanel, addActivityPanel, editActivityPanel);
 
     }
 
