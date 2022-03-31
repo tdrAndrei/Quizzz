@@ -62,7 +62,10 @@ public class QuestionService {
 
         consumptions.add(mainConsumption);
 
-        return new ChooseConsumptionQuestion("How much energy does it take?", mainConsumption, answers, seconds, consumptions);
+        Collections.shuffle(consumptions);
+        long answer = consumptions.indexOf(mainConsumption);
+
+        return new ChooseConsumptionQuestion("How much energy does it take?", answer, answers, seconds, consumptions);
     }
 
     public Question makeCompare(double seconds) {
@@ -71,9 +74,13 @@ public class QuestionService {
 
         while (equalCons.size() < 2) {
             int indexRand = rm.nextInt(numActivities);
-            Activity rand = this.repo.findById((long) indexRand).get();
-            Long consumption = rand.getConsumption_in_wh();
-            equalCons = this.repo.findByConsumption(consumption);
+            try {
+                Activity rand = this.repo.findById((long) indexRand).get();
+                Long consumption = rand.getConsumption_in_wh();
+                equalCons = this.repo.findByConsumption(consumption);
+            } catch (NoSuchElementException e) {
+                continue;
+            }
         }
         Collections.shuffle(equalCons);
         Activity main = equalCons.get(0);
@@ -87,9 +94,13 @@ public class QuestionService {
         }
         answers.add(equalCons.get(1));
         while (answers.size() < 3) {
-            Activity wrongAnswer = this.repo.findById((long) rm.nextInt(numActivities)).get();
-            if (!equalCons.contains(wrongAnswer)) {
-                answers.add(wrongAnswer);
+            try {
+                Activity wrongAnswer = this.repo.findById((long) rm.nextInt(numActivities)).get();
+                if (!equalCons.contains(wrongAnswer)) {
+                    answers.add(wrongAnswer);
+                }
+            } catch (NoSuchElementException e) {
+                continue;
             }
         }
         Collections.shuffle(answers);

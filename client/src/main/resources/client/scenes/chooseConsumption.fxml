@@ -111,7 +111,7 @@
                   <Insets bottom="10.0" top="10.0" />
                </padding>
             </GridPane>
-            <HBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="354.0" prefWidth="500.0" spacing="25.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="TOP">
+            <HBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="354.0" prefWidth="500.0" spacing="25.0" GridPane.columnSpan="3" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="TOP">
                <children>
                   <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="400.0" prefWidth="400.0">
                      <children>
@@ -124,8 +124,8 @@
                               <RowConstraints maxHeight="95.99999237060547" minHeight="10.0" percentHeight="25.0" prefHeight="72.00003051757812" vgrow="SOMETIMES" />
                            </rowConstraints>
                            <children>
-                              <Label fx:id="activity1Label" maxHeight="-Infinity" maxWidth="-Infinity" styleClass="setFont" text="Fully charging the laptop project laptop (HP ZBook Power G7)" textAlignment="CENTER" wrapText="true" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
-                              <ImageView fx:id="question1Image" fitHeight="228.0" fitWidth="279.0" pickOnBounds="true" preserveRatio="true" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                              <Label fx:id="activityLabel" maxHeight="-Infinity" maxWidth="-Infinity" styleClass="setFont" text="Fully charging the laptop project laptop (HP ZBook Power G7)" textAlignment="CENTER" wrapText="true" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+                              <ImageView fx:id="questionImage" fitHeight="228.0" fitWidth="279.0" pickOnBounds="true" preserveRatio="true" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
                                  <image>
                                     <Image url="@/client.photos/clothing-iron.jpg" />
                                  </image>
@@ -146,17 +146,9 @@
                   </AnchorPane>
                </children>
                <GridPane.margin>
-                  <Insets top="20.0" />
+                  <Insets />
                </GridPane.margin>
             </HBox>
-            <Button fx:id="submitAnswerButton" layoutX="60.0" layoutY="720.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="40.0" minWidth="130.0" mnemonicParsing="false" onAction="#submitUserAnswer" prefHeight="40.0" prefWidth="130.0" text="Submit Answer" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
-               <font>
-                  <Font name="Comicbon" size="15.0" />
-               </font>
-               <GridPane.margin>
-                  <Insets bottom="100.0" left="30.0" right="-10.0" />
-               </GridPane.margin>
-            </Button>
             <Label fx:id="timeReduced" GridPane.columnIndex="2" />
             <VBox fx:id="emojiChatContainer" alignment="BOTTOM_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" spacing="5.0" visible="false" GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.rowIndex="2" GridPane.valignment="BOTTOM">
                <children>
@@ -193,6 +185,94 @@
                </children>
                <GridPane.margin>
                   <Insets />
+               </GridPane.margin>
+            </VBox>
+            <VBox maxHeight="-Infinity" prefHeight="110.0" prefWidth="394.0" spacing="50.0" GridPane.columnIndex="3" GridPane.halignment="LEFT" GridPane.rowIndex="2" GridPane.valignment="TOP">
+               <children>
+                  <AnchorPane fx:id="ans1pane" maxHeight="100" maxWidth="-Infinity" prefHeight="100.0" prefWidth="300.0" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.rowSpan="2" GridPane.valignment="CENTER">
+                     <children>
+                        <GridPane fx:id="answer1" layoutX="8.0" layoutY="10.0" maxHeight="-Infinity" maxWidth="-Infinity" onMouseClicked="#submitAnswer" prefHeight="100.0" prefWidth="200.0" styleClass="questionCardGrid" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="10.0">
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints maxHeight="229.33331298828125" minHeight="10.0" percentHeight="80.0" prefHeight="177.99996948242188" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="95.99999237060547" minHeight="10.0" percentHeight="25.0" prefHeight="72.00003051757812" vgrow="SOMETIMES" />
+                           </rowConstraints>
+                           <children>
+                              <Label fx:id="activity1Label" maxHeight="-Infinity" maxWidth="-Infinity" styleClass="setFont" text="Fully charging the laptop project laptop (HP ZBook Power G7)" textAlignment="CENTER" wrapText="true" GridPane.halignment="CENTER" GridPane.rowSpan="2" GridPane.valignment="CENTER" />
+                              <ImageView fx:id="question1Image" fitHeight="60.0" fitWidth="275.0" pickOnBounds="true" preserveRatio="true" />
+                           </children>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </GridPane>
+                     </children>
+                     <padding>
+                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                     </padding>
+                     <styleClass>
+                        <String fx:value="questionLabelBackground" />
+                        <String fx:value="highlightable" />
+                     </styleClass>
+                  </AnchorPane>
+                  <AnchorPane fx:id="ans2pane" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="270.0" prefWidth="300.0">
+                     <children>
+                        <GridPane fx:id="answer2" layoutX="8.0" layoutY="10.0" maxHeight="-Infinity" maxWidth="-Infinity" onMouseClicked="#submitAnswer" prefHeight="200.0" prefWidth="200.0" styleClass="questionCardGrid" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="10.0">
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints maxHeight="229.33331298828125" minHeight="10.0" percentHeight="80.0" prefHeight="177.99996948242188" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="95.99999237060547" minHeight="10.0" percentHeight="25.0" prefHeight="72.00003051757812" vgrow="SOMETIMES" />
+                           </rowConstraints>
+                           <children>
+                              <Label fx:id="activity2Label" maxHeight="-Infinity" maxWidth="-Infinity" styleClass="setFont" text="Fully charging the laptop project laptop (HP ZBook Power G7)" textAlignment="CENTER" wrapText="true" GridPane.halignment="CENTER" GridPane.rowSpan="2" GridPane.valignment="CENTER" />
+                              <ImageView fx:id="question2Image" fitHeight="60.0" fitWidth="275.0" pickOnBounds="true" preserveRatio="true" />
+                           </children>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </GridPane>
+                     </children>
+                     <padding>
+                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                     </padding>
+                     <styleClass>
+                        <String fx:value="questionLabelBackground" />
+                        <String fx:value="highlightable" />
+                     </styleClass>
+                  </AnchorPane>
+                  <AnchorPane fx:id="ans3pane" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="270.0" prefWidth="300.0">
+                     <children>
+                        <GridPane fx:id="answer3" layoutX="8.0" layoutY="10.0" maxHeight="-Infinity" maxWidth="-Infinity" onMouseClicked="#submitAnswer" prefHeight="200.0" prefWidth="200.0" styleClass="questionCardGrid" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="10.0">
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints maxHeight="229.33331298828125" minHeight="10.0" percentHeight="80.0" prefHeight="177.99996948242188" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="95.99999237060547" minHeight="10.0" percentHeight="25.0" prefHeight="72.00003051757812" vgrow="SOMETIMES" />
+                           </rowConstraints>
+                           <children>
+                              <Label fx:id="activity3Label" maxHeight="-Infinity" maxWidth="-Infinity" styleClass="setFont" text="Fully charging the laptop project laptop (HP ZBook Power G7)" textAlignment="CENTER" wrapText="true" GridPane.halignment="CENTER" GridPane.rowSpan="2" GridPane.valignment="CENTER" />
+                              <ImageView fx:id="question3Image" fitHeight="60.0" fitWidth="275.0" pickOnBounds="true" preserveRatio="true" />
+                           </children>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </GridPane>
+                     </children>
+                     <padding>
+                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                     </padding>
+                     <styleClass>
+                        <String fx:value="questionLabelBackground" />
+                        <String fx:value="highlightable" />
+                     </styleClass>
+                  </AnchorPane>
+               </children>
+               <GridPane.margin>
+                  <Insets bottom="125.0" right="50.0" />
                </GridPane.margin>
             </VBox>
          </children>
