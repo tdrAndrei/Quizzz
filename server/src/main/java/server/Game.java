@@ -28,28 +28,33 @@ public class Game {
     private final Queue<Pair<String, Double>> stageQueue = new LinkedList<>();
     private final Map<Long, Message> diffMap = new HashMap<>();
     private int amountAnswered = 0;
+    private int numberOfQuestions;
     private final LeaderBoardEntryService leaderBoardEntryService;
 
     public Game(long id, QuestionService questionService, LeaderBoardEntryService leaderBoardEntryService) {
         this.id = id;
         this.leaderBoardEntryService = leaderBoardEntryService;
         this.questionService = questionService;
+        this.numberOfQuestions = 0;
 
         Random random = new Random();
         stageQueue.add(new MutablePair<>("Waiting", Double.MAX_VALUE));
 
         for (int i = 0; i < 20; i++) {
             int j = random.nextInt(10);
+
             if (j <= 2) {
                 stageQueue.add(new MutablePair<>("Question", 20.0));
-                stageQueue.add(new MutablePair<>("CorrectAns", 3.0));
-            } else if (j <= 7) {
+            } else if (j <= 4) {
                 stageQueue.add(new MutablePair<>("Compare", 20.0));
-                stageQueue.add(new MutablePair<>("CorrectAns", 3.0));
+            } else if (j <= 7) {
+                stageQueue.add(new MutablePair<>("ChooseConsumption", 20.0));
             } else {
                 stageQueue.add(new MutablePair<>("Estimate", 20.0));
-                stageQueue.add(new MutablePair<>("CorrectAns", 3.0));
             }
+            numberOfQuestions ++;
+            stageQueue.add(new MutablePair<>("CorrectAns", 3.0));
+
             if (i == 9) {
                 stageQueue.add(new MutablePair<>("Leaderboard", 5.0));
             }
@@ -100,6 +105,11 @@ public class Game {
                 insertCompareQQuestionIntoDiff(currentQuestion);
                 break;
 
+            case "ChooseConsumption":
+                currentQuestion = questionService.makeChooseConsumption(stagePair.getValue());
+                insertChooseConsumptionQuestionIntoDiff(currentQuestion);
+                break;
+
             case "Leaderboard":
                 if (isSolo) {
                     setMaxTime(0.0);
@@ -144,7 +154,11 @@ public class Game {
         diffMap.put(userId, new NullMessage("None"));
         return update;
     }
-
+    
+    public int getNumberOfQuestions() {
+        return this.numberOfQuestions;
+    }
+    
     public void removePlayer(long userId) {
         playerMap.remove(userId);
         diffMap.remove(userId);
@@ -236,6 +250,24 @@ public class Game {
         }
     }
 
+    public void insertEstimateQuestionIntoDiff(Question question) {
+        EstimateQuestion estimateQuestion = (EstimateQuestion) question;
+        for (long id : diffMap.keySet()) {
+            List<byte[]> imagesBytes = getImageBytesList(question);
+            NewQuestionMessage questionMessage = new NewQuestionMessage("NewQuestion", "Estimate", question.getTitle(), question.getActivities(), question.getTime(), playerMap.get(id).getScore(), estimateQuestion.getBounds(), imagesBytes);
+            diffMap.put(id, questionMessage);
+        }
+    }
+
+    public void insertChooseConsumptionQuestionIntoDiff(Question question) {
+        ChooseConsumptionQuestion chooseConsumptionQuestion = (ChooseConsumptionQuestion) question;
+        for (long id : diffMap.keySet()) {
+            List<byte[]> imagesBytes = getImageBytesList(question);
+            NewQuestionMessage questionMessage = new NewQuestionMessage("NewQuestion", "ChooseConsumption", question.getTitle(), question.getActivities(), question.getTime(), playerMap.get(id).getScore(), chooseConsumptionQuestion.getAnswerConsumptions(), imagesBytes);
+            diffMap.put(id, questionMessage);
+        }
+    }
+
     public void insertCompareQQuestionIntoDiff(Question question) {
         for (long id : diffMap.keySet()) {
             List<byte[]> imagesBytes = getImageBytesList(question);
@@ -256,14 +288,6 @@ public class Game {
             }
         }
         return imagesBytes;
-    }
-    public void insertEstimateQuestionIntoDiff(Question question) {
-        EstimateQuestion estimateQuestion = (EstimateQuestion) question;
-        for (long id : diffMap.keySet()) {
-            List<byte[]> imagesBytes = getImageBytesList(question);
-            NewQuestionMessage questionMessage = new NewQuestionMessage("NewQuestion", "Estimate", question.getTitle(), question.getActivities(), question.getTime(), playerMap.get(id).getScore(), estimateQuestion.getBounds(), imagesBytes);
-            diffMap.put(id, questionMessage);
-        }
     }
 
     public void setMaxTime(Double time) {

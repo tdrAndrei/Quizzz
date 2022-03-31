@@ -47,7 +47,7 @@ public class ClientGameController {
 
     private MultiQuestionController multiQuestionController;
     private EstimateQuestionController estimateQuestionController;
-    private CompareQuestionController compareQuestionController;
+    private ChooseConsumptionController chooseConsumptionController;
     private LeaderboardSoloController leaderboardSoloController;
     private WaitingRoomController waitingRoomController;
     private Long gameId;
@@ -64,6 +64,7 @@ public class ClientGameController {
 
     private double maxTime;
     private double timeLeft;
+    private int questionsLeft;
 
     @javax.inject.Inject
     public ClientGameController(MainCtrl mainController, ServerUtils serverUtils) {
@@ -78,18 +79,18 @@ public class ClientGameController {
 
     public void initialize(Pair<MultiQuestionController, Parent> multiQuestion,
                            Pair<EstimateQuestionController, Parent> estimateQuestion,
-                           Pair<CompareQuestionController, Parent> compareQuestion,
+                           Pair<ChooseConsumptionController, Parent> chooseConsumption,
                            Pair<LeaderboardSoloController, Parent> leaderboard,
                            Pair<WaitingRoomController, Parent> waitingRoom) {
         this.multiQuestionController = multiQuestion.getKey();
         this.estimateQuestionController = estimateQuestion.getKey();
-        this.compareQuestionController = compareQuestion.getKey();
+        this.chooseConsumptionController = chooseConsumption.getKey();
         this.leaderboardSoloController = leaderboard.getKey();
         this.waitingRoomController = waitingRoom.getKey();
 
         emojiChat.addClient(multiQuestionController)
                 .addClient(estimateQuestionController)
-                .addClient(compareQuestionController);
+                .addClient(chooseConsumptionController);
     }
 
     public void startPolling(boolean isMulti) {
@@ -116,6 +117,7 @@ public class ClientGameController {
             emojiChat.setVisibility(false);
         }
 
+        questionsLeft = serverUtils.getNumberOfQuestionsInGame(gameId);
         availableJokers = EnumSet.copyOf(remainingJokers);
         mainController.resetQuestionScenes(remainingJokers);
 
@@ -168,14 +170,16 @@ public class ClientGameController {
                 setDoublePointsForThisRound(false);
                 Platform.runLater(() -> {
                     switch (newQuestionMessage.getQuestionType()) {
-                        case "MC": mainController.showMultiQuestion(); break;
+                        case "MC":
+                        case "Compare":
+                            mainController.showMultiQuestion(); break;
                         case "Estimate": mainController.showEstimate(); break;
-                        case "Compare": mainController.showCompare(); break;
+                        case "ChooseConsumption": mainController.showChooseConsumption(); break;
                     }
 
                     setMaxTime(newQuestionMessage.getTime());
                     setTimeLeft(newQuestionMessage.getTime());
-                    mainController.prepareCurrentScene(newQuestionMessage);
+                    mainController.prepareCurrentScene(newQuestionMessage, questionsLeft);
                 });
                 break;
 
@@ -195,6 +199,8 @@ public class ClientGameController {
                 Platform.runLater(() -> {
                     mainController.showAnswerInCurrentScene(correctAnswerMessage);
                 });
+
+                questionsLeft --;
                 break;
 
             case "ReduceTime":
@@ -430,6 +436,10 @@ public class ClientGameController {
 
     public EnumSet<Joker> getAvailableJokers() {
         return availableJokers;
+    }
+
+    public int getQuestionsLeft() {
+        return this.questionsLeft;
     }
 
 }

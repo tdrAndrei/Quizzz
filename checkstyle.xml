@@ -16,7 +16,7 @@
         <module name="EmptyBlock" />
 
         <module name="MethodLength">
-            <property name="max" value="50"/>
+            <property name="max" value="55"/>
             <property name="countEmpty" value="false"/>
         </module>
 

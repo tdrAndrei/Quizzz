@@ -15,6 +15,7 @@ public interface QuestionScene {
     void reset();
     Label getPointsLabel();
     List<ImageView> getJokerPics();
+    Label getQuestionsLeftLabel();
 
     void lockAnswer();
     void showQuestion(NewQuestionMessage newQuestionMessage);

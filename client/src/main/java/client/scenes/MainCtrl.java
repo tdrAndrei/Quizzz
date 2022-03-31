@@ -19,12 +19,15 @@ import client.utils.ServerUtils;
 import commons.Messages.CorrectAnswerMessage;
 import commons.Messages.NewQuestionMessage;
 import commons.User;
+import javafx.animation.*;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import javafx.util.Pair;
 
 
@@ -46,8 +49,8 @@ public class MainCtrl {
     private MultiQuestionController multiCtrl;
     private Scene multiScene;
 
-    private CompareQuestionController compareQuestionController;
-    private Scene compareQuestionScene;
+    private ChooseConsumptionController chooseConsumptionController;
+    private Scene chooseConsumptionScene;
 
     private LeaderboardSoloController leaderboardSoloController;
     private Scene leaderboardSoloScene;
@@ -78,7 +81,7 @@ public class MainCtrl {
     public void initialize(Stage primaryStage, Pair<LoginController, Parent> login,
                            Pair<MainMenuController, Parent> mainMenu,
                            Pair<MultiQuestionController, Parent> multiQuestion,
-                           Pair<CompareQuestionController, Parent> compareQuestion,
+                           Pair<ChooseConsumptionController, Parent> chooseConsumptionQuestion,
                            Pair<LeaderboardSoloController, Parent> leaderboardSolo,
                            Pair<EstimateQuestionController, Parent> estimateQuestion,
                            ClientGameController clientGameController, Pair<WaitingRoomController, Parent> waitingRoom, Pair<AdminController, Parent> adminController,
@@ -96,8 +99,8 @@ public class MainCtrl {
         this.multiCtrl = multiQuestion.getKey();
         this.multiScene = new Scene(multiQuestion.getValue());
 
-        this.compareQuestionController = compareQuestion.getKey();
-        this.compareQuestionScene = new Scene(compareQuestion.getValue());
+        this.chooseConsumptionController = chooseConsumptionQuestion.getKey();
+        this.chooseConsumptionScene = new Scene(chooseConsumptionQuestion.getValue());
 
         this.leaderboardSoloController = leaderboardSolo.getKey();
         this.leaderboardSoloScene = new Scene(leaderboardSolo.getValue());
@@ -119,7 +122,7 @@ public class MainCtrl {
 
         this.clientGameController = clientGameController;
 
-        questionControllers = List.of(multiCtrl, estimateQuestionController, compareQuestionController);
+        questionControllers = List.of(multiCtrl, estimateQuestionController, chooseConsumptionController);
 
         showLogin();
         primaryStage.show();
@@ -138,6 +141,7 @@ public class MainCtrl {
         setJokerPics(jokers);
         setPointsForAllScenes(0);
         for ( QuestionScene controller : questionControllers ) {
+            controller.getQuestionsLeftLabel().setText(String.valueOf(clientGameController.getQuestionsLeft()));
             //additional logic that can't be generalized is done in this method
             //You need to override it in the specific controller
             controller.reset();
@@ -163,8 +167,35 @@ public class MainCtrl {
         currentSceneController.lockAnswer();
     }
 
-    public void prepareCurrentScene(NewQuestionMessage newQuestionMessage) {
+    public void prepareCurrentScene(NewQuestionMessage newQuestionMessage, int questionsLeft) {
         currentSceneController.showQuestion(newQuestionMessage);
+        questionControllers.forEach(controller -> {
+            Label target = controller.getQuestionsLeftLabel();
+            Timeline animate = new Timeline(
+                    new KeyFrame(
+                            Duration.ZERO,
+                            new KeyValue(target.scaleXProperty(), 1),
+                            new KeyValue(target.scaleYProperty(), 1)
+                    ),
+                    new KeyFrame(
+                            Duration.seconds(0.4),
+                            e -> target.setText(String.valueOf(questionsLeft)),
+                            new KeyValue(target.scaleXProperty(), 1.3, Interpolator.EASE_OUT),
+                            new KeyValue(target.scaleYProperty(), 1.3, Interpolator.EASE_OUT)
+                    ),
+                    new KeyFrame(
+                            Duration.seconds(0.6),
+                            new KeyValue(target.scaleXProperty(), 1.3, Interpolator.EASE_OUT),
+                            new KeyValue(target.scaleYProperty(), 1.3, Interpolator.EASE_OUT)
+                    ),
+                    new KeyFrame(
+                            Duration.seconds(0.9),
+                            new KeyValue(target.scaleXProperty(), 1, Interpolator.EASE_IN),
+                            new KeyValue(target.scaleYProperty(), 1, Interpolator.EASE_IN)
+                    )
+            );
+            animate.playFromStart();
+        });
     }
 
     public void showAnswerInCurrentScene(CorrectAnswerMessage correctAnswerMessage) {
@@ -259,9 +290,9 @@ public class MainCtrl {
         primaryStage.setScene(multiScene);
     }
 
-    public void showCompare() {
-        currentSceneController = compareQuestionController;
-        primaryStage.setScene(compareQuestionScene);
+    public void showChooseConsumption() {
+        currentSceneController = chooseConsumptionController;
+        primaryStage.setScene(chooseConsumptionScene);
     }
 
     public void joinGame(boolean isMulti) {

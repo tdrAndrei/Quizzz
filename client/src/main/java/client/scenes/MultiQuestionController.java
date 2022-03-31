@@ -86,6 +86,9 @@ public class MultiQuestionController implements Initializable, QuestionScene {
     private Label timeReduced;
 
     @FXML
+    private Label questionsLeftLabel;
+
+    @FXML
     private GridPane grid;
 
     @FXML
@@ -170,6 +173,11 @@ public class MultiQuestionController implements Initializable, QuestionScene {
         return jokerPics;
     }
 
+    @Override
+    public Label getQuestionsLeftLabel() {
+        return this.questionsLeftLabel;
+    }
+
     public void useSkipQuestionJoker() {
         questionLabel.setText("You skipped this question!");
         clientGameController.skipQuestion();
@@ -211,6 +219,7 @@ public class MultiQuestionController implements Initializable, QuestionScene {
     @Override
     public void reset() {
     }
+    
     @Override
     public Label getPointsLabel() {
         return this.pointsLabel;

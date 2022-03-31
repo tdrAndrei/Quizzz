@@ -225,4 +225,9 @@ public class TestActivityRepository implements ActivityRepository {
     public List<Activity> findByConsumption(Long lowerBound, Long upperBound) {
         return null;
     }
+
+    @Override
+    public List<Activity> findByConsumption(List<Long> consumptions) {
+        return null;
+    }
 }

@@ -116,7 +116,12 @@ public class UIController {
         questionLabel.setText(message.getTitle());
 
         questionLabel.setTextFill(Color.rgb(0, 0, 0));
-        setQuestions(message.getActivities(), message.getImagesBytes());
+
+        if (message.getQuestionType().equals("ChooseConsumption")) {
+            setQuestions(message.getBounds());
+        } else {
+            setQuestions(message.getActivities(), message.getImagesBytes());
+        }
     }
 
     public void colorSelectedAnswer(long selectedAnswer) {
@@ -131,7 +136,9 @@ public class UIController {
 
     public void showAnswer(CorrectAnswerMessage message, long chosenAnswer) {
         long correctAnswer = message.getCorrectAnswer();
-        answerPaneList.get((int) chosenAnswer).setBorder(selectedWrongAnswerBorder);
+        if (chosenAnswer != -1) {
+            answerPaneList.get((int) chosenAnswer).setBorder(selectedWrongAnswerBorder);
+        }
         answerPaneList.get((int) correctAnswer).setBorder(correctAnswerBorder);
         activityLabelList.get((int) correctAnswer).setTextFill(Color.rgb(94, 206, 119));
 
@@ -236,6 +243,23 @@ public class UIController {
         Activity thirdActivity = activities.get(2);
         question3Image.setImage(new Image(new ByteArrayInputStream(imageByteList.get(2))));
         activity3Label.setText(thirdActivity.getTitle());
+        setTextAndBorders();
+    }
+
+    public void setQuestions(List<Long> bounds) {
+        question1Image.setImage(null);
+        question2Image.setImage(null);
+        question3Image.setImage(null);
+        Long firstAnswer = bounds.get(0);
+        activity1Label.setText(firstAnswer.toString() + " Wh");
+        Long secondAnswer = bounds.get(1);
+        activity2Label.setText(secondAnswer.toString() + " Wh");
+        Long thirdAnswer = bounds.get(2);
+        activity3Label.setText(thirdAnswer.toString() + " Wh");
+        setTextAndBorders();
+    }
+
+    public void setTextAndBorders() {
         activity1Label.setTextFill(Color.rgb(0 , 0 , 0));
         activity2Label.setTextFill(Color.rgb(0 , 0 , 0));
         activity3Label.setTextFill(Color.rgb(0 , 0 , 0));
