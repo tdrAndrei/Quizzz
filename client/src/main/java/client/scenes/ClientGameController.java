@@ -65,6 +65,7 @@ public class ClientGameController {
 
     private double maxTime;
     private double timeLeft;
+    private int questionsLeft;
 
     @javax.inject.Inject
     public ClientGameController(MainCtrl mainController, ServerUtils serverUtils) {
@@ -120,6 +121,7 @@ public class ClientGameController {
             emojiChat.setVisibility(false);
         }
 
+        questionsLeft = serverUtils.getNumberOfQuestionsInGame(gameId);
         availableJokers = EnumSet.copyOf(remainingJokers);
         mainController.resetQuestionScenes(remainingJokers);
 
@@ -180,7 +182,7 @@ public class ClientGameController {
 
                     setMaxTime(newQuestionMessage.getTime());
                     setTimeLeft(newQuestionMessage.getTime());
-                    mainController.prepareCurrentScene(newQuestionMessage);
+                    mainController.prepareCurrentScene(newQuestionMessage, questionsLeft);
                 });
                 break;
 
@@ -200,6 +202,8 @@ public class ClientGameController {
                 Platform.runLater(() -> {
                     mainController.showAnswerInCurrentScene(correctAnswerMessage);
                 });
+
+                questionsLeft --;
                 break;
 
             case "ReduceTime":

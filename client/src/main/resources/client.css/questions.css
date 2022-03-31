@@ -54,6 +54,20 @@
     -fx-background-color: #ffc5ac;
 }
 
+.questionsLeftLabel{
+    -fx-background-radius: 50%;
+    -fx-alignment: center;
+    -fx-font-size: 2em;
+    -fx-border-radius: 50%;
+    -fx-border-style: solid;
+    -fx-border-width: 2px;
+    -fx-border-color: black;
+    -fx-pref-height: 40px;
+    -fx-pref-width: 40px;
+    -fx-max-height: 40px;
+    -fx-max-width: 40px;
+}
+
 #scoreBox {
     -fx-font-size: 20px;
 }

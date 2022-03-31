@@ -104,6 +104,14 @@ public class ServerUtils {
         session.send("/app/emoji/" + gameId, new EmojiMessage(userId, emojiIndex, username));
     }
 
+    public Integer getNumberOfQuestionsInGame(long gameId) {
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/game/howManyQuestions/" + gameId)
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .get(Integer.class);
+    }
+
     public List<Quote> getQuotes() {
         return ClientBuilder.newClient(new ClientConfig()) //
                 .target(SERVER).path("api/quotes") //

@@ -32,6 +32,10 @@ public class GameController {
         return gameManager.getUpdate(gameId, userId);
     }
 
+    @GetMapping(path = "/howManyQuestions/{gameId}")
+    public int getNumberOfQuestionsInGame(@PathVariable("gameId") long gameId) {
+        return gameManager.getNumberOfQuestionsInGame(gameId);
+    }
 
     @GetMapping(path = "/start/{gameId}")
     public void startGame(@PathVariable("gameId") long gameId){

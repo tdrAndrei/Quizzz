@@ -53,6 +53,10 @@ public class GameManager {
         return gameId;
     }
 
+    public int getNumberOfQuestionsInGame(long gameId) {
+        return gameMap.get(gameId).getNumberOfQuestions();
+    }
+
     public long useEliminateAnswer(long gameId) {
         Game game = gameMap.get(gameId);
         return game.eliminateJoker();

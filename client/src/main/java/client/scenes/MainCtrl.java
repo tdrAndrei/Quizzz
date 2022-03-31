@@ -170,8 +170,11 @@ public class MainCtrl {
         currentSceneController.lockAnswer();
     }
 
-    public void prepareCurrentScene(NewQuestionMessage newQuestionMessage) {
+    public void prepareCurrentScene(NewQuestionMessage newQuestionMessage, int questionsLeft) {
         currentSceneController.showQuestion(newQuestionMessage);
+        questionControllers.forEach(controller -> {
+            controller.getQuestionsLeftLabel().setText(String.valueOf(questionsLeft));
+        });
     }
 
     public void showAnswerInCurrentScene(CorrectAnswerMessage correctAnswerMessage) {

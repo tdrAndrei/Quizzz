@@ -215,6 +215,12 @@
                   <Insets />
                </GridPane.margin>
             </VBox>
+            <Label fx:id="questionsLeftLabel" text="Label" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="BOTTOM">
+               <styleClass>
+                  <String fx:value="questionsLeftLabel" />
+                  <String fx:value="setFont" />
+               </styleClass>
+            </Label>
          </children>
          <padding>
             <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />

@@ -65,6 +65,8 @@ public class CompareQuestionController implements Initializable, QuestionScene {
 
     @FXML private Label timeReduced;
 
+    @FXML private Label questionsLeftLabel;
+
     @FXML private GridPane grid;
 
     @FXML private GridPane answer1;
@@ -149,6 +151,11 @@ public class CompareQuestionController implements Initializable, QuestionScene {
     @Override
     public List<ImageView> getJokerPics() {
         return jokerPics;
+    }
+
+    @Override
+    public Label getQuestionsLeftLabel() {
+        return this.questionsLeftLabel;
     }
 
     public void useSkipQuestionJoker() {
