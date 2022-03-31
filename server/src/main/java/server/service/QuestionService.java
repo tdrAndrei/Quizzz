@@ -40,6 +40,8 @@ public class QuestionService {
             while (p <= mainConsumption)
                 p *= 10L;
 
+            p/=10;
+
             int c = rm.nextInt(4);
             if (c == 0)
                 p = p/2L;
@@ -50,13 +52,16 @@ public class QuestionService {
             if (c == 3)
                 p = p/10L;
 
+            p = Math.max(1, p);
+
             int dice = rm.nextInt(2);
             if (dice == 0)
                 p = p + mainConsumption;
             else
                 p = mainConsumption - p;
 
-            consumptions.add(p);
+            if (!consumptions.contains(p))
+                consumptions.add(p);
 
         }
 
