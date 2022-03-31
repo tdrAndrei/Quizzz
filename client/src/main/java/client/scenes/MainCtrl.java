@@ -19,12 +19,17 @@ import client.utils.ServerUtils;
 import commons.Messages.CorrectAnswerMessage;
 import commons.Messages.NewQuestionMessage;
 import commons.User;
+import javafx.animation.*;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
+import javafx.scene.layout.Border;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import javafx.util.Pair;
 
 
@@ -145,6 +150,7 @@ public class MainCtrl {
         setJokerPics(jokers);
         setPointsForAllScenes(0);
         for ( QuestionScene controller : questionControllers ) {
+            controller.getQuestionsLeftLabel().setText(String.valueOf(clientGameController.getQuestionsLeft()));
             //additional logic that can't be generalized is done in this method
             //You need to override it in the specific controller
             controller.reset();
@@ -173,7 +179,31 @@ public class MainCtrl {
     public void prepareCurrentScene(NewQuestionMessage newQuestionMessage, int questionsLeft) {
         currentSceneController.showQuestion(newQuestionMessage);
         questionControllers.forEach(controller -> {
-            controller.getQuestionsLeftLabel().setText(String.valueOf(questionsLeft));
+            Label target = controller.getQuestionsLeftLabel();
+            Timeline animate = new Timeline(
+                    new KeyFrame(
+                            Duration.ZERO,
+                            new KeyValue(target.scaleXProperty(), 1),
+                            new KeyValue(target.scaleYProperty(), 1)
+                    ),
+                    new KeyFrame(
+                            Duration.seconds(0.4),
+                            e -> target.setText(String.valueOf(questionsLeft)),
+                            new KeyValue(target.scaleXProperty(), 1.3, Interpolator.EASE_OUT),
+                            new KeyValue(target.scaleYProperty(), 1.3, Interpolator.EASE_OUT)
+                    ),
+                    new KeyFrame(
+                            Duration.seconds(0.6),
+                            new KeyValue(target.scaleXProperty(), 1.3, Interpolator.EASE_OUT),
+                            new KeyValue(target.scaleYProperty(), 1.3, Interpolator.EASE_OUT)
+                    ),
+                    new KeyFrame(
+                            Duration.seconds(0.9),
+                            new KeyValue(target.scaleXProperty(), 1, Interpolator.EASE_IN),
+                            new KeyValue(target.scaleYProperty(), 1, Interpolator.EASE_IN)
+                    )
+            );
+            animate.playFromStart();
         });
     }
 

@@ -57,15 +57,15 @@
 .questionsLeftLabel{
     -fx-background-radius: 50%;
     -fx-alignment: center;
-    -fx-font-size: 2em;
+    -fx-font-size: 3em;
     -fx-border-radius: 50%;
     -fx-border-style: solid;
-    -fx-border-width: 2px;
+    -fx-border-width: 3px;
     -fx-border-color: black;
-    -fx-pref-height: 40px;
-    -fx-pref-width: 40px;
-    -fx-max-height: 40px;
-    -fx-max-width: 40px;
+    -fx-pref-height: 60px;
+    -fx-pref-width: 60px;
+    -fx-max-height: 60px;
+    -fx-max-width: 60px;
 }
 
 #scoreBox {

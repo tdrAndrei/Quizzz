@@ -441,5 +441,9 @@ public class ClientGameController {
         return availableJokers;
     }
 
+    public int getQuestionsLeft() {
+        return this.questionsLeft;
+    }
+
 }
 
