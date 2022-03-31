@@ -243,12 +243,7 @@ public class UIController {
         Activity thirdActivity = activities.get(2);
         question3Image.setImage(new Image(new ByteArrayInputStream(imageByteList.get(2))));
         activity3Label.setText(thirdActivity.getTitle());
-        activity1Label.setTextFill(Color.rgb(0 , 0 , 0));
-        activity2Label.setTextFill(Color.rgb(0 , 0 , 0));
-        activity3Label.setTextFill(Color.rgb(0 , 0 , 0));
-        ans1pane.setBorder(Border.EMPTY);
-        ans2pane.setBorder(Border.EMPTY);
-        ans3pane.setBorder(Border.EMPTY);
+        setTextAndBorders();
     }
 
     public void setQuestions(List<Long> bounds) {
@@ -261,6 +256,10 @@ public class UIController {
         activity2Label.setText(secondAnswer.toString() + " Wh");
         Long thirdAnswer = bounds.get(2);
         activity3Label.setText(thirdAnswer.toString() + " Wh");
+        setTextAndBorders();
+    }
+
+    public void setTextAndBorders() {
         activity1Label.setTextFill(Color.rgb(0 , 0 , 0));
         activity2Label.setTextFill(Color.rgb(0 , 0 , 0));
         activity3Label.setTextFill(Color.rgb(0 , 0 , 0));
