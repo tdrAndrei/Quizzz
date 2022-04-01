@@ -8,6 +8,8 @@ Note taker:     Kayleigh Jones & Wiktor Grzybko\
 All team members were present physically, except Kayleigh due to COVID.
 
 # Agenda points
+- How should we organize the code in a controller? Which methods should come first, etc. Right now, even after the restructuring, the order of the code seems kind of messy.
+- What class structure should we have for front-end stuff like animations and displaying stuff, because now we have a lot of duplicate code (for now we only have controllers and very few entities).
 
 # Points of action
 ## Deadlines (Fri April 8th midnight):
