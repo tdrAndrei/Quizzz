@@ -6,7 +6,6 @@ import client.utils.ServerUtils;
 import commons.Messages.*;
 import javafx.animation.PathTransition;
 import commons.Player;
-import javafx.application.Platform;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
@@ -173,7 +172,7 @@ public class ClientGameController {
                 });
 
                 setDoublePointsForThisRound(false);
-                Runnable showQuestionRunnable = () -> {
+                javaFXUtility.queueJFXThread(() -> {
                     switch (newQuestionMessage.getQuestionType()) {
                         case "MC":
                         case "Compare":
@@ -185,8 +184,7 @@ public class ClientGameController {
                     setMaxTime(newQuestionMessage.getTime());
                     setTimeLeft(newQuestionMessage.getTime());
                     mainController.prepareCurrentScene(newQuestionMessage, questionsLeft);
-                };
-                javaFXUtility.queueJFXThread(showQuestionRunnable);
+                });
                 break;
 
             case "ShowLeaderboard":
@@ -199,24 +197,19 @@ public class ClientGameController {
                 CorrectAnswerMessage correctAnswerMessage = (CorrectAnswerMessage) message;
                 status = GameState.SHOW_ANSWER;
                 progressBarThread.cancel();
-
                 availableJokers.clear();
-
-                Runnable showCorrectAnswerRunnable = () -> {
+                javaFXUtility.queueJFXThread(() -> {
                     mainController.showAnswerInCurrentScene(correctAnswerMessage);
-                };
-                javaFXUtility.queueJFXThread(showCorrectAnswerRunnable);
-
+                });
                 questionsLeft --;
                 break;
 
             case "ReduceTime":
                 ReduceTimeMessage reduceTimeMessage = (ReduceTimeMessage) message;
-                Runnable reflectReducedTimeRunnable = () -> {
+                javaFXUtility.queueJFXThread(() -> {
                     setTimeLeft(reduceTimeMessage.getNewTime());
                     mainController.showTimeReducedInCurrentScene(reduceTimeMessage.getUserName());
-                };
-                javaFXUtility.queueJFXThread(reflectReducedTimeRunnable);
+                });
                 break;
         }
     }
@@ -329,16 +322,15 @@ public class ClientGameController {
 
     public void startTimer(ProgressBar progressBar, Label timeText){
         progressBarThread = new Timer();
-        Runnable updateProgressbarRunnable = () -> {
-            updateProgressBar(timeLeft, maxTime, progressBar, timeText);
-        };
         progressBarThread.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
                 double maxTime = getMaxTime();
                 double timeLeft = getTimeLeft();
                 updateTimeLeft(0.1, timeLeft);
-                javaFXUtility.queueJFXThread(updateProgressbarRunnable);
+                javaFXUtility.queueJFXThread(() -> {
+                    updateProgressBar(timeLeft, maxTime, progressBar, timeText);
+                });
             }
         }, 0, 100);
     }
@@ -361,32 +353,29 @@ public class ClientGameController {
         boolean isSolo = showLeaderboardMessage.getEntryId() != null;
         if (showLeaderboardMessage.getGameProgress().equals("End")) {
             if (isSolo) {
-                Runnable showSoloLeaderboardRunnable = () -> {
+                javaFXUtility.queueJFXThread(() -> {
                     mainController.showLeaderboardSolo();
                     Long myEntryId = showLeaderboardMessage.getEntryId();
                     leaderboardSoloController.showMine(myEntryId);
-                };
-                javaFXUtility.queueJFXThread(showSoloLeaderboardRunnable);
+                });
             } else {
-                Runnable showMultiEndLeaderboardRunnable = () -> {
+                javaFXUtility.queueJFXThread(() -> {
                     mainController.showLeaderboardSolo();
                     mainController.showLeaderboardMulti();
                     String userName = mainController.getUser().getName();
                     leaderboardSoloController.initMulti(showLeaderboardMessage.getEntries(), userName, "End");
                     leaderboardSoloController.showEntries();
                     leaderboardSoloController.setEndScreen();
-                };
-                javaFXUtility.queueJFXThread(showMultiEndLeaderboardRunnable);
+                });
             }
         } else if (showLeaderboardMessage.getGameProgress().equals("Mid")) {
-            Runnable showMultiMidLeaderboardRunnable = () -> {
+            javaFXUtility.queueJFXThread(() -> {
                 mainController.showLeaderboardMulti();
                 String userName = mainController.getUser().getName();
                 leaderboardSoloController.initMulti(showLeaderboardMessage.getEntries(), userName, "Mid");
                 leaderboardSoloController.showEntries();
                 leaderboardSoloController.setMidScreen();
-            };
-            javaFXUtility.queueJFXThread(showMultiMidLeaderboardRunnable);
+            });
         }
     }
 

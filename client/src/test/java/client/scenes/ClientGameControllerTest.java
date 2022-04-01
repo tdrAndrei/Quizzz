@@ -3,7 +3,6 @@ package client.scenes;
 import client.EmojiChat;
 import client.utils.JavaFXUtility;
 import client.utils.ServerUtils;
-import com.fasterxml.jackson.databind.ext.Java7Handlers;
 import commons.Activity;
 import commons.Messages.NewPlayersMessage;
 import commons.Messages.NewQuestionMessage;
