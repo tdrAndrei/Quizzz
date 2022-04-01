@@ -67,7 +67,6 @@ public class ClientGameController {
     private double timeLeft;
     private int questionsLeft;
     private int questionsWithoutAnswer;
-    private boolean isSolo;
 
     @javax.inject.Inject
     public ClientGameController(MainCtrl mainController, ServerUtils serverUtils) {
@@ -101,7 +100,6 @@ public class ClientGameController {
         if (isMulti) {
             this.gameMode = GameMode.MULTI;
             remainingJokers = List.of(Joker.ELIMINATE, Joker.DOUBLEPOINTS, Joker.REDUCETIME);
-            isSolo = false;
 
             gameId = serverUtils.joinMulti(mainController.getUser());
 
@@ -116,7 +114,6 @@ public class ClientGameController {
         } else {
             this.gameMode = GameMode.SOLO;
             remainingJokers = List.of(Joker.ELIMINATE, Joker.DOUBLEPOINTS, Joker.SKIPQUESTION);
-            isSolo = true;
 
             gameId = serverUtils.joinSolo(mainController.getUser());
             emojiChat.setVisibility(false);
@@ -171,7 +168,7 @@ public class ClientGameController {
                     if (joker != Joker.USED)
                         availableJokers.add(joker);
                 });
-                
+
                 setDoublePointsForThisRound(false);
                 Platform.runLater(() -> {
                     switch (newQuestionMessage.getQuestionType()) {
@@ -196,6 +193,9 @@ public class ClientGameController {
 
             case "ShowCorrectAnswer":
                 CorrectAnswerMessage correctAnswerMessage = (CorrectAnswerMessage) message;
+                if (status != GameState.SUBMITTED_ANSWER)
+                    incrementNotAnswered();
+
                 status = GameState.SHOW_ANSWER;
                 progressBarThread.cancel();
 
@@ -449,15 +449,17 @@ public class ClientGameController {
     }
 
     public void incrementNotAnswered() {
-        if (!isSolo) {
+        if (gameMode == GameMode.MULTI) {
             questionsWithoutAnswer++;
             if (questionsWithoutAnswer == 3) {
-                exitGame();
-                try {
-                    mainController.kickAlert();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                Platform.runLater(() -> {
+                    exitGame();
+                    try {
+                        mainController.kickAlert();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
             }
         }
     }

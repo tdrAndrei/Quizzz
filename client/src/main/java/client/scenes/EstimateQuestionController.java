@@ -82,7 +82,6 @@ public class EstimateQuestionController implements Initializable, QuestionScene 
     private final ClientGameController clientGameController;
     private final ServerUtils serverUtils;
     private ChangeListener<Number> changeListener;
-    private boolean questionAnswered;
 
     private List<ImageView> jokerPics;
 
@@ -111,13 +110,11 @@ public class EstimateQuestionController implements Initializable, QuestionScene 
         answerLabel.setText("");
         timeReduced.setText("");
         answerLabel.setStyle("-fx-text-fill: black");
-        questionAnswered = false;
 
     }
 
     public void submitUserAnswer(){
         clientGameController.submitAnswer((long) answerSlider.getValue());
-        questionAnswered = true;
     }
 
     @Override
@@ -129,9 +126,6 @@ public class EstimateQuestionController implements Initializable, QuestionScene 
         answerLabel.setStyle("-fx-text-fill: rgb(131,210,0);");
 
         clientGameController.changeScore(message.getScore(), pointsLabel, newPoints);
-        if (!questionAnswered) {
-            clientGameController.incrementNotAnswered();
-        }
     }
 
     public void quit() {
