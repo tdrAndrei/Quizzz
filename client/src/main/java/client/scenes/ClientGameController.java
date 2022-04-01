@@ -15,6 +15,7 @@ import javafx.scene.shape.VLineTo;
 import javafx.util.Duration;
 import javafx.util.Pair;
 import java.awt.*;
+import java.io.IOException;
 import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -65,6 +66,8 @@ public class ClientGameController {
     private double maxTime;
     private double timeLeft;
     private int questionsLeft;
+    private int questionsWithoutAnswer;
+    private boolean isSolo;
 
     @javax.inject.Inject
     public ClientGameController(MainCtrl mainController, ServerUtils serverUtils) {
@@ -98,6 +101,7 @@ public class ClientGameController {
         if (isMulti) {
             this.gameMode = GameMode.MULTI;
             remainingJokers = List.of(Joker.ELIMINATE, Joker.DOUBLEPOINTS, Joker.REDUCETIME);
+            isSolo = false;
 
             gameId = serverUtils.joinMulti(mainController.getUser());
 
@@ -112,6 +116,7 @@ public class ClientGameController {
         } else {
             this.gameMode = GameMode.SOLO;
             remainingJokers = List.of(Joker.ELIMINATE, Joker.DOUBLEPOINTS, Joker.SKIPQUESTION);
+            isSolo = true;
 
             gameId = serverUtils.joinSolo(mainController.getUser());
             emojiChat.setVisibility(false);
@@ -252,6 +257,7 @@ public class ClientGameController {
         mainController.lockCurrentScene();
         serverUtils.submitAnswer(getGameId(), mainController.getUser().getId(), answer);
         availableJokers.remove(Joker.ELIMINATE);
+        resetNotAnswered();
     }
 
     public void doublePoint() {
@@ -440,6 +446,27 @@ public class ClientGameController {
 
     public int getQuestionsLeft() {
         return this.questionsLeft;
+    }
+
+    public void incrementNotAnswered() {
+        if (!isSolo) {
+            questionsWithoutAnswer++;
+            if (questionsWithoutAnswer == 3) {
+                exitGame();
+                try {
+                    mainController.kickAlert();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public void resetNotAnswered() {
+        setQuestionsWithoutAnswer(0);
+    }
+    public void setQuestionsWithoutAnswer(int questionsWithoutAnswer) {
+        this.questionsWithoutAnswer = questionsWithoutAnswer;
     }
 
 }

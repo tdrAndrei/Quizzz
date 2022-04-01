@@ -137,6 +137,9 @@ public class MultiQuestionController implements Initializable, QuestionScene {
 
     @Override
     public void showAnswer(CorrectAnswerMessage message) {
+        if (chosenAnswer == -1) {
+            clientGameController.incrementNotAnswered();
+        }
         uiController.showAnswer(message, chosenAnswer);
         clientGameController.changeScore(message.getScore(), pointsLabel, newPoints);
     }
@@ -193,6 +196,7 @@ public class MultiQuestionController implements Initializable, QuestionScene {
         uiController.colorSelectedAnswer(clickedAnswer);
         chosenAnswer = clickedAnswer;
         clientGameController.submitAnswer(clickedAnswer);
+        clientGameController.resetNotAnswered();
     }
 
     @Override
