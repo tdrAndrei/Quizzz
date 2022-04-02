@@ -10,6 +10,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.util.Pair;
 import java.awt.*;
+import java.io.IOException;
 import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -61,6 +62,7 @@ public class ClientGameController {
     private double maxTime;
     private double timeLeft;
     private int questionsLeft;
+    private int questionsWithoutAnswer;
 
     @javax.inject.Inject
     public ClientGameController(MainCtrl mainController, ServerUtils serverUtils, EmojiChat emojiChat, JavaFXUtility javaFXUtility) {
@@ -191,6 +193,9 @@ public class ClientGameController {
 
             case "ShowCorrectAnswer":
                 CorrectAnswerMessage correctAnswerMessage = (CorrectAnswerMessage) message;
+                if (status != GameState.SUBMITTED_ANSWER)
+                    incrementNotAnswered();
+
                 status = GameState.SHOW_ANSWER;
                 progressBarThread.cancel();
                 availableJokers.clear();
@@ -249,6 +254,7 @@ public class ClientGameController {
         mainController.lockCurrentScene();
         serverUtils.submitAnswer(getGameId(), mainController.getUser().getId(), answer);
         availableJokers.remove(Joker.ELIMINATE);
+        resetNotAnswered();
     }
 
     public void doublePoint() {
@@ -470,6 +476,28 @@ public class ClientGameController {
 
     public void setAvailableJokers(EnumSet<Joker> availableJokers) {
         this.availableJokers = availableJokers;
+    }
+    public void incrementNotAnswered() {
+        if (gameMode == GameMode.MULTI) {
+            questionsWithoutAnswer++;
+            if (questionsWithoutAnswer == 3) {
+                Platform.runLater(() -> {
+                    exitGame();
+                    try {
+                        mainController.kickAlert();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+            }
+        }
+    }
+
+    public void resetNotAnswered() {
+        setQuestionsWithoutAnswer(0);
+    }
+    public void setQuestionsWithoutAnswer(int questionsWithoutAnswer) {
+        this.questionsWithoutAnswer = questionsWithoutAnswer;
     }
 }
 

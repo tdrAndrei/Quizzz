@@ -297,6 +297,7 @@ public class MainCtrl {
 
     public void joinGame(boolean isMulti) {
         clientGameController.startPolling(isMulti);
+        clientGameController.setQuestionsWithoutAnswer(0);
     }
 
     public void quit() throws IOException {
@@ -316,6 +317,14 @@ public class MainCtrl {
             System.exit(0);
         }
     }
+
+    public void kickAlert() throws IOException {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Inactivity");
+        alert.setHeaderText("You have been kicked out of the game for inactivity");
+        alert.show();
+    }
+
 
     public void setUser(User user) {
         this.user = user;
