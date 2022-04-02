@@ -4,15 +4,10 @@ import client.EmojiChat;
 import client.utils.JavaFXUtility;
 import client.utils.ServerUtils;
 import commons.Messages.*;
-import javafx.animation.PathTransition;
 import commons.Player;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
-import javafx.scene.shape.MoveTo;
-import javafx.scene.shape.Path;
-import javafx.scene.shape.VLineTo;
-import javafx.util.Duration;
 import javafx.util.Pair;
 import java.awt.*;
 import java.util.*;
@@ -77,6 +72,7 @@ public class ClientGameController {
 
         this.emojiChat = emojiChat;
         this.javaFXUtility = javaFXUtility;
+        this.gameMode = GameMode.NOT_PLAYING;
     }
 
     public void initialize(Pair<MultiQuestionController, Parent> multiQuestion,
@@ -315,9 +311,9 @@ public class ClientGameController {
         }
 
         Color newColor = new Color(newComponents[0], newComponents[1], newComponents[2]);
-        progressBar.setStyle("-fx-accent: rgb(" + newColor.getRed() + ", " +
-                                                            newColor.getGreen() + ", " +
-                                                            newColor.getBlue() + ");");
+        javaFXUtility.setStyle(progressBar, "-fx-accent: rgb(" + newColor.getRed() + ", " +
+                newColor.getGreen() + ", " +
+                newColor.getBlue() + ");");
     }
 
     public void startTimer(ProgressBar progressBar, Label timeText){
@@ -336,16 +332,16 @@ public class ClientGameController {
     }
 
     public void updateProgressBar(double timeLeft, double maxTime, ProgressBar progressBar, Label timer){
-        if (timeLeft >= 0){
-            progressBar.setProgress(timeLeft/maxTime);
-            int displayText = (int) Math.round(getTimeLeft());
-            timer.setText(displayText + "S");
+        if (timeLeft > 0){
+            javaFXUtility.setProgress(progressBar, timeLeft/maxTime);
+            int displayText = (int) Math.round(timeLeft);
+            javaFXUtility.setText(timer, displayText + "S");
             updateProgressBarColor(timeLeft, maxTime, progressBar);
         } else {
-            progressBar.setProgress(0.0);
+            javaFXUtility.setProgress(progressBar, 0.0);
             mainController.lockCurrentScene();
             int displayText = 0;
-            timer.setText(displayText + "S");
+            javaFXUtility.setText(timer, displayText + "S");
         }
     }
 
@@ -381,30 +377,22 @@ public class ClientGameController {
 
     public void changeScore(int score, Label pointsLabel, Label newPoints) {
 
-        String[] string = pointsLabel.getText().split(" ");
+        String[] string = javaFXUtility.getText(pointsLabel).split(" ");
 
         int currScore = Integer.parseInt(string[0]);
         int pointsAdded = score - currScore;
 
         if (hasDoublePointsForThisRound())
-            newPoints.setText(" + 2x " + pointsAdded / 2);
+            javaFXUtility.setText(newPoints, " + 2x " + pointsAdded / 2);
         else
-            newPoints.setText(" + " + pointsAdded);
+            javaFXUtility.setText(newPoints, " + " + pointsAdded);
 
         if (pointsAdded == 0)
-            newPoints.setStyle("-fx-text-fill: rgb(255,0,0);");
+            javaFXUtility.setStyle(newPoints, "-fx-text-fill: rgb(255,0,0);");
         else
-            newPoints.setStyle("-fx-text-fill: rgb(0, 210, 28);");
+            javaFXUtility.setStyle(newPoints, "-fx-text-fill: rgb(0, 210, 28);");
 
-        pointsLabel.setText(currScore + " pts");
-
-        Path moveVertically = new Path();
-        moveVertically.getElements().add(new MoveTo(0, 0));
-        moveVertically.getElements().add(new VLineTo(-100));
-
-        PathTransition fadeOut = new PathTransition(Duration.seconds(3), moveVertically, newPoints);
-        fadeOut.play();
-
+        javaFXUtility.playPointsAnimation(newPoints);
         mainController.setPointsForAllScenes(score);
     }
 
