@@ -86,7 +86,7 @@ public class QuestionService {
 
             equalCons = this.repo.findByConsumption(consumption);
 
-            mainActivity = getRandActivityFromList(equalCons, seconds);
+            mainActivity = getRandActivityFromList(equalCons);
             if (mainActivity == null) {
                 return makeCompare(seconds);
             }
@@ -106,7 +106,7 @@ public class QuestionService {
 
                 List<Activity> matches = this.repo.findByConsumption(consumptions);
 
-                Activity activityAnsRand = getRandActivityFromList(matches, seconds);
+                Activity activityAnsRand = getRandActivityFromList(matches);
                 if (activityAnsRand == null) {
                     return makeCompare(seconds);
                 }
@@ -142,11 +142,13 @@ public class QuestionService {
         return new CompareQuestion("Instead of " + title + ", I can try:", answer, answers, seconds);
     }
 
-    public Activity getRandActivityFromList(List<Activity> activities, double seconds) {
+    public Activity getRandActivityFromList(List<Activity> activities) {
         Activity act = null;
         Collections.shuffle(activities);
         int idx = 0;
-        act = activities.get(idx);
+        if (activities.size() > 0) {
+            act = activities.get(idx);
+        }
         while (idx < activities.size() && checkIndex(act.getId().intValue())) {
             act = activities.get(idx);
             idx++;
