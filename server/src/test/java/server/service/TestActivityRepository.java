@@ -13,8 +13,10 @@ import server.database.ActivityRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class TestActivityRepository implements ActivityRepository {
 
@@ -218,7 +220,9 @@ public class TestActivityRepository implements ActivityRepository {
 
     @Override
     public List<Activity> findByConsumption(Long consumption) {
-        return null;
+        return activityList.stream()
+                .filter(a -> Objects.equals(a.getConsumption_in_wh(), consumption))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -228,6 +232,8 @@ public class TestActivityRepository implements ActivityRepository {
 
     @Override
     public List<Activity> findByConsumption(List<Long> consumptions) {
-        return null;
+        return activityList.stream()
+                .filter(a -> consumptions.contains(a.getConsumption_in_wh()))
+                .collect(Collectors.toList());
     }
 }
