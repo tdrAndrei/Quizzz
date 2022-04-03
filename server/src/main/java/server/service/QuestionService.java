@@ -86,19 +86,32 @@ public class QuestionService {
 
             equalCons = this.repo.findByConsumption(consumption);
 
-            Collections.shuffle(equalCons);
-            mainActivity = equalCons.get(0);
-            Long mainConsumption = mainActivity.getConsumption_in_wh();
+            mainActivity = getRandActivityFromList(equalCons);
+            if (mainActivity == null) {
+                return makeCompare(seconds);
+            }
 
             if (rm.nextInt(equalCons.size()) == 0) {
-                int ansRand = rm.nextInt(numActivities);
-                while (checkIndex(ansRand)
-                        || this.repo.findById((long) ansRand).get().getConsumption_in_wh() >= mainConsumption
-                        || (double) mainConsumption/this.repo.findById((long) ansRand).get().getConsumption_in_wh() % 1 != 0) {
-                    ansRand = rm.nextInt(numActivities);
+
+                ArrayList<Long> consumptions = new ArrayList<>();
+
+                long x = 2;
+                while (x <= 100 && consumption/x >= Math.sqrt(consumption)) {
+                    if ((double) consumption/x % 1 == 0) {
+                        consumptions.add(consumption/x);
+                        consumptions.add(x);
+                    }
+                    x++;
                 }
-                Activity activityAnsRand = this.repo.findById((long) ansRand).get();
-                factor = (int) (mainConsumption/activityAnsRand.getConsumption_in_wh());
+
+                List<Activity> matches = this.repo.findByConsumption(consumptions);
+
+                Activity activityAnsRand = getRandActivityFromList(matches);
+                if (activityAnsRand == null) {
+                    return makeCompare(seconds);
+                }
+
+                factor = (int) (consumption/activityAnsRand.getConsumption_in_wh());
                 Activity correctAns = new Activity(null, activityAnsRand.getImage_path(), activityAnsRand.getTitle() + ", " +
                         (factor) + " times", activityAnsRand.getConsumption_in_wh(), activityAnsRand.getSource());
                 equalCons.add(1, correctAns);
@@ -116,21 +129,31 @@ public class QuestionService {
             if (!answers.contains(wrongAnswer) && !equalCons.contains(wrongAnswer) && (rand == 0 || wrongAnswer.getConsumption_in_wh() * wrongFactor != mainActivity.getConsumption_in_wh())) {
                 if (rand == 1 && !wrongAnswer.getTitle().contains(" times")) {
                     wrongAnswer.setTitle(wrongAnswer.getTitle() + ", " + wrongFactor + " times");
+                    answers.add(wrongAnswer);
                 }
-                answers.add(wrongAnswer);
             }
         }
         Collections.shuffle(answers);
         answers.add(mainActivity);
         int answer = answers.indexOf(equalCons.get(1));
 
-        char[] c = mainActivity.getTitle().toCharArray();
-        if (Character.toUpperCase(c[1]) != c[1]) {
-            c[0] = Character.toLowerCase(c[0]);
-        }
-        String title = new String(c);
+        String title = lowerCaseTitle(mainActivity.getTitle());
 
         return new CompareQuestion("Instead of " + title + ", I can try:", answer, answers, seconds);
+    }
+
+    public Activity getRandActivityFromList(List<Activity> activities) {
+        Activity act = null;
+        Collections.shuffle(activities);
+        int idx = 0;
+        if (activities.size() > 0) {
+            act = activities.get(idx);
+        }
+        while (idx < activities.size() && checkIndex(act.getId().intValue())) {
+            act = activities.get(idx);
+            idx++;
+        }
+        return act;
     }
 
     public void checkUniqueness(List<Activity> activities, Activity target) {
@@ -283,5 +306,13 @@ public class QuestionService {
         bounds.add(c + c * j / 10L);
 
         return new EstimateQuestion(title, a.getConsumption_in_wh(), List.of(a), bounds, seconds);
+    }
+
+    public static String lowerCaseTitle(String title) {
+        char[] c = title.toCharArray();
+        if (Character.toUpperCase(c[1]) != c[1]) {
+            c[0] = Character.toLowerCase(c[0]);
+        }
+        return new String(c);
     }
 }
