@@ -163,11 +163,7 @@ public class ClientGameController {
                 NewQuestionMessage newQuestionMessage = (NewQuestionMessage) message;
 
                 status = GameState.NEW_QUESTION;
-
-                remainingJokers.forEach(joker -> {
-                    if (joker != Joker.USED)
-                        availableJokers.add(joker);
-                });
+                determineAvailableJokers();
 
                 setDoublePointsForThisRound(false);
                 javaFXUtility.queueJFXThread(() -> {
@@ -229,6 +225,13 @@ public class ClientGameController {
             mainController.setJokerPics(remainingJokers);
             onSuccess.run();
         }
+    }
+
+    public void determineAvailableJokers() {
+        remainingJokers.forEach(joker -> {
+            if (joker != Joker.USED)
+                availableJokers.add(joker);
+        });
     }
 
     public void exitGame() {
@@ -481,7 +484,7 @@ public class ClientGameController {
         if (gameMode == GameMode.MULTI) {
             questionsWithoutAnswer++;
             if (questionsWithoutAnswer == 3) {
-                Platform.runLater(() -> {
+                javaFXUtility.queueJFXThread(() -> {
                     exitGame();
                     try {
                         mainController.kickAlert();
