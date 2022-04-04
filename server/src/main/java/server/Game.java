@@ -193,7 +193,7 @@ public class Game {
     public long eliminateJoker() {
         long correctAns = currentQuestion.getAnswer();
         Random rand = new Random();
-        long randomVal = rand.nextInt(4);
+        long randomVal = rand.nextInt(3);
         if (correctAns == randomVal) {
             return (randomVal + 1) % 3;
         }
