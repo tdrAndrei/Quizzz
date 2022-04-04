@@ -1,18 +1,13 @@
 package client.scenes;
 
 import client.EmojiChat;
+import client.utils.JavaFXUtility;
 import client.utils.ServerUtils;
 import commons.Messages.*;
-import javafx.animation.PathTransition;
 import commons.Player;
-import javafx.application.Platform;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
-import javafx.scene.shape.MoveTo;
-import javafx.scene.shape.Path;
-import javafx.scene.shape.VLineTo;
-import javafx.util.Duration;
 import javafx.util.Pair;
 import java.awt.*;
 import java.io.IOException;
@@ -55,7 +50,8 @@ public class ClientGameController {
     private Color[] timebarColors;
     private boolean doublePointsForThisRound;
     private Timer progressBarThread;
-    private final EmojiChat emojiChat;
+    private EmojiChat emojiChat;
+    private JavaFXUtility javaFXUtility;
 
     private final MainCtrl mainController;
     private final ServerUtils serverUtils;
@@ -69,14 +65,16 @@ public class ClientGameController {
     private int questionsWithoutAnswer;
 
     @javax.inject.Inject
-    public ClientGameController(MainCtrl mainController, ServerUtils serverUtils) {
+    public ClientGameController(MainCtrl mainController, ServerUtils serverUtils, EmojiChat emojiChat, JavaFXUtility javaFXUtility) {
         this.mainController = mainController;
         this.serverUtils = serverUtils;
 
         timebarColors = new Color[]{Color.green, Color.yellow, Color.red};
         progressBarThread = new Timer();
 
-        emojiChat = new EmojiChat();
+        this.emojiChat = emojiChat;
+        this.javaFXUtility = javaFXUtility;
+        this.gameMode = GameMode.NOT_PLAYING;
     }
 
     public void initialize(Pair<MultiQuestionController, Parent> multiQuestion,
@@ -138,8 +136,8 @@ public class ClientGameController {
             } catch (InterruptedException ignored) {
             }
             if (message instanceof ShowLeaderboardMessage && ((ShowLeaderboardMessage) message).getGameProgress().equals("End")) {
-                pollingThread.cancel();
                 gameMode = GameMode.NOT_PLAYING;
+                pollingThread.cancel();
             }
             }
         } , 0, 500);
@@ -156,21 +154,19 @@ public class ClientGameController {
 
             case "NewPlayers":
                 NewPlayersMessage newPlayersMessage = (NewPlayersMessage) message;
-                updateWaitingRoom(newPlayersMessage);
+                List<Player> playerList = newPlayersMessage.getPlayerList();
+                waitingRoomController.showPlayers(playerList);
+                waitingRoomController.showEntries();
                 break;
 
             case "NewQuestion":
                 NewQuestionMessage newQuestionMessage = (NewQuestionMessage) message;
 
                 status = GameState.NEW_QUESTION;
-
-                remainingJokers.forEach(joker -> {
-                    if (joker != Joker.USED)
-                        availableJokers.add(joker);
-                });
+                determineAvailableJokers();
 
                 setDoublePointsForThisRound(false);
-                Platform.runLater(() -> {
+                javaFXUtility.queueJFXThread(() -> {
                     switch (newQuestionMessage.getQuestionType()) {
                         case "MC":
                         case "Compare":
@@ -198,19 +194,16 @@ public class ClientGameController {
 
                 status = GameState.SHOW_ANSWER;
                 progressBarThread.cancel();
-
                 availableJokers.clear();
-
-                Platform.runLater(() -> {
+                javaFXUtility.queueJFXThread(() -> {
                     mainController.showAnswerInCurrentScene(correctAnswerMessage);
                 });
-
                 questionsLeft --;
                 break;
 
             case "ReduceTime":
                 ReduceTimeMessage reduceTimeMessage = (ReduceTimeMessage) message;
-                Platform.runLater(() -> {
+                javaFXUtility.queueJFXThread(() -> {
                     setTimeLeft(reduceTimeMessage.getNewTime());
                     mainController.showTimeReducedInCurrentScene(reduceTimeMessage.getUserName());
                 });
@@ -232,6 +225,13 @@ public class ClientGameController {
             mainController.setJokerPics(remainingJokers);
             onSuccess.run();
         }
+    }
+
+    public void determineAvailableJokers() {
+        remainingJokers.forEach(joker -> {
+            if (joker != Joker.USED)
+                availableJokers.add(joker);
+        });
     }
 
     public void exitGame() {
@@ -320,9 +320,9 @@ public class ClientGameController {
         }
 
         Color newColor = new Color(newComponents[0], newComponents[1], newComponents[2]);
-        progressBar.setStyle("-fx-accent: rgb(" + newColor.getRed() + ", " +
-                                                            newColor.getGreen() + ", " +
-                                                            newColor.getBlue() + ");");
+        javaFXUtility.setStyle(progressBar, "-fx-accent: rgb(" + newColor.getRed() + ", " +
+                newColor.getGreen() + ", " +
+                newColor.getBlue() + ");");
     }
 
     public void startTimer(ProgressBar progressBar, Label timeText){
@@ -333,22 +333,24 @@ public class ClientGameController {
                 double maxTime = getMaxTime();
                 double timeLeft = getTimeLeft();
                 updateTimeLeft(0.1, timeLeft);
-                Platform.runLater(() -> updateProgressBar(timeLeft, maxTime, progressBar, timeText));
+                javaFXUtility.queueJFXThread(() -> {
+                    updateProgressBar(timeLeft, maxTime, progressBar, timeText);
+                });
             }
         }, 0, 100);
     }
 
     public void updateProgressBar(double timeLeft, double maxTime, ProgressBar progressBar, Label timer){
-        if (timeLeft >= 0){
-            progressBar.setProgress(timeLeft/maxTime);
-            int displayText = (int) Math.round(getTimeLeft());
-            timer.setText(displayText + "S");
+        if (timeLeft > 0){
+            javaFXUtility.setProgress(progressBar, timeLeft/maxTime);
+            int displayText = (int) Math.round(timeLeft);
+            javaFXUtility.setText(timer, displayText + "S");
             updateProgressBarColor(timeLeft, maxTime, progressBar);
         } else {
-            progressBar.setProgress(0.0);
+            javaFXUtility.setProgress(progressBar, 0.0);
             mainController.lockCurrentScene();
             int displayText = 0;
-            timer.setText(displayText + "S");
+            javaFXUtility.setText(timer, displayText + "S");
         }
     }
 
@@ -356,13 +358,14 @@ public class ClientGameController {
         boolean isSolo = showLeaderboardMessage.getEntryId() != null;
         if (showLeaderboardMessage.getGameProgress().equals("End")) {
             if (isSolo) {
-                Platform.runLater(() -> {
+                javaFXUtility.queueJFXThread(() -> {
                     mainController.showLeaderboardSolo();
                     Long myEntryId = showLeaderboardMessage.getEntryId();
                     leaderboardSoloController.showMine(myEntryId);
                 });
             } else {
-                Platform.runLater(() -> {
+                javaFXUtility.queueJFXThread(() -> {
+                    mainController.showLeaderboardSolo();
                     mainController.showLeaderboardMulti();
                     String userName = mainController.getUser().getName();
                     leaderboardSoloController.initMulti(showLeaderboardMessage.getEntries(), userName, "End");
@@ -371,7 +374,7 @@ public class ClientGameController {
                 });
             }
         } else if (showLeaderboardMessage.getGameProgress().equals("Mid")) {
-            Platform.runLater(() -> {
+            javaFXUtility.queueJFXThread(() -> {
                 mainController.showLeaderboardMulti();
                 String userName = mainController.getUser().getName();
                 leaderboardSoloController.initMulti(showLeaderboardMessage.getEntries(), userName, "Mid");
@@ -381,38 +384,24 @@ public class ClientGameController {
         }
     }
 
-    public void updateWaitingRoom(NewPlayersMessage newPlayersMessage) {
-        List<Player> playerList = newPlayersMessage.getPlayerList();
-        waitingRoomController.showPlayers(playerList);
-        waitingRoomController.showEntries();
-    }
-
     public void changeScore(int score, Label pointsLabel, Label newPoints) {
 
-        String[] string = pointsLabel.getText().split(" ");
+        String[] string = javaFXUtility.getText(pointsLabel).split(" ");
 
         int currScore = Integer.parseInt(string[0]);
         int pointsAdded = score - currScore;
 
         if (hasDoublePointsForThisRound())
-            newPoints.setText(" + 2x " + pointsAdded / 2);
+            javaFXUtility.setText(newPoints, " + 2x " + pointsAdded / 2);
         else
-            newPoints.setText(" + " + pointsAdded);
+            javaFXUtility.setText(newPoints, " + " + pointsAdded);
 
         if (pointsAdded == 0)
-            newPoints.setStyle("-fx-text-fill: rgb(255,0,0);");
+            javaFXUtility.setStyle(newPoints, "-fx-text-fill: rgb(255,0,0);");
         else
-            newPoints.setStyle("-fx-text-fill: rgb(0, 210, 28);");
+            javaFXUtility.setStyle(newPoints, "-fx-text-fill: rgb(0, 210, 28);");
 
-        pointsLabel.setText(currScore + " pts");
-
-        Path moveVertically = new Path();
-        moveVertically.getElements().add(new MoveTo(0, 0));
-        moveVertically.getElements().add(new VLineTo(-100));
-
-        PathTransition fadeOut = new PathTransition(Duration.seconds(3), moveVertically, newPoints);
-        fadeOut.play();
-
+        javaFXUtility.playPointsAnimation(newPoints);
         mainController.setPointsForAllScenes(score);
     }
 
@@ -448,11 +437,54 @@ public class ClientGameController {
         return this.questionsLeft;
     }
 
+    public MultiQuestionController getMultiQuestionController() {
+        return multiQuestionController;
+    }
+
+    public EstimateQuestionController getEstimateQuestionController() {
+        return estimateQuestionController;
+    }
+
+    public ChooseConsumptionController getChooseConsumptionController() {
+        return chooseConsumptionController;
+    }
+
+    public LeaderboardSoloController getLeaderboardSoloController() {
+        return leaderboardSoloController;
+    }
+
+    public WaitingRoomController getWaitingRoomController() {
+        return waitingRoomController;
+    }
+
+    public void setLeaderboardSoloController(LeaderboardSoloController leaderboardSoloController) {
+        this.leaderboardSoloController = leaderboardSoloController;
+    }
+
+    public void setWaitingRoomController(WaitingRoomController waitingRoomController) {
+        this.waitingRoomController = waitingRoomController;
+    }
+
+    public void setGameId(Long gameId) {
+        this.gameId = gameId;
+    }
+
+    public void setQuestionsLeft(int questionsLeft) {
+        this.questionsLeft = questionsLeft;
+    }
+
+    public void setRemainingJokers(List<Joker> remainingJokers) {
+        this.remainingJokers = remainingJokers;
+    }
+
+    public void setAvailableJokers(EnumSet<Joker> availableJokers) {
+        this.availableJokers = availableJokers;
+    }
     public void incrementNotAnswered() {
         if (gameMode == GameMode.MULTI) {
             questionsWithoutAnswer++;
             if (questionsWithoutAnswer == 3) {
-                Platform.runLater(() -> {
+                javaFXUtility.queueJFXThread(() -> {
                     exitGame();
                     try {
                         mainController.kickAlert();
@@ -470,6 +502,5 @@ public class ClientGameController {
     public void setQuestionsWithoutAnswer(int questionsWithoutAnswer) {
         this.questionsWithoutAnswer = questionsWithoutAnswer;
     }
-
 }
 
