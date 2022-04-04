@@ -92,7 +92,6 @@ public class QuestionService {
             }
 
             if (rm.nextInt(equalCons.size()) == 0) {
-
                 ArrayList<Long> consumptions = new ArrayList<>();
 
                 long x = 2;
@@ -129,8 +128,8 @@ public class QuestionService {
             if (!answers.contains(wrongAnswer) && !equalCons.contains(wrongAnswer) && (rand == 0 || wrongAnswer.getConsumption_in_wh() * wrongFactor != mainActivity.getConsumption_in_wh())) {
                 if (rand == 1 && !wrongAnswer.getTitle().contains(" times")) {
                     wrongAnswer.setTitle(wrongAnswer.getTitle() + ", " + wrongFactor + " times");
-                    answers.add(wrongAnswer);
                 }
+                answers.add(wrongAnswer);
             }
         }
         Collections.shuffle(answers);

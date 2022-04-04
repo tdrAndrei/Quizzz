@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Comparator;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -67,6 +68,31 @@ class QuestionServiceTest {
 
     }
 
+    @Test
+    void makeCompare() {
+        QuestionService qs = new QuestionService(repo, new Rand(0));
+        Activity a = repo.findAll().get(1);
+        Question q = qs.makeCompare(20);
+
+        Activity b = q.getActivities().stream()
+                .filter(x -> x.getTitle().startsWith(a.getTitle()))
+                .filter(x -> x.getTitle().endsWith(" times"))
+                .collect(Collectors.toList()).get(0);
+        int expectedIndex = q.getActivities().indexOf(b);
+
+        assertNotEquals(0, q.calculateScore((long) expectedIndex, 0));
+    }
+
+    @Test
+    void makeChooseConsumption() {
+
+        QuestionService qs = new QuestionService(repo, new Rand(0));
+        Activity a = repo.findAll().get(0);
+        Question q = qs.makeChooseConsumption(20);
+
+        assertEquals(a, q.getActivities().get(0));
+    }
+
     private static class Rand extends Random {
 
         int predetermined;
@@ -80,10 +106,13 @@ class QuestionServiceTest {
 
         @Override
         public int nextInt(int bound) {
-            if (bound == 2)
+            if (bound == 1 || bound == 2)
                 return predetermined;
-            else
-                return next++;
+            else {
+                int ret = next;
+                next = (next + 1) % bound;
+                return ret;
+            }
         }
 
     }
