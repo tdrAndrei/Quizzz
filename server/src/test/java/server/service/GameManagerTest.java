@@ -20,8 +20,8 @@ public class GameManagerTest {
             public void QuestionService() {
 
             }
-            @Override
-            public Question makeMultipleChoice(double seconds) {
+
+            public List<Activity> makeFakeActivities() {
                 List<Activity> fakeActivities = new ArrayList<>();
                 fakeActivities.add(new Activity(0L, "../profile_images/editIcon.png", "test_act_1", 3L,
                         "testsrc"));
@@ -31,21 +31,17 @@ public class GameManagerTest {
                         "testsrc"));
                 fakeActivities.add(new Activity(3L, "../profile_images/editIcon.png", "test_act_4", 300L,
                         "testsrc"));
-                return new MultiChoiceQuestion("TestTitle", 1, fakeActivities, seconds);
+                return fakeActivities;
+            }
+
+            @Override
+            public Question makeMultipleChoice(double seconds) {
+                return new MultiChoiceQuestion("TestTitle", 1, makeFakeActivities(), seconds);
             }
 
             @Override
             public Question makeCompare(double seconds) {
-                List<Activity> fakeActivities = new ArrayList<>();
-                fakeActivities.add(new Activity(0L, "../profile_images/editIcon.png", "test_act_1", 3L,
-                        "testsrc"));
-                fakeActivities.add(new Activity(1L, "../profile_images/editIcon.png", "test_act_2", 300L,
-                        "testsrc"));
-                fakeActivities.add(new Activity(2L, "../profile_images/editIcon.png", "test_act_3", 30L,
-                        "testsrc"));
-                fakeActivities.add(new Activity(3L, "../profile_images/editIcon.png", "test_act_4", 300L,
-                        "testsrc"));
-                return new MultiChoiceQuestion("TestTitle", 1, fakeActivities, seconds);
+                return new MultiChoiceQuestion("TestTitle", 1, makeFakeActivities(), seconds);
             }
 
             @Override
@@ -55,26 +51,12 @@ public class GameManagerTest {
 
             @Override
             public Question makeEstimate(double seconds) {
-                List<Activity> fakeActivities = new ArrayList<>();
-                fakeActivities.add(new Activity(0L, "../profile_images/editIcon.png", "test_act_1", 3L,
-                        "/"));
-                fakeActivities.add(new Activity(1L, "../profile_images/editIcon.png", "test_act_2", 30L,
-                        "/"));
-                fakeActivities.add(new Activity(2L, "../profile_images/editIcon.png", "test_act_3", 300L,
-                        "/"));
-                return new EstimateQuestion("title", 1, fakeActivities, null, seconds);
+                return new EstimateQuestion("title", 1, makeFakeActivities(), null, seconds);
             }
 
             @Override
             public Question makeChooseConsumption(double seconds) {
-                List<Activity> fakeActivities = new ArrayList<>();
-                fakeActivities.add(new Activity(0L, "../profile_images/editIcon.png", "test_act_1", 3L,
-                        "/"));
-                fakeActivities.add(new Activity(1L, "../profile_images/editIcon.png", "test_act_2", 30L,
-                        "/"));
-                fakeActivities.add(new Activity(2L, "../profile_images/editIcon.png", "test_act_3", 300L,
-                        "/"));
-                return new ChooseConsumptionQuestion("title", 1, fakeActivities, seconds, null);
+                return new ChooseConsumptionQuestion("title", 1, makeFakeActivities(), seconds, null);
             }
         }, new LeaderBoardEntryService(new TestLeaderboardEntryRepo()));
     }
