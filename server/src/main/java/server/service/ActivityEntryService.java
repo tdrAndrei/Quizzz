@@ -35,7 +35,7 @@ public class ActivityEntryService {
         }
     }
 
-    public Activity getById(long id){
+    public Activity findById(long id){
         if (activityRepository.findById(id).isEmpty()) {
             return null;
         } else {

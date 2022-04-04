@@ -237,7 +237,9 @@ public class ClientGameController {
     public void exitGame() {
         gameMode = GameMode.NOT_PLAYING;
         progressBarThread.cancel();
-        serverUtils.leaveGame(this.getGameId(), mainController.getUser().getId());
+        if (this.getGameId() != null){
+            serverUtils.leaveGame(this.getGameId(), mainController.getUser().getId());
+        }
         mainController.showMainMenu();
     }
 
