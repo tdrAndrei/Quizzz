@@ -22,7 +22,7 @@
 }
 
 .label {
-    -fx-font-size: 150%;
+    -fx-font-size: 70%;
     -fx-alignment: baseline-left;
     -fx-padding: 5 0 5 10;
 }
@@ -95,55 +95,13 @@
 }
 
 
-.selectedScore {
-    -fx-background-color: #000000;
-    -fx-text-fill: #fff6ed;
-    -fx-padding: 5 12 5 0;
-    -fx-alignment: baseline-right;
-}
-
-.greenBar {
-    -fx-background-color: #80da94;
-    -fx-text-fill: white;
-}
-.greenYellowBar {
-    -fx-background-color: #bee8a0;
-    -fx-text-fill: white;
-
-}
-.yellowBar {
-    -fx-background-color: #fef292;
-    -fx-text-fill: white;
-}
-.yellowOrangeBar {
-    -fx-background-color: #fedaa0;
-    -fx-text-fill: white;
-
-}
-.orangeBar {
-    -fx-background-color: #fdb38e;
-    -fx-text-fill: white;
-
-}
-.redBar {
-    -fx-background-color: #ff8182;
-    -fx-text-fill: white;
-
-}
-
-#colName {
-    -fx-alignment: baseline-left;
-    -fx-padding: 2 42 2 0;
-}
-
-#colScore,
-#colScore .label {
-    -fx-alignment: baseline-right;
+#titleCol,
+#titleCol .label {
+    -fx-text-fill: #000000;
     -fx-padding: 2 12 2 0;
 }
 
 #rank {
-    -fx-alignment: center;
     -fx-font-size: 32;
     -fx-font-weight: Bold;
 }

@@ -25,7 +25,7 @@ class ShowLeaderboardMessageTest {
         playerList.add(p1);
         playerList.add(p2);
         entries = new ArrayList<>();
-        message = new ShowLeaderboardMessage("ShowLeaderboard", "Mid", playerList);
+        message = new ShowLeaderboardMessage("ShowLeaderboard", "Mid", playerList, 5L);
 
     }
 
@@ -89,7 +89,7 @@ class ShowLeaderboardMessageTest {
 
     @Test
     void testEquals() {
-        ShowLeaderboardMessage message2 = new ShowLeaderboardMessage("ShowLeaderboard", "Mid", playerList);
+        ShowLeaderboardMessage message2 = new ShowLeaderboardMessage("ShowLeaderboard", "Mid", playerList, 5L);
         assertEquals(message2, message);
     }
 
@@ -109,4 +109,28 @@ class ShowLeaderboardMessageTest {
                 '}';
         assertEquals(s, message.toString());
     }
+
+    @Test
+    void testGetGameProgress() {
+        assertEquals("Mid", message.getGameProgress());
+    }
+
+    @Test
+    void testSetGameProgress() {
+        message.setGameProgress("Low");
+        assertEquals("Low", message.getGameProgress());
+    }
+
+    @Test
+    void getEntryId() {
+        assertEquals(5L, message.getEntryId());
+    }
+
+    @Test
+    void setEntryId() {
+        message.setEntryId(6L);
+        assertEquals(6L , message.getEntryId());
+    }
+
+
 }

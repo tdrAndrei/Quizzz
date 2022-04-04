@@ -87,6 +87,8 @@ public class MainMenuController implements Initializable {
     private Button quitButton;
     @FXML
     private Label title;
+    @FXML
+    private Button adminButton;
 
     private final MainCtrl mainCtrl;
     private Thread animator;
@@ -160,6 +162,11 @@ public class MainMenuController implements Initializable {
     public void startMulti() {
         stopAnimatorThread();
         mainCtrl.joinGame(true);
+    }
+
+    public void showAdmin() {
+        stopAnimatorThread();
+        mainCtrl.showAdmin();
     }
 
     /**

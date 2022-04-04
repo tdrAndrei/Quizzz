@@ -1,14 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import javafx.geometry.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane minHeight="600.0" minWidth="900.0" prefHeight="800.0" prefWidth="1200.0" stylesheets="@/client.css/questions.css" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.MultiQuestionController">
+<AnchorPane minHeight="600.0" minWidth="900.0" prefHeight="800.0" prefWidth="1200.0" stylesheets="@/client.css/questions.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.MultiQuestionController">
    <children>
       <GridPane fx:id="grid" minHeight="600.0" minWidth="900.0" prefHeight="800.0" prefWidth="1200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <columnConstraints>
@@ -98,7 +107,7 @@
             </GridPane>
             <AnchorPane fx:id="ans1pane" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="270.0" prefWidth="300.0" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.rowSpan="2" GridPane.valignment="CENTER">
                <children>
-                  <GridPane fx:id="Answer1" maxHeight="-Infinity" maxWidth="-Infinity" onMouseClicked="#submit1" prefHeight="200.0" prefWidth="200.0" styleClass="questionCardGrid" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <GridPane fx:id="answer1" maxHeight="-Infinity" maxWidth="-Infinity" onMouseClicked="#submitAnswer" prefHeight="200.0" prefWidth="200.0" styleClass="questionCardGrid" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <columnConstraints>
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
                      </columnConstraints>
@@ -128,7 +137,7 @@
             </AnchorPane>
             <AnchorPane fx:id="ans2pane" layoutX="123.0" layoutY="345.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="270.0" prefWidth="300.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="BOTTOM">
                <children>
-                  <GridPane fx:id="Answer2" maxHeight="-Infinity" maxWidth="-Infinity" onMouseClicked="#submit2" prefHeight="200.0" prefWidth="200.0" styleClass="questionCardGrid" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <GridPane fx:id="answer2" maxHeight="-Infinity" maxWidth="-Infinity" onMouseClicked="#submitAnswer" prefHeight="200.0" prefWidth="200.0" styleClass="questionCardGrid" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <columnConstraints>
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
                      </columnConstraints>
@@ -161,7 +170,7 @@
             </AnchorPane>
             <AnchorPane fx:id="ans3pane" layoutX="30.0" layoutY="45.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="270.0" prefWidth="300.0" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.rowSpan="2" GridPane.valignment="CENTER">
                <children>
-                  <GridPane fx:id="Answer3" maxHeight="-Infinity" maxWidth="-Infinity" onMouseClicked="#submit3" prefHeight="200.0" prefWidth="200.0" styleClass="questionCardGrid" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <GridPane fx:id="answer3" maxHeight="-Infinity" maxWidth="-Infinity" onMouseClicked="#submitAnswer" prefHeight="200.0" prefWidth="200.0" styleClass="questionCardGrid" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <columnConstraints>
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
                      </columnConstraints>
@@ -189,16 +198,16 @@
                   <String fx:value="highlightable" />
                </styleClass>
             </AnchorPane>
-            <Label fx:id="questionLabel" alignment="TOP_CENTER" contentDisplay="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="66.0" prefWidth="802.0" styleClass="setFont" text="Which activity takes the most amount of energy?" textAlignment="CENTER" wrapText="true" GridPane.columnSpan="3" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+            <Label fx:id="questionLabel" alignment="TOP_CENTER" contentDisplay="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" prefHeight="100.0" prefWidth="938.0" styleClass="setFont" text="Which activity takes the most amount of energy?" textAlignment="CENTER" wrapText="true" GridPane.columnSpan="3" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
                <font>
                   <Font name="Arial Bold" size="24.0" />
                </font>
                <GridPane.margin>
-                  <Insets top="10.0" />
+                  <Insets top="35.0" />
                </GridPane.margin>
             </Label>
             <Label fx:id="timeReduced" GridPane.columnIndex="1" />
-            <VBox fx:id="eVbox" alignment="BOTTOM_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="177.0" spacing="5.0" visible="false" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.rowIndex="2" GridPane.rowSpan="2" GridPane.valignment="BOTTOM">
+            <VBox fx:id="emojiChatContainer" alignment="BOTTOM_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="177.0" spacing="5.0" visible="false" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.rowIndex="2" GridPane.rowSpan="2" GridPane.valignment="BOTTOM">
                <children>
                   <ListView fx:id="emojiChatView" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="122.0" prefWidth="252.0" styleClass="emojiChat" />
                   <HBox alignment="BOTTOM_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" prefWidth="200.0" spacing="5.0">
@@ -235,6 +244,12 @@
                   <Insets />
                </GridPane.margin>
             </VBox>
+            <Label fx:id="questionsLeftLabel" text="Label" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="BOTTOM">
+               <styleClass>
+                  <String fx:value="questionsLeftLabel" />
+                  <String fx:value="setFont" />
+               </styleClass>
+            </Label>
          </children>
          <padding>
             <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />

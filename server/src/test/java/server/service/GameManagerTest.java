@@ -7,10 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import server.Game;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -19,20 +16,32 @@ public class GameManagerTest {
 
     @BeforeEach
     public void init() throws JsonProcessingException {
-        this.gameManager = new GameManager(new QuestionService(new TestActivityRepository(), null) {
+        this.gameManager = new GameManager(new QuestionService(new TestActivityRepository(), new Random()) {
             public void QuestionService() {
 
             }
+
+            public List<Activity> makeFakeActivities() {
+                List<Activity> fakeActivities = new ArrayList<>();
+                fakeActivities.add(new Activity(0L, "../profile_images/editIcon.png", "test_act_1", 3L,
+                        "testsrc"));
+                fakeActivities.add(new Activity(1L, "../profile_images/editIcon.png", "test_act_2", 30L,
+                        "testsrc"));
+                fakeActivities.add(new Activity(2L, "../profile_images/editIcon.png", "test_act_3", 300L,
+                        "testsrc"));
+                fakeActivities.add(new Activity(3L, "../profile_images/editIcon.png", "test_act_4", 300L,
+                        "testsrc"));
+                return fakeActivities;
+            }
+
             @Override
             public Question makeMultipleChoice(double seconds) {
-                List<Activity> fakeActivities = new ArrayList<>();
-                fakeActivities.add(new Activity(0L, "/", "test_act_1", 3L,
-                        "testsrc"));
-                fakeActivities.add(new Activity(1L, "/", "test_act_2", 30L,
-                        "testsrc"));
-                fakeActivities.add(new Activity(2L, "/", "test_act_3", 300L,
-                        "testsrc"));
-                return new MultiChoiceQuestion("TestTitle", 1, fakeActivities, seconds);
+                return new MultiChoiceQuestion("TestTitle", 1, makeFakeActivities(), seconds);
+            }
+
+            @Override
+            public Question makeCompare(double seconds) {
+                return new MultiChoiceQuestion("TestTitle", 1, makeFakeActivities(), seconds);
             }
 
             @Override
@@ -42,14 +51,12 @@ public class GameManagerTest {
 
             @Override
             public Question makeEstimate(double seconds) {
-                List<Activity> fakeActivities = new ArrayList<>();
-                fakeActivities.add(new Activity(0L, "/", "test_act_1", 3L,
-                        "/"));
-                fakeActivities.add(new Activity(1L, "/", "test_act_2", 30L,
-                        "/"));
-                fakeActivities.add(new Activity(2L, "/", "test_act_3", 300L,
-                        "/"));
-                return new EstimateQuestion("title", 1, fakeActivities, null, seconds);
+                return new EstimateQuestion("title", 1, makeFakeActivities(), null, seconds);
+            }
+
+            @Override
+            public Question makeChooseConsumption(double seconds) {
+                return new ChooseConsumptionQuestion("title", 1, makeFakeActivities(), seconds, null);
             }
         }, new LeaderBoardEntryService(new TestLeaderboardEntryRepo()));
     }
