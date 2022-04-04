@@ -2,7 +2,6 @@ package server.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import commons.Activity;
-import commons.ChooseConsumptionQuestion;
 import commons.Question;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
