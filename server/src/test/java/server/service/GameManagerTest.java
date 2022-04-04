@@ -64,6 +64,18 @@ public class GameManagerTest {
                         "/"));
                 return new EstimateQuestion("title", 1, fakeActivities, null, seconds);
             }
+
+            @Override
+            public Question makeChooseConsumption(double seconds) {
+                List<Activity> fakeActivities = new ArrayList<>();
+                fakeActivities.add(new Activity(0L, "../profile_images/editIcon.png", "test_act_1", 3L,
+                        "/"));
+                fakeActivities.add(new Activity(1L, "../profile_images/editIcon.png", "test_act_2", 30L,
+                        "/"));
+                fakeActivities.add(new Activity(2L, "../profile_images/editIcon.png", "test_act_3", 300L,
+                        "/"));
+                return new ChooseConsumptionQuestion("title", 1, fakeActivities, seconds, null);
+            }
         }, new LeaderBoardEntryService(new TestLeaderboardEntryRepo()));
     }
 
