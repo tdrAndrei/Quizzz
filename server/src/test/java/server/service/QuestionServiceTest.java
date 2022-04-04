@@ -2,6 +2,7 @@ package server.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import commons.Activity;
+import commons.ChooseConsumptionQuestion;
 import commons.Question;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -83,6 +84,16 @@ class QuestionServiceTest {
         assertNotEquals(0, q.calculateScore((long) expectedIndex, 0));
     }
 
+    @Test
+    void makeChooseConsumption() {
+
+        QuestionService qs = new QuestionService(repo, new Rand(0));
+        Activity a = repo.findAll().get(0);
+        Question q = qs.makeChooseConsumption(20);
+
+        assertEquals(a, q.getActivities().get(0));
+    }
+
     private static class Rand extends Random {
 
         int predetermined;
@@ -96,14 +107,13 @@ class QuestionServiceTest {
 
         @Override
         public int nextInt(int bound) {
-            if (next + 1 >= bound)
-                next--;
-            if (bound == 2)
+            if (bound == 1 || bound == 2)
                 return predetermined;
-            else if (bound == 1)
-                return predetermined;
-            else
-                return next++;
+            else {
+                int ret = next;
+                next = (next + 1) % bound;
+                return ret;
+            }
         }
 
     }
