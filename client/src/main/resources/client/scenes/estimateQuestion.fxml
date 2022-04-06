@@ -159,7 +159,7 @@
             </HBox>
             <HBox maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="50.0" prefWidth="100.0" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="TOP">
                <children>
-                  <Label fx:id="answerLabel" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="91.0" prefWidth="226.0" styleClass="setFont" text="Answer" textAlignment="JUSTIFY">
+                  <Label fx:id="answerLabel" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="91.0" prefWidth="226.0" styleClass="setFont" text="Answer" textAlignment="JUSTIFY" wrapText="true">
                      <font>
                         <Font name="Comicbon" size="20.0" />
                      </font>
@@ -169,7 +169,7 @@
                   <Insets left="30.0" />
                </GridPane.margin>
             </HBox>
-            <Button fx:id="submitAnswerButton" layoutX="60.0" layoutY="720.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="40.0" minWidth="130.0" mnemonicParsing="false" onAction="#submitUserAnswer" prefHeight="40.0" prefWidth="130.0" text="Submit Answer" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
+            <Button fx:id="submitAnswerButton" layoutX="60.0" layoutY="720.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="40.0" minWidth="130.0" mnemonicParsing="false" onAction="#submitUserAnswer" prefHeight="40.0" prefWidth="130.0" styleClass="setFont" text="Submit Answer" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
                <font>
                   <Font name="Comicbon" size="15.0" />
                </font>

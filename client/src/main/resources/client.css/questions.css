@@ -26,7 +26,6 @@
     -fx-background-color: #fef8a0;
 }
 .button:pressed {
-    -fx-background-color: #ffc5ac;
     -fx-scale-x: 95%;
     -fx-scale-y: 95%;
 }
