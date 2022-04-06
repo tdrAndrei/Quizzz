@@ -2,6 +2,9 @@ package client;
 
 import client.scenes.QuestionScene;
 import commons.Messages.EmojiMessage;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -11,6 +14,8 @@ import javafx.scene.control.ListView;
 import javafx.scene.effect.BlendMode;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.text.Font;
+import javafx.util.Duration;
 import javafx.util.Pair;
 
 import java.util.ArrayList;
@@ -47,7 +52,6 @@ public class EmojiChat {
             public void updateItem(Pair<String, Integer> valuePair, boolean empty) {
                 super.updateItem(valuePair, empty);
                 setContentDisplay(ContentDisplay.RIGHT);
-                setStyle("-fx-background-color: #ffc5ac");
                 if (empty) {
                     setText(null);
                     setGraphic(null);
@@ -62,6 +66,9 @@ public class EmojiChat {
                 }
             }
         });
+
+        emojiChatView.setFocusTraversable(false);
+        emojiChatView.setMouseTransparent(true);
     }
 
     public void emojiHandler(EmojiMessage message) {

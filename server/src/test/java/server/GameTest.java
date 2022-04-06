@@ -99,6 +99,7 @@ class GameTest {
         game.setAmountAnswered(0);
         game.processAnswer(2L, 1L);
         assertEquals(game.getAmountAnswered(), 1);
+        game.insertCorrectAnswerIntoDiff();
         assertNotEquals(game.getPlayerMap().get(1L).getScore(), 0);
     }
 
@@ -109,6 +110,7 @@ class GameTest {
         game.setCurrentQuestion(testMCQ);
         game.getPlayerMap().get(1L).setScore(0);
         game.processAnswer(1L, 1L);
+        game.insertCorrectAnswerIntoDiff();
         assertEquals(game.getPlayerMap().get(1L).getScore(), 0);
     }
 

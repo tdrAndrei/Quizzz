@@ -50,7 +50,14 @@
 }
 
 .emojiChat{
-    -fx-background-color: #ffc5ac;
+    -fx-background-color: transparent;
+}
+.emojiChat .scroll-bar:vertical{
+    -fx-opacity: 0;
+}
+.list-cell{
+    -fx-background-color: transparent;
+    -fx-font-size: 1.5em;
 }
 
 .questionsLeftLabel{
