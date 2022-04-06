@@ -50,7 +50,7 @@
                <children>
                   <Label maxHeight="1.7976931348623157E308" prefHeight="48.0" prefWidth="119.0" styleClass="setFont" text="Your Score:" />
                   <Label fx:id="pointsLabel" maxHeight="1.7976931348623157E308" prefHeight="48.0" prefWidth="85.0" styleClass="setFont" text="0 Pts" />
-                  <Label fx:id="newPoints" alignment="BASELINE_RIGHT" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" prefHeight="48.0" prefWidth="150.0" styleClass="setFont" text="+ new pts">
+                  <Label fx:id="newPoints" alignment="BASELINE_RIGHT" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" prefHeight="48.0" prefWidth="150.0" styleClass="setFont">
                      <font>
                         <Font name="Comicbon" size="18.0" />
                      </font>
