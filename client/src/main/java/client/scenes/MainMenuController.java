@@ -204,6 +204,11 @@ public class MainMenuController implements Initializable {
         leaderboardButton.setPrefWidth(Math.min(ratioW * leaderboardButton.getMinWidth(), 1.5 * leaderboardButton.getMinWidth()));
         setFontSize(leaderboardButton, 20, 30, scaleForText);
 
+        adminButton.setPrefHeight(Math.min(ratioH * adminButton.getMinHeight(), 1.5 * adminButton.getMinHeight()));
+        adminButton.setPrefWidth(Math.min(ratioW * adminButton.getMinWidth(), 1.5 *adminButton.getMinWidth()));
+        setFontSize(adminButton, 20, 30, scaleForText);
+
+
         quitButton.setPrefHeight(Math.min(1.1 * ratioH * quitButton.getMinHeight(), 1.5 * quitButton.getMinHeight()));
         quitButton.setPrefWidth(Math.min(ratioW * quitButton.getMinWidth(), 1.5 * quitButton.getMinWidth()));
         setFontSize(quitButton, 18, 25, scaleForText);
