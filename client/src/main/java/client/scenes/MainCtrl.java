@@ -157,7 +157,7 @@ public class MainCtrl {
             //Setting the joker images for all scenes
             int index = 0;
             for (Joker joker : jokers) {
-                controller.getJokerPics().get(index).setImage(new Image(joker.getPath()));
+                controller.getJokerPics().get(index).setImage(joker.getPic());
                 index++;
             }
         }
