@@ -25,6 +25,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.util.Pair;
@@ -32,7 +33,9 @@ import javafx.util.Pair;
 
 import javax.inject.Inject;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MainCtrl {
 
@@ -73,6 +76,7 @@ public class MainCtrl {
 
     private List<QuestionScene> questionControllers;
     private QuestionScene currentSceneController;
+    private Map<Joker, Image> jokerArtworks;
 
     @Inject
     private ServerUtils server;
@@ -121,8 +125,6 @@ public class MainCtrl {
 
         this.clientGameController = clientGameController;
 
-        questionControllers = List.of(multiCtrl, estimateQuestionController, chooseConsumptionController);
-
         showLogin();
         primaryStage.show();
 
@@ -134,6 +136,12 @@ public class MainCtrl {
                 e.printStackTrace();
             }
         });
+
+        this.questionControllers = List.of(multiCtrl, estimateQuestionController, chooseConsumptionController);
+        this.jokerArtworks = new HashMap<>();
+        for (Joker joker: Joker.values()) {
+            this.jokerArtworks.put(joker, new Image(joker.getPath()));
+        }
     }
 
     public void resetQuestionScenes(List<Joker> jokers) {
@@ -156,7 +164,7 @@ public class MainCtrl {
             //Setting the joker images for all scenes
             int index = 0;
             for (Joker joker : jokers) {
-                controller.getJokerPics().get(index).setImage(joker.getPic());
+                controller.getJokerPics().get(index).setImage(jokerArtworks.get(joker));
                 index++;
             }
         }
