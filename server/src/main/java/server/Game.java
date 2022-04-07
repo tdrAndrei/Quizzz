@@ -24,6 +24,7 @@ public class Game {
     private boolean isSolo = false;
     private Date startTime;
     private final Map<Long, Boolean> doublePointsMap = new HashMap<>();
+    private final Map<Long, Integer> scoreForThisRound = new HashMap<>();
     private final Map<Long, Double> maxTime = new HashMap<>();
     private final Queue<Pair<String, Double>> stageQueue = new LinkedList<>();
     private final Map<Long, Message> diffMap = new HashMap<>();
@@ -71,6 +72,7 @@ public class Game {
         diffMap.put(user.getId(), new NullMessage("None"));
         maxTime.put(user.getId(), Double.MAX_VALUE);
         doublePointsMap.put(user.getId(), false);
+        scoreForThisRound.put(user.getId(), 0);
         insertMessageIntoDiff(new NewPlayersMessage("NewPlayers", new ArrayList<>(playerMap.values())));
     }
 
@@ -135,16 +137,12 @@ public class Game {
 
     public void processAnswer(long userAnswer, long userId) {
         int elapsed = ((int) (new Date().getTime() - startTime.getTime()) / 1000);
-        Player currPlayer = playerMap.get(userId);
         if (maxTime.get(userId) < elapsed) {
             return;
         }
-        if (doublePointsMap.get(userId)) {
-            currPlayer.setScore(currPlayer.getScore() + (2 * (currentQuestion.calculateScore(userAnswer, elapsed))));
-            doublePointsMap.put(userId, false);
-        } else {
-            currPlayer.setScore(currPlayer.getScore() + currentQuestion.calculateScore(userAnswer, elapsed));
-        }
+
+        scoreForThisRound.put(userId, currentQuestion.calculateScore(userAnswer, elapsed));
+
         maxTime.put(userId, 0.0); // to make sure maxtime is not high when joker used by player who answered
         amountAnswered++;
     }
@@ -228,6 +226,12 @@ public class Game {
 
     public void insertCorrectAnswerIntoDiff() {
         for (long id : diffMap.keySet()) {
+            if (doublePointsMap.get(id)) {
+                scoreForThisRound.put(id, scoreForThisRound.get(id) * 2);
+                doublePointsMap.put(id, false);
+            }
+            playerMap.get(id).setScore( playerMap.get(id).getScore() + scoreForThisRound.get(id) );
+            scoreForThisRound.put(id, 0);
             CorrectAnswerMessage answerMessage = new CorrectAnswerMessage("ShowCorrectAnswer", playerMap.get(id).getScore(), currentQuestion.getAnswer());
             diffMap.put(id, answerMessage);
         }
@@ -340,6 +344,10 @@ public class Game {
 
     public void setAmountAnswered(int amountAnswered) {
         this.amountAnswered = amountAnswered;
+    }
+
+    public Map<Long, Integer> getScoreForThisRound() {
+        return scoreForThisRound;
     }
 
     @Override

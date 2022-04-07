@@ -161,7 +161,6 @@ public class WaitingRoomController implements Initializable {
     public void exit() {
         warnLabel.setText("");
         clientGameController.exitGame();
-        mainCtrl.showMainMenu();
     }
 
 }

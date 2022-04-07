@@ -166,11 +166,11 @@ public class UIController {
         for (Node node : grid.lookupAll(".highlightable")) {
             node.setOnMouseEntered(e -> {
                 new Timeline(new KeyFrame(Duration.seconds(0), new KeyValue(node.scaleXProperty(), 1), new KeyValue(node.scaleYProperty(), 1)),
-                        new KeyFrame(Duration.seconds(.2), new KeyValue(node.scaleXProperty(), 1.05), new KeyValue(node.scaleYProperty(), 1.05))).play();
+                        new KeyFrame(Duration.seconds(.15), new KeyValue(node.scaleXProperty(), 1.04), new KeyValue(node.scaleYProperty(), 1.04))).play();
             });
             node.setOnMouseExited(e -> {
-                node.setScaleX(1);
-                node.setScaleY(1);
+                new Timeline(new KeyFrame(Duration.seconds(0), new KeyValue(node.scaleXProperty(), 1.04), new KeyValue(node.scaleYProperty(), 1.04)),
+                             new KeyFrame(Duration.seconds(.15), new KeyValue(node.scaleXProperty(), 1), new KeyValue(node.scaleYProperty(), 1))).play();
             });
         }
         ans1pane.setStyle("-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 10, 0.5, 0.0, 0.0);");
