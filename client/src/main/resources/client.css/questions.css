@@ -26,7 +26,6 @@
     -fx-background-color: #fef8a0;
 }
 .button:pressed {
-    -fx-background-color: #ffc5ac;
     -fx-scale-x: 95%;
     -fx-scale-y: 95%;
 }
@@ -51,7 +50,19 @@
 }
 
 .emojiChat{
-    -fx-background-color: #ffc5ac;
+    -fx-background-color: transparent;
+}
+.emojiChat .scroll-bar:vertical{
+    -fx-opacity: 0;
+}
+
+.emojiChat .scroll-bar:horizontal{
+    -fx-opacity: 0;
+}
+
+.list-cell{
+    -fx-background-color: transparent;
+    -fx-font-size: 1.5em;
 }
 
 .questionsLeftLabel{

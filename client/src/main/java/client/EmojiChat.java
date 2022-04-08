@@ -47,7 +47,6 @@ public class EmojiChat {
             public void updateItem(Pair<String, Integer> valuePair, boolean empty) {
                 super.updateItem(valuePair, empty);
                 setContentDisplay(ContentDisplay.RIGHT);
-                setStyle("-fx-background-color: #ffc5ac");
                 if (empty) {
                     setText(null);
                     setGraphic(null);
@@ -62,6 +61,9 @@ public class EmojiChat {
                 }
             }
         });
+
+        emojiChatView.setFocusTraversable(false);
+        emojiChatView.setMouseTransparent(true);
     }
 
     public void emojiHandler(EmojiMessage message) {

@@ -203,6 +203,7 @@ public class ClientGameController {
 
             case "ReduceTime":
                 ReduceTimeMessage reduceTimeMessage = (ReduceTimeMessage) message;
+                availableJokers.remove(Joker.REDUCETIME);   ///If time is reduced for me, I cannot use time joker this  round
                 javaFXUtility.queueJFXThread(() -> {
                     setTimeLeft(reduceTimeMessage.getNewTime());
                     mainController.showTimeReducedInCurrentScene(reduceTimeMessage.getUserName());

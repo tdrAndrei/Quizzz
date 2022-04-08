@@ -13,7 +13,6 @@ public enum Joker {
     USED("/client.photos/usedJoker.png");
 
     private String path;
-
     Joker(String path) {
         this.path = path;
     }

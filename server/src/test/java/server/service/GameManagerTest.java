@@ -121,6 +121,7 @@ public class GameManagerTest {
         long response = gameManager.joinSolo(user);
         gameManager.processAnswer(1L, 1, response);
         Game game = gameManager.getGameMap().get(response);
+        game.insertCorrectAnswerIntoDiff();
         assertTrue(game.getPlayerMap().get(1L).getScore() != 0);
     }
 
@@ -130,6 +131,7 @@ public class GameManagerTest {
         long response = gameManager.joinSolo(user);
         gameManager.processAnswer(1L, 3, response);
         Game game = gameManager.getGameMap().get(response);
+        game.insertCorrectAnswerIntoDiff();
         assertEquals(0, game.getPlayerMap().get(1L).getScore());
     }
 

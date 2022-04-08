@@ -219,7 +219,11 @@ class ClientGameControllerTest {
 
     @Test
     public void interpretMessageReduceTimeTest() throws InterruptedException {
+        // Preparation
+        clientGameController.setAvailableJokers(EnumSet.of(Joker.REDUCETIME));
+        //Method invocation
         clientGameController.interpretMessage(new ReduceTimeMessage("ReduceTime", "test-user-2", 4.00));
+        //Tests
         verify(javaFXUtility, times(1)).queueJFXThread(any(Runnable.class));
         verifyNoInteractions(mainCtrl, serverUtils, emojiChat);
     }

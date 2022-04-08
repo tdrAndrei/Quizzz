@@ -98,11 +98,12 @@ public class QuestionService {
                 while (x <= 100 && consumption/x >= Math.sqrt(consumption)) {
                     if ((double) consumption/x % 1 == 0) {
                         consumptions.add(consumption/x);
-                        consumptions.add(x);
+                        if (consumption/x <= Integer.MAX_VALUE) {
+                            consumptions.add(x);
+                        }
                     }
                     x++;
                 }
-
                 List<Activity> matches = this.repo.findByConsumption(consumptions);
 
                 Activity activityAnsRand = getRandActivityFromList(matches);
@@ -134,11 +135,9 @@ public class QuestionService {
         }
         Collections.shuffle(answers);
         answers.add(mainActivity);
-        int answer = answers.indexOf(equalCons.get(1));
 
         String title = lowerCaseTitle(mainActivity.getTitle());
-
-        return new CompareQuestion("Instead of " + title + ", I can try:", answer, answers, seconds);
+        return new CompareQuestion("Instead of " + title + ", I can try:", answers.indexOf(equalCons.get(1)), answers, seconds);
     }
 
     public Activity getRandActivityFromList(List<Activity> activities) {
