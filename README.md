@@ -1,5 +1,6 @@
 ## Description of project
-This is _Quizzzz!_, a fast-paced educational quiz game geared towards raising awareness about energy usage.
+This is _Quizzzz!_, a fast-paced educational quiz game geared towards raising awareness about energy usage.  
+This project is powered by the [Spring](https://spring.io/) library for the database and API functionality and the [javaFX](https://openjfx.io/) library for an interactive user interface.
 ## Group members
 
 | Profile Picture | Name | Email |
