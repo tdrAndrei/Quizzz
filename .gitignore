@@ -43,3 +43,6 @@ out/
 ### IGNORE ACTIVITIES ###
 server/src/main/resources/*
 !server/src/main/resources/application.properties
+
+### IGNORE CONFIG FILE FOR CLIENT ###
+client/src/main/resources/config.txt

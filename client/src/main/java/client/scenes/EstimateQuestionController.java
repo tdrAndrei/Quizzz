@@ -164,8 +164,8 @@ public class EstimateQuestionController implements Initializable, QuestionScene 
         changeListener = new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                int value = (int) answerSlider.getValue();
-                answerLabel.setText(Integer.toString(value));
+                long value = (long) Math.floor(answerSlider.getValue());
+                answerLabel.setText(Long.toString(value));
             }
         };
         progressBar.setProgress(1.0);
