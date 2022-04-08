@@ -4,9 +4,9 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="560.0" prefWidth="751.0" stylesheets="@/client.css/admin.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.AdminController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="600.0" minWidth="900.0" prefHeight="800.0" prefWidth="1200.0" stylesheets="@/client.css/admin.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.AdminController">
    <children>
-      <GridPane fx:id="gridPane" layoutX="-1.0" prefHeight="560.0" prefWidth="751.0">
+      <GridPane fx:id="gridPane" layoutX="-1.0" minHeight="600.0" minWidth="900.0" prefHeight="800.0" prefWidth="1200.0">
         <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" maxWidth="195.0" minWidth="10.0" prefWidth="110.0" />
             <ColumnConstraints hgrow="SOMETIMES" maxWidth="585.0" minWidth="10.0" prefWidth="203.0" />
@@ -21,7 +21,7 @@
           <RowConstraints maxHeight="166.0" minHeight="10.0" prefHeight="118.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <Button fx:id="menuButton" mnemonicParsing="false" onAction="#backToMainMenu" prefHeight="38.0" prefWidth="78.0" text="Menu" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+            <Button fx:id="menuButton" mnemonicParsing="false" onAction="#backToMainMenu" prefHeight="50.0" prefWidth="89.0" text="Menu" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
                <GridPane.margin>
                   <Insets />
                </GridPane.margin>
@@ -35,7 +35,7 @@
                   <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                </columnResizePolicy>
             </TableView>
-            <Button fx:id="newActivity" mnemonicParsing="false" onAction="#goToAddActivityScreen" prefHeight="39.0" prefWidth="271.0" text="ADD NEW ACTIVITY" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER" />
+            <Button fx:id="newActivity" mnemonicParsing="false" onAction="#goToAddActivityScreen" prefHeight="49.0" prefWidth="286.0" text="ADD NEW ACTIVITY" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER" />
          </children>
       </GridPane>
    </children>

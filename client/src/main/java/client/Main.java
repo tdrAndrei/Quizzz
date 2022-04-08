@@ -41,7 +41,6 @@ public class Main extends Application {
         var login = FXML.load(LoginController.class, "client", "scenes", "Login.fxml");
         var mainMenu = FXML.load(MainMenuController.class, "client", "scenes", "main.fxml");
         var multiQuestion = FXML.load(MultiQuestionController.class, "client", "scenes", "multiQuestion.fxml");
-        //var add = FXML.load(AddQuoteCtrl.class, "client", "scenes", "AddQuote.fxml");
         var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
         var leaderboardSolo = FXML.load(LeaderboardSoloController.class, "client", "scenes", "LeaderboardSolo.fxml");
         var estimateQuestion = FXML.load(EstimateQuestionController.class, "client", "scenes", "estimateQuestion.fxml");
