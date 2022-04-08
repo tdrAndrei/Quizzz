@@ -34,8 +34,6 @@ public class MyModule implements Module {
         binder.bind(ChooseConsumptionController.class).in(Scopes.SINGLETON);
         binder.bind(WaitingRoomController.class).in(Scopes.SINGLETON);
         binder.bind(LeaderboardSoloController.class).in(Scopes.SINGLETON);
-        binder.bind(AddQuoteCtrl.class).in(Scopes.SINGLETON);
-        binder.bind(QuoteOverviewCtrl.class).in(Scopes.SINGLETON);
         binder.bind(ClientGameController.class).in(Scopes.SINGLETON);
     }
 }
