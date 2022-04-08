@@ -111,7 +111,7 @@ public class WaitingRoomController implements Initializable {
         Label nameLabel = new Label();
         nameLabel.setText("  " + position + ". " + name);
         nameLabel.getStyleClass().add("barColor");
-        double minWidth = grid.getPrefWidth()/1.4;
+        double minWidth = grid.getPrefWidth()/1.65;
         nameLabel.setMinWidth(minWidth);
         nameLabel.setMinHeight(35);
         return new WaitingRoomEntryLabel(nameLabel, entryId);
