@@ -41,7 +41,7 @@ public class GameManager {
 
     public long joinMulti(User user) {
         for (Game game : gameMap.values()) {
-            if (game.getStageQueue().peek().getKey().equals("Waiting")) {
+            if (game.getStageQueue().peek().getKey() != null && game.getStageQueue().peek().getKey().equals("Waiting")) {
                 game.addPlayer(user);
                 return game.getId();
             }
@@ -51,6 +51,10 @@ public class GameManager {
         newGame.addPlayer(user);
         gameMap.put(gameId, newGame);
         return gameId;
+    }
+
+    public int getNumberOfQuestionsInGame(long gameId) {
+        return gameMap.get(gameId).getNumberOfQuestions();
     }
 
     public long useEliminateAnswer(long gameId) {

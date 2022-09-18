@@ -41,14 +41,20 @@ public class Main extends Application {
         var login = FXML.load(LoginController.class, "client", "scenes", "Login.fxml");
         var mainMenu = FXML.load(MainMenuController.class, "client", "scenes", "main.fxml");
         var multiQuestion = FXML.load(MultiQuestionController.class, "client", "scenes", "multiQuestion.fxml");
-        //var add = FXML.load(AddQuoteCtrl.class, "client", "scenes", "AddQuote.fxml");
         var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
         var leaderboardSolo = FXML.load(LeaderboardSoloController.class, "client", "scenes", "LeaderboardSolo.fxml");
         var estimateQuestion = FXML.load(EstimateQuestionController.class, "client", "scenes", "estimateQuestion.fxml");
+
+        var chooseConsumption = FXML.load(ChooseConsumptionController.class, "client", "scenes", "chooseConsumption.fxml");
+
         var waitingRoom = FXML.load(WaitingRoomController.class, "client", "scenes", "waitingRoom.fxml");
+        var adminPanel = FXML.load(AdminController.class, "client", "scenes", "admin.fxml");
+        var addActivityPanel = FXML.load(AddActivityController.class, "client", "scenes", "newActivity.fxml");
+        var editActivityPanel = FXML.load(EditActivityController.class, "client", "scenes", "editActivity.fxml");
         var clientGameController = INJECTOR.getInstance(ClientGameController.class);
-        clientGameController.initialize(multiQuestion, estimateQuestion, leaderboardSolo, waitingRoom);
-        mainCtrl.initialize(primaryStage, login, mainMenu, multiQuestion, leaderboardSolo, estimateQuestion, clientGameController, waitingRoom);
+
+        clientGameController.initialize(multiQuestion, estimateQuestion, chooseConsumption, leaderboardSolo, waitingRoom);
+        mainCtrl.initialize(primaryStage, login, mainMenu, multiQuestion, chooseConsumption, leaderboardSolo, estimateQuestion, clientGameController, waitingRoom, adminPanel, addActivityPanel, editActivityPanel);
 
     }
 

@@ -40,12 +40,13 @@ public class UserService {
         return userRepo.save(user);
     }
 
-    public void deleteById(Long id) {
+    public boolean deleteById(Long id) {
         if (id < 0 || !userRepo.existsById(id)) {
-            return;
+            return false;
         } else {
             userRepo.deleteById(id);
         }
+        return true;
     }
 
     public Optional<User> updateById(Long id, String name) {

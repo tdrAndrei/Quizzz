@@ -45,12 +45,20 @@ public class UserController {
     }
 
     @DeleteMapping(path = "{userId}")
-    public void deleteUser(@PathVariable("userId") Long userId) {
-        userService.deleteById(userId);
+    public ResponseEntity<?> deleteUser(@PathVariable("userId") Long userId) {
+        if (!userService.deleteById(userId)){
+            return ResponseEntity.badRequest().build();
+        }
+
+        return ResponseEntity.ok().build();
     }
 
     @PutMapping(path = "{userId}")
-    public void updateUser(@PathVariable("userId") Long userId , @RequestParam(required = false) String name) {
-        userService.updateById(userId, name);
+    public ResponseEntity<?> updateUser(@PathVariable("userId") Long userId , @RequestParam(required = false) String name) {
+        if (userService.updateById(userId, name).isEmpty()){
+            return ResponseEntity.badRequest().build();
+        }
+
+        return ResponseEntity.ok().build();
     }
 }

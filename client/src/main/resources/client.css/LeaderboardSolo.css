@@ -1,6 +1,6 @@
 .root {
     -fx-background-color: #fcebd9;
-    -fx-font-family: Arial;
+    -fx-font-family: 'Comicbon';
 }
 
 .button {
@@ -143,6 +143,7 @@
 }
 
 #rank {
+    -fx-alignment: center;
     -fx-font-size: 32;
     -fx-font-weight: Bold;
 }

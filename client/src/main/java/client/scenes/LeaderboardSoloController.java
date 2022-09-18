@@ -9,6 +9,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 
 import javax.inject.Inject;
 import java.net.URL;
@@ -22,11 +23,13 @@ class LeaderboardEntryLabel {
     Label nameLabel;
     Label scoreLabel;
     Long entryId;
+    Integer rank;
 
     public LeaderboardEntryLabel(Long entryId, Label nameLabel, Label scoreLabel) {
         this.entryId = entryId;
         this.nameLabel=nameLabel;
         this.scoreLabel=scoreLabel;
+        this.rank = -1;
     }
 
     public Long getEntryId() {
@@ -57,19 +60,29 @@ class LeaderboardEntryLabel {
         this.scoreLabel = scoreLabel;
     }
 
+    public Integer getRank() {
+        return rank;
+    }
+
+    public void setRank(Integer rank) {
+        this.rank = rank;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof LeaderboardEntryLabel)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
         LeaderboardEntryLabel that = (LeaderboardEntryLabel) o;
-        return Objects.equals(scoreLabel, that.scoreLabel) && Objects.equals(nameLabel, that.nameLabel);
+        return Objects.equals(nameLabel, that.nameLabel) && Objects.equals(scoreLabel, that.scoreLabel) && Objects.equals(entryId, that.entryId) && Objects.equals(rank, that.rank);
     }
 
     @Override
     public String toString() {
-        return "LeaderboardEntry{" +
+        return "LeaderboardEntryLabel{" +
                 "nameLabel=" + nameLabel +
                 ", scoreLabel=" + scoreLabel +
+                ", entryId=" + entryId +
+                ", rank=" + rank +
                 '}';
     }
 }
@@ -83,10 +96,25 @@ public class LeaderboardSoloController implements Initializable {
     private TableView leaderboardEntries;
 
     @FXML
+    private Button mainMenuButton;
+
+    @FXML
+    private Button replayButton;
+
+    @FXML
+    private Button leaveButton;
+
+    @FXML
+    private HBox multiEndButtons;
+
+    @FXML
     private TableColumn<LeaderboardEntryLabel, Label> colName;
 
     @FXML
     private TableColumn<LeaderboardEntryLabel, Label> colScore;
+
+    @FXML
+    private TableColumn<LeaderboardEntryLabel, Integer> colRank;
 
     @FXML
     private GridPane grid;
@@ -107,7 +135,7 @@ public class LeaderboardSoloController implements Initializable {
         this.server = server;
     }
 
-    public void addLabel(String name, int sc, long entryId) {
+    public LeaderboardEntryLabel addLabel(String name, int sc, long entryId) {
             Label nameLabel = new Label();
             nameLabel.setText(name);
             int range = scoreUpperBound-scoreLowerBound;
@@ -127,10 +155,7 @@ public class LeaderboardSoloController implements Initializable {
             Label scoreLabel = new Label();
             scoreLabel.setText(String.valueOf(sc));
 
-            entries.add(getNearestIndex(sc, 0, entries.size() - 1), new LeaderboardEntryLabel(entryId, nameLabel, scoreLabel));
-            resizeLabels();
-            data = FXCollections.observableList(entries);
-            leaderboardEntries.setItems(data);
+            return new LeaderboardEntryLabel(entryId, nameLabel, scoreLabel);
     }
 
     public void resizeLabels() {
@@ -156,9 +181,14 @@ public class LeaderboardSoloController implements Initializable {
             }
             entries.get(i).getNameLabel().setStyle("-fx-shape: \"M 0 100 L "+(minWidth)+" 100 L "+(minWidth+25)+" 50 L "+(minWidth)+" 0 L 0 0 L 0 100 z\"");
             entries.get(i).getNameLabel().setMinWidth(minWidth);
+
+            int pos = i+1;
+            while (pos > 1 && entries.get(pos-1).getScoreLabel().getText().equals(entries.get(pos-2).getScoreLabel().getText())) {
+                pos--;
+            }
+            entries.get(i).setRank(pos);
         }
-        data = FXCollections.observableList(entries);
-        leaderboardEntries.setItems(data);
+        showEntries();
     }
 
     public void showMine(Long entryId) {
@@ -171,15 +201,19 @@ public class LeaderboardSoloController implements Initializable {
                 entries.get(pos).getScoreLabel().setStyle("-fx-shape: \"M 0 50 L 150 100 L 700 100 L 700 0 L 150 0 L 0 50 z\"");
                 entries.get(pos).getScoreLabel().setMinWidth(width);
                 entries.get(pos).getScoreLabel().setMaxHeight(100);
-                rank.setText("You finished in " + (pos+1) + ordinal(pos+1) + " place!");
+                pos++;
+                while (pos > 1 && entries.get(pos-1).getScoreLabel().getText().equals(entries.get(pos-2).getScoreLabel().getText())) {
+                    pos--;
+                }
+                rank.setText("You finished in " + (pos) + ordinal(pos) + " place!");
                 break;
             }
             pos++;
         }
-        data = FXCollections.observableList(entries);
-        leaderboardEntries.setItems(data);
+        showEntries();
         leaderboardEntries.scrollTo(pos);
     }
+
     public static String ordinal(int n) {
         if (n % 100 > 3 && n % 100 < 21) {
             return "th";
@@ -196,8 +230,10 @@ public class LeaderboardSoloController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        leaderboardEntries.setSelectionModel(null);
         colName.setCellValueFactory(q -> new SimpleObjectProperty<>(q.getValue().getNameLabel()));
         colScore.setCellValueFactory(q -> new SimpleObjectProperty<>(q.getValue().getScoreLabel()));
+        colRank.setCellValueFactory(q -> new SimpleObjectProperty<>(q.getValue().getRank()));
     }
 
     public void backToMainMenu(){
@@ -219,9 +255,61 @@ public class LeaderboardSoloController implements Initializable {
         return getNearestIndex(target, low, mid-1);
     }
 
-    public void reset() {
+    public void resetState() {
+        multiEndButtons.setMouseTransparent(true);
+        hideNode(leaveButton);
+        hideNode(replayButton);
+        showNode(mainMenuButton);
+        entries.clear();
         leaderboardEntries.scrollTo(0);
-        rank.setText("");
+        rank.setText("ALL TIME SOLO LEADERBOARD");
+    }
+
+    public void initMulti(List<LeaderboardEntry> multiEntries, String userName, String gameProgress) {
+        entries.clear();
+
+        scoreUpperBound = 0;
+        scoreLowerBound = Integer.MAX_VALUE;
+
+        for (LeaderboardEntry rawEntry : multiEntries) {
+            if (rawEntry.getScore() < scoreLowerBound) {
+                scoreLowerBound = rawEntry.getScore();
+            }
+            if (rawEntry.getScore() > scoreUpperBound) {
+                scoreUpperBound = rawEntry.getScore();
+            }
+        }
+        LeaderboardEntryLabel myEntry = null;
+        for (LeaderboardEntry rawEntry : multiEntries) {
+            LeaderboardEntryLabel processedEntry = addLabel(rawEntry.getName(), rawEntry.getScore(), 0);
+            if (rawEntry.getName().equals(userName)) {
+                processedEntry.getScoreLabel().getStyleClass().add("selectedScore");
+                int width = 64;
+                processedEntry.getScoreLabel().setStyle("-fx-shape: \"M 0 50 L 150 100 L 700 100 L 700 0 L 150 0 L 0 50 z\"");
+                processedEntry.getScoreLabel().setMinWidth(width);
+                processedEntry.getScoreLabel().setMaxHeight(100);
+                myEntry = processedEntry;
+            }
+            entries.add(getNearestIndex(rawEntry.getScore(), 0, entries.size() - 1), processedEntry);
+        }
+        int pos = entries.indexOf(myEntry) + 1;
+        while (pos > 1 && entries.get(pos-1).getScoreLabel().getText().equals(entries.get(pos-2).getScoreLabel().getText())) {
+            pos--;
+        }
+        if (gameProgress.equals("End")) {
+            rank.setText("You finished in " + (pos) + ordinal(pos) + " place!");
+        } else {
+            String motivation = "";
+            if (pos == 1) {
+                motivation = "Keep it up!";
+            } else if (pos < entries.size() * 0.5) {
+                motivation = "Almost there!";
+            } else {
+                motivation = "Keep trying!";
+            }
+            rank.setText("You are in " + (pos) + ordinal(pos) + " place! " + motivation);
+        }
+        resizeLabels();
     }
 
     public void refresh() {
@@ -240,8 +328,14 @@ public class LeaderboardSoloController implements Initializable {
             }
         }
         for (LeaderboardEntry rawEntry : allTimeEntries) {
-            addLabel(rawEntry.getName(), rawEntry.getScore(), rawEntry.getId());
+            entries.add(getNearestIndex(rawEntry.getScore(), 0, entries.size() - 1), addLabel(rawEntry.getName(), rawEntry.getScore(), rawEntry.getId()));
         }
+        resizeLabels();
+    }
+
+    public void showEntries() {
+        data = FXCollections.observableList(entries);
+        leaderboardEntries.setItems(data);
     }
 
     public void resizeWidth(double width){
@@ -249,9 +343,32 @@ public class LeaderboardSoloController implements Initializable {
         resizeLabels();
     }
 
+    public void setEndScreen() {
+        hideNode(mainMenuButton);
+        showNode(leaveButton);
+        showNode(replayButton);
+        multiEndButtons.setMouseTransparent(false);
+    }
+
+    public void setMidScreen() {
+        hideNode(mainMenuButton);
+    }
+
+    public void replay() {
+        mainCtrl.joinGame(true);
+    }
+
     public void resizeHeight(double height){
         grid.setPrefHeight(height);
     }
 
+    public void hideNode(Control c) {
+        c.setMouseTransparent(true);
+        c.setStyle("visibility: hidden");
+    }
 
+    public void showNode(Control c) {
+        c.setMouseTransparent(false);
+        c.setStyle("visibility: visible");
+    }
 }

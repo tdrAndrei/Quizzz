@@ -6,42 +6,26 @@
     -fx-background-color: #ffc5ac;
     -fx-font-family: 'Comicbon';
 }
-#progressBar {
-    -fx-accent: #f37500;
-    -fx-font-family: 'Comicbon';
-}
-
-#timer {
-    -fx-font-family: 'Comicbon';
-}
-
-#activity1Label {
-    -fx-font-family: 'Comicbon';
-}
-
-#submitAnswerButton {
+.setFont {
     -fx-font-family: 'Comicbon';
 }
 
 #answerLabel {
-    -fx-font-family: 'Comicbon';
     -fx-font-weight: bold;
 }
 
-#pointsLabel {
-    -fx-font-family: 'Comicbon';
+#newPoints {
+    -fx-font-weight: bold;
 }
 
 .button {
     -fx-background-color: #fdecd8;
-    -fx-font-family: 'Comicbon';
     -fx-background-radius: 5px;
 }
 .button:hover {
     -fx-background-color: #fef8a0;
 }
 .button:pressed {
-    -fx-background-color: #ffc5ac;
     -fx-scale-x: 95%;
     -fx-scale-y: 95%;
 }
@@ -54,15 +38,57 @@
     -fx-border-style: solid;
     -fx-border-radius: 2px;
 }
-.highlightable:hover{
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 10, 0.5, 0.0, 0.0);
+
+.questionLabelBackground {
+    -fx-background-color: #fef8a0;
+    -fx-font-size: 15px;
+    -fx-min-width: 300px;
+    -fx-min-height: 60px;
+    -fx-background-radius: 5px;
+    -fx-border-style: solid;
+    -fx-border-radius: 2px;
 }
+
+.emojiChat{
+    -fx-background-color: transparent;
+}
+.emojiChat .scroll-bar:vertical{
+    -fx-opacity: 0;
+}
+
+.emojiChat .scroll-bar:horizontal{
+    -fx-opacity: 0;
+}
+
+.list-cell{
+    -fx-background-color: transparent;
+    -fx-font-size: 1.5em;
+}
+
+.questionsLeftLabel{
+    -fx-background-radius: 50%;
+    -fx-alignment: center;
+    -fx-font-size: 3em;
+    -fx-border-radius: 50%;
+    -fx-border-style: solid;
+    -fx-border-width: 3px;
+    -fx-border-color: black;
+    -fx-pref-height: 60px;
+    -fx-pref-width: 60px;
+    -fx-max-height: 60px;
+    -fx-max-width: 60px;
+}
+
 #scoreBox {
     -fx-font-size: 20px;
-    -fx-font-family: 'Comicbon';
 }
 #questionLabel {
     -fx-font-size: 30px;
-    -fx-font-family: 'Comicbon';
     -fx-text-alignment: center;
+}
+
+#timeReduced {
+    -fx-font-size: 20px;
+    -fx-font-family: 'Comicbon';
+    -fx-text-fill: #c95959;
 }

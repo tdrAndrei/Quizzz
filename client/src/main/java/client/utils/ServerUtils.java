@@ -15,21 +15,25 @@
  */
 package client.utils;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URL;
+import java.lang.reflect.Type;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.function.Consumer;
 
+import commons.Activity;
 import commons.LeaderboardEntry;
+import commons.Messages.EmojiMessage;
 import commons.Messages.Message;
 import commons.User;
 import org.glassfish.jersey.client.ClientConfig;
 
-import commons.Quote;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.GenericType;
+import org.springframework.messaging.converter.MappingJackson2MessageConverter;
+import org.springframework.messaging.simp.stomp.*;
+import org.springframework.web.socket.client.standard.StandardWebSocketClient;
+import org.springframework.web.socket.messaging.WebSocketStompClient;
 
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import static jakarta.ws.rs.core.MediaType.TEXT_PLAIN;
@@ -37,28 +41,60 @@ import static jakarta.ws.rs.core.MediaType.TEXT_PLAIN;
 public class ServerUtils {
 
     private static String SERVER = "";
-
-
+    private StompSession session;
     public void setUrl(String url) {
         SERVER = url;
     }
 
-    public void getQuotesTheHardWay() throws IOException {
-        var url = new URL("http://localhost:8080/api/quotes");
-        var is = url.openConnection().getInputStream();
-        var br = new BufferedReader(new InputStreamReader(is));
-        String line;
-        while ((line = br.readLine()) != null) {
-            System.out.println(line);
+    public String generateWebsocketURL() {
+        String intermediate;
+        if (SERVER.contains("https")) {
+            intermediate = SERVER.replace("https", "");
+        } else {
+            intermediate = SERVER.replace("http", "");
+        }
+        return "ws" + intermediate + "websocket";
+    }
+
+    public void getAndSetSession() {
+        String websocketURL = generateWebsocketURL();
+        var client = new StandardWebSocketClient();
+        var stomp = new WebSocketStompClient(client);
+        stomp.setMessageConverter(new MappingJackson2MessageConverter());
+        try {
+            this.session = stomp.connect(websocketURL, new StompSessionHandlerAdapter() {}).get();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
         }
     }
 
-    public List<Quote> getQuotes() {
-        return ClientBuilder.newClient(new ClientConfig()) //
-                .target(SERVER).path("api/quotes") //
-                .request(APPLICATION_JSON) //
-                .accept(APPLICATION_JSON) //
-                .get(new GenericType<List<Quote>>() {});
+    public void registerForEmojiMessages(long gameId, Consumer<EmojiMessage> q) {
+        session.subscribe("/topic/emoji/" + gameId, new StompFrameHandler() {
+            @Override
+            public Type getPayloadType(StompHeaders headers) {
+                return EmojiMessage.class;
+            }
+
+            @Override
+            public void handleFrame(StompHeaders headers, Object payload) {
+                EmojiMessage receivedMessage = (EmojiMessage) payload;
+                q.accept(receivedMessage);
+            }
+        });
+    }
+
+    public void sendEmojiTest(long gameId, String username, int emojiIndex, long userId) {
+        session.send("/app/emoji/" + gameId, new EmojiMessage(userId, emojiIndex, username));
+    }
+
+    public Integer getNumberOfQuestionsInGame(long gameId) {
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/game/howManyQuestions/" + gameId)
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .get(Integer.class);
     }
 
     public List<LeaderboardEntry> getLeaderboardEntries() {
@@ -67,6 +103,14 @@ public class ServerUtils {
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
                 .get(new GenericType<List<LeaderboardEntry>>() {});
+    }
+
+    public List<Activity> getActivties() {
+        return ClientBuilder.newClient(new ClientConfig()) //
+                .target(SERVER).path("api/admin/display") //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .get(new GenericType<List<Activity>>() {});
     }
 
     public LeaderboardEntry addLeaderboardEntry(LeaderboardEntry leaderboardEntry) {
@@ -178,14 +222,33 @@ public class ServerUtils {
                 .accept(APPLICATION_JSON)
                 .get();
     }
-
-    public Quote addQuote(Quote quote) {
+    public Activity addActivity(Activity activity) {
         return ClientBuilder.newClient(new ClientConfig()) //
-                .target(SERVER).path("api/quotes") //
+                .target(SERVER).path("api/admin/add") //
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
-                .post(Entity.entity(quote, APPLICATION_JSON), Quote.class);
+                .post(Entity.entity(activity, APPLICATION_JSON), Activity.class);
     }
+
+    public void updateActivity(Activity activity, String title, long consumption, String source){
+        ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/admin/edit/" + activity.getId())
+                .queryParam("title", title)
+                .queryParam("consumption", consumption)
+                .queryParam("source", source)
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .put(Entity.entity(activity, APPLICATION_JSON), Activity.class);
+    }
+
+    public Activity getActivityById(long id){
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/admin/getById/" + id)
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .get(new GenericType<Activity>() {});
+    }
+
     public Message getUpdate() {
         return new Message("newMessage");
     }

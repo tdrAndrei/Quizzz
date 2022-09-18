@@ -19,6 +19,7 @@ import java.util.Objects;
         @JsonSubTypes.Type(value = NewPlayersMessage.class, name = "NewPlayersMessage"),
         @JsonSubTypes.Type(value = NewQuestionMessage.class, name = "NewQuestion"),
         @JsonSubTypes.Type(value = NullMessage.class, name = "None"),
+        @JsonSubTypes.Type(value = ReduceTimeMessage.class, name = "ReduceTime"),
         @JsonSubTypes.Type(value = ShowLeaderboardMessage.class, name = "ShowLeaderboard"),
 })public class Message {
     /**

@@ -7,10 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import server.Game;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -19,20 +16,32 @@ public class GameManagerTest {
 
     @BeforeEach
     public void init() throws JsonProcessingException {
-        this.gameManager = new GameManager(new QuestionService(new TestActivityRepository(), null) {
+        this.gameManager = new GameManager(new QuestionService(new TestActivityRepository(), new Random()) {
             public void QuestionService() {
 
             }
-            @Override
-            public Question makeMultipleChoice(int seconds) {
+
+            public List<Activity> makeFakeActivities() {
                 List<Activity> fakeActivities = new ArrayList<>();
-                fakeActivities.add(new Activity(0L, "/", "test_act_1", 3L,
+                fakeActivities.add(new Activity(0L, "../profile_images/editIcon.png", "test_act_1", 3L,
                         "testsrc"));
-                fakeActivities.add(new Activity(1L, "/", "test_act_2", 30L,
+                fakeActivities.add(new Activity(1L, "../profile_images/editIcon.png", "test_act_2", 30L,
                         "testsrc"));
-                fakeActivities.add(new Activity(2L, "/", "test_act_3", 300L,
+                fakeActivities.add(new Activity(2L, "../profile_images/editIcon.png", "test_act_3", 300L,
                         "testsrc"));
-                return new MultiChoiceQuestion("TestTitle", 1, fakeActivities, seconds);
+                fakeActivities.add(new Activity(3L, "../profile_images/editIcon.png", "test_act_4", 300L,
+                        "testsrc"));
+                return fakeActivities;
+            }
+
+            @Override
+            public Question makeMultipleChoice(double seconds) {
+                return new MultiChoiceQuestion("TestTitle", 1, makeFakeActivities(), seconds);
+            }
+
+            @Override
+            public Question makeCompare(double seconds) {
+                return new MultiChoiceQuestion("TestTitle", 1, makeFakeActivities(), seconds);
             }
 
             @Override
@@ -41,15 +50,13 @@ public class GameManagerTest {
             }
 
             @Override
-            public Question makeEstimate(int seconds) {
-                List<Activity> fakeActivities = new ArrayList<>();
-                fakeActivities.add(new Activity(0L, "/", "test_act_1", 3L,
-                        "/"));
-                fakeActivities.add(new Activity(1L, "/", "test_act_2", 30L,
-                        "/"));
-                fakeActivities.add(new Activity(2L, "/", "test_act_3", 300L,
-                        "/"));
-                return new EstimateQuestion("title", 1, fakeActivities, seconds);
+            public Question makeEstimate(double seconds) {
+                return new EstimateQuestion("title", 1, makeFakeActivities(), null, seconds);
+            }
+
+            @Override
+            public Question makeChooseConsumption(double seconds) {
+                return new ChooseConsumptionQuestion("title", 1, makeFakeActivities(), seconds, null);
             }
         }, new LeaderBoardEntryService(new TestLeaderboardEntryRepo()));
     }
@@ -114,6 +121,7 @@ public class GameManagerTest {
         long response = gameManager.joinSolo(user);
         gameManager.processAnswer(1L, 1, response);
         Game game = gameManager.getGameMap().get(response);
+        game.insertCorrectAnswerIntoDiff();
         assertTrue(game.getPlayerMap().get(1L).getScore() != 0);
     }
 
@@ -123,6 +131,7 @@ public class GameManagerTest {
         long response = gameManager.joinSolo(user);
         gameManager.processAnswer(1L, 3, response);
         Game game = gameManager.getGameMap().get(response);
+        game.insertCorrectAnswerIntoDiff();
         assertEquals(0, game.getPlayerMap().get(1L).getScore());
     }
 
@@ -155,11 +164,11 @@ public class GameManagerTest {
         long response2 = gameManager.joinMulti(user2);
         Game game = gameManager.getGameMap().get(response2);
 
-        Map<Long, Integer> timeMap = game.getMaxTime();
-        int check1 = timeMap.get(1L);
+        Map<Long, Double> timeMap = game.getMaxTime();
+        double check1 = timeMap.get(1L);
 
         gameManager.useTimeJoker(response, 2L);
-        int check2 = timeMap.get(1L);
+        double check2 = timeMap.get(1L);
 
         assertEquals(check2, check1 / 2);
     }
@@ -172,11 +181,11 @@ public class GameManagerTest {
         long response2 = gameManager.joinMulti(user2);
         Game game = gameManager.getGameMap().get(response2);
 
-        Map<Long, Integer> timeMap = game.getMaxTime();
-        int check1 = timeMap.get(2L);
+        Map<Long, Double> timeMap = game.getMaxTime();
+        double check1 = timeMap.get(2L);
 
         gameManager.useTimeJoker(response, 2L);
-        int check2 = timeMap.get(2L);
+        double check2 = timeMap.get(2L);
 
         assertEquals(check2, check1);
     }
